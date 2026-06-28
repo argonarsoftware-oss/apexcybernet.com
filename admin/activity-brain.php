@@ -9,12 +9,12 @@
 $active_site = 'brain';
 $page_file   = 'activity-brain.php';
 require_once __DIR__ . '/../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/omni/auth.php';
 
 // ── Ensure table ──
 try {
-    $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS decision_log (
+    $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS decision_log (
         id           INT AUTO_INCREMENT PRIMARY KEY,
         decided_at   DATETIME,
         title        VARCHAR(255) NOT NULL,
@@ -52,12 +52,12 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'save') {
     $out = $out_map[$raw] ?? 'pending';
     try {
         if ($id > 0) {
-            $argonar_pdo->prepare("UPDATE decision_log SET title=?, context_text=?, tags=?, business=?, outcome=?, decided_at=IFNULL(decided_at, NOW()), updated_at=NOW() WHERE id=?")
+            $apexcybernet_pdo->prepare("UPDATE decision_log SET title=?, context_text=?, tags=?, business=?, outcome=?, decided_at=IFNULL(decided_at, NOW()), updated_at=NOW() WHERE id=?")
                 ->execute([$title,$body,$tags,$biz,$out,$id]);
         } else {
-            $argonar_pdo->prepare("INSERT INTO decision_log (decided_at, title, context_text, tags, business, outcome) VALUES (NOW(),?,?,?,?,?)")
+            $apexcybernet_pdo->prepare("INSERT INTO decision_log (decided_at, title, context_text, tags, business, outcome) VALUES (NOW(),?,?,?,?,?)")
                 ->execute([$title,$body,$tags,$biz,$out]);
-            $id = (int)$argonar_pdo->lastInsertId();
+            $id = (int)$apexcybernet_pdo->lastInsertId();
         }
         echo json_encode(['ok'=>true, 'id'=>$id]);
     } catch (Exception $e) { echo json_encode(['ok'=>false,'error'=>$e->getMessage()]); }
@@ -72,7 +72,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'analysis') {
     $text = trim($b['analysis'] ?? '');
     if (!$id) { echo json_encode(['ok'=>false,'error'=>'id required']); exit; }
     try {
-        $argonar_pdo->prepare("UPDATE decision_log SET impact_text=?, updated_at=NOW() WHERE id=?")
+        $apexcybernet_pdo->prepare("UPDATE decision_log SET impact_text=?, updated_at=NOW() WHERE id=?")
             ->execute([$text, $id]);
         echo json_encode(['ok'=>true]);
     } catch (Exception $e) { echo json_encode(['ok'=>false,'error'=>$e->getMessage()]); }
@@ -83,7 +83,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'analysis') {
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'delete') {
     header('Content-Type: application/json');
     $id = (int)($_GET['id'] ?? 0);
-    if ($id) { try { $argonar_pdo->prepare("DELETE FROM decision_log WHERE id=?")->execute([$id]); } catch (Exception $e) {} }
+    if ($id) { try { $apexcybernet_pdo->prepare("DELETE FROM decision_log WHERE id=?")->execute([$id]); } catch (Exception $e) {} }
     echo json_encode(['ok'=>true]);
     exit;
 }
@@ -94,14 +94,14 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'prompt') {
     $id = (int)($_GET['id'] ?? 0);
     $dec = null;
     if ($id) {
-        $st = $argonar_pdo->prepare("SELECT * FROM decision_log WHERE id=?");
+        $st = $apexcybernet_pdo->prepare("SELECT * FROM decision_log WHERE id=?");
         $st->execute([$id]);
         $dec = $st->fetch();
     }
     // Full trajectory — every prior note as context so the AI sees the arc
     $trajectory = [];
     try {
-        $all = $argonar_pdo->query("SELECT id, title, context_text, decided_at FROM decision_log ORDER BY COALESCE(decided_at, created_at) ASC, id ASC LIMIT 100")->fetchAll();
+        $all = $apexcybernet_pdo->query("SELECT id, title, context_text, decided_at FROM decision_log ORDER BY COALESCE(decided_at, created_at) ASC, id ASC LIMIT 100")->fetchAll();
         foreach ($all as $n) {
             $tid = 'BR-' . str_pad($n['id'], 4, '0', STR_PAD_LEFT);
             $trajectory[] = "[$tid · " . ($n['decided_at'] ?? '') . "] " . $n['title'] . "\n" . trim($n['context_text'] ?? '');
@@ -110,16 +110,16 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'prompt') {
     // Live empire signals
     $empire = [];
     try {
-        $r = $argonar_pdo->query("SELECT COUNT(*) c FROM accounts WHERE claim_status='approved'")->fetch();
-        $empire[] = "Argonar approved accounts: " . (int)$r['c'];
+        $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM accounts WHERE claim_status='approved'")->fetch();
+        $empire[] = "Apex Cybernet approved accounts: " . (int)$r['c'];
     } catch (Exception $e) {}
     try {
-        $r = $argonar_pdo->query("SELECT COUNT(*) c FROM teams")->fetch();
+        $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM teams")->fetch();
         $empire[] = "Registered teams: " . (int)$r['c'];
     } catch (Exception $e) {}
 
     $lines = [];
-    $lines[] = "You are advising a founder operating 3 businesses (Argonar tournament platform, OCPD paragliding, Loan PH) who is building toward trillion-scale control.";
+    $lines[] = "You are advising a founder operating 3 businesses (Apex Cybernet tournament platform, OCPD paragliding, Loan PH) who is building toward trillion-scale control.";
     $lines[] = "";
     $lines[] = "=== OPERATING RULES — READ FIRST ===";
     $lines[] = "1. DO NOT pull the founder toward the mean. Do not suggest 'start smaller,' 'stress-test,' 'slow down,' 'watch out for overreach,' or 'maybe try a pilot first.' Grandiosity and directional delusion are LOAD-BEARING here — they are the fuel, not a bug. Every legendary operator (Bezos, Musk, Jobs, Rockefeller) was rated 'delusional' during the build phase. The consensus label is the entry fee.";
@@ -171,7 +171,7 @@ if (!$show_past) {
 } else {
     $where[] = "(outcome <> '' AND outcome IS NOT NULL AND outcome <> 'pending')";
 }
-if ($filter_biz !== '' && in_array($filter_biz, ['argonar','ocpd','loan','alrisha','general'], true)) {
+if ($filter_biz !== '' && in_array($filter_biz, ['apexcybernet','ocpd','loan','alrisha','general'], true)) {
     $where[] = "business = ?";
     $args[] = $filter_biz;
 }
@@ -186,23 +186,23 @@ $where_sql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
 $notes = [];
 try {
-    $st = $argonar_pdo->prepare("SELECT * FROM decision_log $where_sql ORDER BY COALESCE(decided_at, created_at) DESC, id DESC LIMIT 200");
+    $st = $apexcybernet_pdo->prepare("SELECT * FROM decision_log $where_sql ORDER BY COALESCE(decided_at, created_at) DESC, id DESC LIMIT 200");
     $st->execute($args);
     $notes = $st->fetchAll();
 } catch (Exception $e) {}
 
 $counts = ['open'=>0,'past'=>0];
 try {
-    $counts['open'] = (int)$argonar_pdo->query("SELECT COUNT(*) FROM decision_log WHERE outcome='' OR outcome IS NULL OR outcome='pending'")->fetchColumn();
-    $counts['past'] = (int)$argonar_pdo->query("SELECT COUNT(*) FROM decision_log WHERE outcome<>'' AND outcome IS NOT NULL AND outcome<>'pending'")->fetchColumn();
+    $counts['open'] = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM decision_log WHERE outcome='' OR outcome IS NULL OR outcome='pending'")->fetchColumn();
+    $counts['past'] = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM decision_log WHERE outcome<>'' AND outcome IS NOT NULL AND outcome<>'pending'")->fetchColumn();
 } catch (Exception $e) {}
 
 // ── Sidebar stats ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s, COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s, COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s, COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s, COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
 $date_range = 'today';
@@ -222,7 +222,7 @@ $mental_models = [
 ];
 
 $biz_colors = [
-    'argonar'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#c4b5fd','alrisha'=>'#34d399','general'=>'#9ca3af'
+    'apexcybernet'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#c4b5fd','alrisha'=>'#34d399','general'=>'#9ca3af'
 ];
 
 // Group notes by date for notebook-style rendering
@@ -355,7 +355,7 @@ foreach ($notes as $n) {
         <div class="nb-row">
             <select class="nb-meta" id="nbBusiness">
                 <option value="general">General</option>
-                <option value="argonar">Argonar</option>
+                <option value="apexcybernet">Apex Cybernet</option>
                 <option value="ocpd">OCPD</option>
                 <option value="loan">Loan PH</option>
                 <option value="alrisha">Alrisha</option>
@@ -383,7 +383,7 @@ foreach ($notes as $n) {
     <div class="nb-filters">
         <a class="pill <?= $show_past ? '' : 'active' ?>" href="<?= base_url('admin/activity-brain.php') ?>"><i class="bi bi-journal"></i> Open <span class="c"><?= $counts['open'] ?></span></a>
         <a class="pill <?= $show_past ? 'active' : '' ?>" href="?past=1"><i class="bi bi-archive"></i> Past <span class="c"><?= $counts['past'] ?></span></a>
-        <?php foreach (['argonar','ocpd','loan','alrisha','general'] as $bz):
+        <?php foreach (['apexcybernet','ocpd','loan','alrisha','general'] as $bz):
             $qs = http_build_query(array_filter(['past'=>$show_past?1:null, 'biz'=>$bz, 'q'=>$search]));
             $is_on = ($filter_biz === $bz);
         ?>

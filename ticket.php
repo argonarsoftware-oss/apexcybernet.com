@@ -293,7 +293,7 @@ require_once __DIR__ . '/includes/header.php';
                 <button onclick="copyRef()" id="copyBtn" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:0.3rem 0.75rem; border-radius:8px; font-size:0.75rem; cursor:pointer; font-weight:600;">
                     <i class="bi bi-clipboard"></i> Copy Code
                 </button>
-                <a href="sms:?body=My%20Argonar%20Tournament%20code:%20<?= urlencode($ref) ?>%20-%20https://argonar.co/" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:0.3rem 0.75rem; border-radius:8px; font-size:0.75rem; text-decoration:none; font-weight:600;">
+                <a href="sms:?body=My%20Apex Cybernet%20Tournament%20code:%20<?= urlencode($ref) ?>%20-%20https://apexcybernet.com/" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:0.3rem 0.75rem; border-radius:8px; font-size:0.75rem; text-decoration:none; font-weight:600;">
                     <i class="bi bi-chat-dots"></i> SMS
                 </a>
                 <a href="https://www.facebook.com/argonarsoftware/?text=My%20tournament%20code:%20<?= urlencode($ref) ?>" target="_blank" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:0.3rem 0.75rem; border-radius:8px; font-size:0.75rem; text-decoration:none; font-weight:600;">
@@ -338,7 +338,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.75rem;">Scan QR with any banking or e-wallet app</div>
                 <img src="<?= base_url('payment/generate-qr.php?amount=' . number_format($payAmount, 2, '.', '')) ?>"
                      alt="Payment QR Code" style="width:220px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.15); margin:0 auto;">
-                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.5rem;">QR Ph (InstaPay) - Argonar Software</div>
+                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.5rem;">QR Ph (InstaPay) - Apex Cybernet</div>
                 <div style="font-size:0.75rem; color:var(--accent-light); margin-top:0.4rem;"><i class="bi bi-info-circle"></i> The exact amount will be filled automatically when you scan.</div>
                 <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.3rem;">The small centavo difference is for payment verification. Send the exact amount shown.</div>
             </div>
@@ -375,7 +375,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="ticket-status ticket-waiting">
                 <div class="ticket-status-icon"><i class="bi bi-exclamation-triangle"></i></div>
                 <h3>Auto-detection unavailable</h3>
-                <p>We couldn't reach the payment listener right now. Send your &#8369;<?= number_format($amount, 0) ?> to QR Ph (InstaPay) — Argonar Software, then upload the proof below. We'll review and confirm within minutes.</p>
+                <p>We couldn't reach the payment listener right now. Send your &#8369;<?= number_format($amount, 0) ?> to QR Ph (InstaPay) — Apex Cybernet, then upload the proof below. We'll review and confirm within minutes.</p>
             </div>
         <?php endif; ?>
 
@@ -451,7 +451,7 @@ require_once __DIR__ . '/includes/header.php';
         <i class="bi bi-shield-lock-fill" style="font-size:2.5rem; color:var(--accent-light, #a78bfa); display:block; margin-bottom:0.75rem;"></i>
         <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:0.4rem;">Account Required</h3>
         <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1.25rem; line-height:1.5;">
-            You need an Argonar account to pay with H-Coins. Log in or create an account to get started.
+            You need an Apex Cybernet account to pay with H-Coins. Log in or create an account to get started.
         </p>
         <a href="<?= base_url('login.php') ?>" style="display:inline-flex; align-items:center; gap:0.4rem; background:var(--accent, #7c3aed); color:#fff; border:none; border-radius:10px; padding:0.7rem 1.5rem; font-size:0.9rem; font-weight:800; text-decoration:none;">
             <i class="bi bi-box-arrow-in-right"></i> Log In / Sign Up

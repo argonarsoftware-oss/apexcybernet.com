@@ -85,7 +85,7 @@ m_head('Dashboard');
 <div style="margin:0 1rem 1rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.28);border-radius:14px;padding:1rem 1.1rem;">
     <div style="font-weight:800;font-size:0.88rem;color:#f87171;margin-bottom:0.2rem;"><i class="bi bi-exclamation-triangle-fill"></i> Payment Required</div>
     <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.65rem;">Your slot is not confirmed. Pay before Apr 17 or it goes to waitlist.</div>
-    <a href="https://argonar.co/ticket.php?ref=<?= urlencode($user['ref_code']) ?>&type=<?= $user['ref_type'] ?>&game=<?= $game ?>"
+    <a href="https://apexcybernet.com/ticket.php?ref=<?= urlencode($user['ref_code']) ?>&type=<?= $user['ref_type'] ?>&game=<?= $game ?>"
        style="display:block;background:#dc2626;color:#fff;border-radius:10px;padding:0.7rem;text-align:center;font-weight:800;font-size:0.88rem;">
         <i class="bi bi-qr-code"></i> Pay Now — Secure Your Slot
     </a>
@@ -95,7 +95,7 @@ m_head('Dashboard');
 <!-- Season pass -->
 <?php if (!empty($season_pass)): ?>
 <?php if ($season_pass['status'] === 'active'): ?>
-<a href="https://argonar.co/season-pass.php" style="display:flex;align-items:center;gap:0.75rem;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.28);border-radius:14px;color:var(--text);text-decoration:none;">
+<a href="https://apexcybernet.com/season-pass.php" style="display:flex;align-items:center;gap:0.75rem;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.28);border-radius:14px;color:var(--text);text-decoration:none;">
     <div style="width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,0.12);color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;"><i class="bi bi-patch-check-fill"></i></div>
     <div style="flex:1;min-width:0;">
         <div style="font-weight:800;font-size:0.85rem;color:#fde68a;">Season 1 Pass · Active</div>
@@ -104,7 +104,7 @@ m_head('Dashboard');
     <i class="bi bi-chevron-right" style="color:var(--muted);font-size:0.85rem;"></i>
 </a>
 <?php else: ?>
-<a href="https://argonar.co/season-pass.php" style="display:flex;align-items:center;gap:0.75rem;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:rgba(96,165,250,0.05);border:1px solid rgba(96,165,250,0.22);border-radius:14px;color:var(--text);text-decoration:none;">
+<a href="https://apexcybernet.com/season-pass.php" style="display:flex;align-items:center;gap:0.75rem;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:rgba(96,165,250,0.05);border:1px solid rgba(96,165,250,0.22);border-radius:14px;color:var(--text);text-decoration:none;">
     <div style="width:36px;height:36px;border-radius:10px;background:rgba(96,165,250,0.1);color:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;"><i class="bi bi-clock-history"></i></div>
     <div style="flex:1;min-width:0;">
         <div style="font-weight:800;font-size:0.85rem;color:#93c5fd;">Season 1 Pass · Pending</div>
@@ -141,18 +141,18 @@ m_head('Dashboard');
 
 <!-- Quick actions -->
 <div class="quick" style="grid-template-columns:repeat(3,1fr);">
-    <a href="https://argonar.co/predict.php" class="quick-btn">
+    <a href="https://apexcybernet.com/predict.php" class="quick-btn">
         <i class="bi bi-graph-up-arrow" style="color:#a78bfa;"></i>Predict
     </a>
-    <a href="<?= $game ? 'https://argonar.co/bracket.php?game=' . $game : 'https://argonar.co/bracket.php' ?>" class="quick-btn">
+    <a href="<?= $game ? 'https://apexcybernet.com/bracket.php?game=' . $game : 'https://apexcybernet.com/bracket.php' ?>" class="quick-btn">
         <i class="bi bi-diagram-3-fill" style="color:#60a5fa;"></i>Bracket
     </a>
     <?php if ($registration): ?>
-    <a href="https://argonar.co/ticket.php?ref=<?= urlencode($user['ref_code']) ?>&type=<?= $user['ref_type'] ?>&game=<?= $game ?>" class="quick-btn">
+    <a href="https://apexcybernet.com/ticket.php?ref=<?= urlencode($user['ref_code']) ?>&type=<?= $user['ref_type'] ?>&game=<?= $game ?>" class="quick-btn">
         <i class="bi bi-qr-code" style="color:#34d399;"></i>Ticket
     </a>
     <?php else: ?>
-    <a href="https://argonar.co/register.php" class="quick-btn">
+    <a href="https://apexcybernet.com/register.php" class="quick-btn">
         <i class="bi bi-plus-circle-fill" style="color:#34d399;"></i>Register
     </a>
     <?php endif; ?>
@@ -183,7 +183,7 @@ m_head('Dashboard');
     <div class="card-body" style="padding-bottom:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
             <div class="card-title" style="margin-bottom:0;">My Predictions</div>
-            <a href="https://argonar.co/predict.php" style="font-size:0.72rem;color:var(--accent-l);font-weight:700;">Place bet</a>
+            <a href="https://apexcybernet.com/predict.php" style="font-size:0.72rem;color:var(--accent-l);font-weight:700;">Place bet</a>
         </div>
     </div>
     <?php if (empty($my_preds)): ?>
@@ -237,7 +237,7 @@ m_head('Dashboard');
     </div>
 </div>
 <?php else: ?>
-<a href="https://argonar.co/register.php" style="display:flex;align-items:center;justify-content:space-between;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);text-decoration:none;">
+<a href="https://apexcybernet.com/register.php" style="display:flex;align-items:center;justify-content:space-between;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);text-decoration:none;">
     <div style="display:flex;align-items:center;gap:0.75rem;">
         <div style="width:36px;height:36px;border-radius:10px;background:var(--accent-dim);color:var(--accent-l);display:flex;align-items:center;justify-content:center;font-size:1rem;"><i class="bi bi-trophy-fill"></i></div>
         <div>

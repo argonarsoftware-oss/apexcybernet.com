@@ -4,26 +4,26 @@
  * Core analytics include — runs all queries and outputs all shared HTML.
  *
  * Expects these variables already set by the calling page:
- *   $active_site, $argonar_pdo, $date_range, $event_filter,
+ *   $active_site, $apexcybernet_pdo, $date_range, $event_filter,
  *   $user_filter, $search, $page, $per_page, $page_file
  *
  * Also expects: $search_params, $search_cond, $date_cond, $prev_cond,
  *   $ev_cond, $uf_cond, $where already built by the calling page.
  */
 
-// ── Site condition for activity_logs (argonar_pdo / single DB) ──
+// ── Site condition for activity_logs (apexcybernet_pdo / single DB) ──
 if ($active_site === 'ocpd') {
     $site_cond = "AND site='ocpd'";
 } elseif ($active_site === 'loan') {
     $site_cond = "AND site='loan'";
 } else {
-    $site_cond = "AND (site='argonar' OR site IS NULL OR site='')";
+    $site_cond = "AND (site='apexcybernet' OR site IS NULL OR site='')";
 }
 
 // ── Current period stats ──
 $s = [];
 try {
-    $st = $argonar_pdo->query("SELECT
+    $st = $apexcybernet_pdo->query("SELECT
         COUNT(*)                                                          AS total,
         SUM(event_type='pageview')                                        AS pageviews,
         SUM(event_type='click')                                           AS clicks,
@@ -36,7 +36,7 @@ try {
 // ── Previous period stats ──
 $sp = [];
 try {
-    $st = $argonar_pdo->query("SELECT
+    $st = $apexcybernet_pdo->query("SELECT
         SUM(event_type='pageview')     AS pageviews,
         SUM(event_type='click')        AS clicks,
         COUNT(DISTINCT session_id)     AS sessions
@@ -54,7 +54,7 @@ $avg_depth = round(($s['total'] ?? 0) / $ses, 1);
 // ── Bounce rate (sessions with exactly 1 event) ──
 $bounce_rate = 0;
 try {
-    $br = $argonar_pdo->query("SELECT
+    $br = $apexcybernet_pdo->query("SELECT
         SUM(CASE WHEN ec=1 THEN 1 ELSE 0 END) AS bounced,
         COUNT(*) AS total_sess
         FROM (SELECT session_id, COUNT(*) AS ec FROM activity_logs WHERE 1=1 $date_cond $uf_cond $site_cond GROUP BY session_id) t")->fetch();
@@ -64,7 +64,7 @@ try {
 // ── Avg session duration ──
 $avg_duration = '—';
 try {
-    $dur = $argonar_pdo->query("SELECT AVG(TIMESTAMPDIFF(SECOND, first_ev, last_ev)) AS avg_sec
+    $dur = $apexcybernet_pdo->query("SELECT AVG(TIMESTAMPDIFF(SECOND, first_ev, last_ev)) AS avg_sec
         FROM (SELECT session_id, MIN(created_at) AS first_ev, MAX(created_at) AS last_ev
               FROM activity_logs WHERE 1=1 $date_cond $uf_cond $site_cond
               GROUP BY session_id HAVING COUNT(*) > 1) t")->fetchColumn();
@@ -81,7 +81,7 @@ $chart_pv     = [];
 $chart_cl     = [];
 try {
     if ($date_range === 'today') {
-        $rows_chart = $argonar_pdo->query("SELECT HOUR(created_at) AS period,
+        $rows_chart = $apexcybernet_pdo->query("SELECT HOUR(created_at) AS period,
             SUM(event_type='pageview') AS pv, SUM(event_type='click') AS cl
             FROM activity_logs WHERE created_at >= CURDATE() $uf_cond $site_cond
             GROUP BY HOUR(created_at) ORDER BY period ASC")->fetchAll();
@@ -94,7 +94,7 @@ try {
         }
     } else {
         $interval = $date_range === '30d' ? 30 : ($date_range === '7d' ? 7 : 90);
-        $rows_chart = $argonar_pdo->query("SELECT DATE(created_at) AS period,
+        $rows_chart = $apexcybernet_pdo->query("SELECT DATE(created_at) AS period,
             SUM(event_type='pageview') AS pv, SUM(event_type='click') AS cl
             FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL $interval DAY) $uf_cond $site_cond
             GROUP BY DATE(created_at) ORDER BY period ASC")->fetchAll();
@@ -109,7 +109,7 @@ try {
 // ── Hourly heatmap ──
 $hourly_totals = array_fill(0, 24, 0);
 try {
-    $hrows = $argonar_pdo->query("SELECT HOUR(created_at) AS h, COUNT(*) AS c
+    $hrows = $apexcybernet_pdo->query("SELECT HOUR(created_at) AS h, COUNT(*) AS c
         FROM activity_logs WHERE created_at >= CURDATE() $uf_cond $site_cond
         GROUP BY h")->fetchAll();
     foreach ($hrows as $r) $hourly_totals[(int)$r['h']] = (int)$r['c'];
@@ -119,7 +119,7 @@ $hourly_max = max(1, max($hourly_totals));
 // ── Top referrers ──
 $top_refs = [];
 try {
-    $tr = $argonar_pdo->query("SELECT
+    $tr = $apexcybernet_pdo->query("SELECT
         CASE WHEN referrer IS NULL OR referrer='' THEN 'Direct / None'
              ELSE REGEXP_REPLACE(referrer, '^https?://(www\\.)?([^/]+).*$', '\\\\2') END AS src,
         COUNT(*) AS hits
@@ -131,7 +131,7 @@ try {
 // ── Device breakdown ──
 $devices = ['Mobile' => 0, 'Tablet' => 0, 'Desktop' => 0, 'Unknown' => 0];
 try {
-    $drows = $argonar_pdo->query("SELECT screen_w, COUNT(DISTINCT session_id) AS cnt
+    $drows = $apexcybernet_pdo->query("SELECT screen_w, COUNT(DISTINCT session_id) AS cnt
         FROM activity_logs WHERE 1=1 $date_cond $uf_cond $site_cond AND screen_w IS NOT NULL
         GROUP BY screen_w")->fetchAll();
     foreach ($drows as $r) {
@@ -141,7 +141,7 @@ try {
         elseif ($sw < 1024)  $devices['Tablet']  += $w;
         else                 $devices['Desktop'] += $w;
     }
-    $unk = $argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+    $unk = $apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
         WHERE 1=1 $date_cond $uf_cond $site_cond AND screen_w IS NULL")->fetchColumn();
     $devices['Unknown'] = (int)$unk;
 } catch (Exception $e) {}
@@ -157,7 +157,7 @@ try {
             '30d'   => "DATE_SUB(NOW(), INTERVAL 30 DAY)",
             default => "CURDATE()"
         };
-        $nr = $argonar_pdo->query("SELECT
+        $nr = $apexcybernet_pdo->query("SELECT
             SUM(CASE WHEN first_seen >= $cutoff THEN 1 ELSE 0 END) AS new_s,
             SUM(CASE WHEN first_seen < $cutoff THEN 1 ELSE 0 END) AS ret_s
             FROM (
@@ -173,7 +173,7 @@ try {
 // ── Top pages ──
 $top_pages = [];
 try {
-    $tp_st = $argonar_pdo->prepare("SELECT page_url, COUNT(*) AS views FROM activity_logs
+    $tp_st = $apexcybernet_pdo->prepare("SELECT page_url, COUNT(*) AS views FROM activity_logs
         WHERE event_type='pageview' $date_cond $uf_cond $site_cond $search_cond
         GROUP BY page_url ORDER BY views DESC LIMIT 10");
     $tp_st->execute($search_params);
@@ -183,7 +183,7 @@ try {
 // ── Top clicked elements ──
 $top_clicks = [];
 try {
-    $tc = $argonar_pdo->query("SELECT
+    $tc = $apexcybernet_pdo->query("SELECT
         COALESCE(NULLIF(element_text,''), element_id, element_tag, '?') AS label,
         element_href, COUNT(*) AS clicks
         FROM activity_logs WHERE event_type='click' $date_cond $uf_cond $site_cond
@@ -194,7 +194,7 @@ try {
 // ── Chat messages analytics ──
 // Pulls from the real chat tables (cafe_comments = homepage live chat,
 // chat_messages = DMs + groups) rather than activity_logs, since those tables
-// never get mirrored into the tracker. Chat is inherently argonar-scoped so
+// never get mirrored into the tracker. Chat is inherently apexcybernet-scoped so
 // the $site_cond filter is intentionally ignored here.
 $chat_stats     = ['total' => 0, 'senders' => 0, 'conversations' => 0, 'avg_len' => 0];
 $chat_top       = [];
@@ -226,7 +226,7 @@ try {
         ) x
         ORDER BY x.created_at DESC
     ";
-    $all = $argonar_pdo->query($union_sql)->fetchAll(PDO::FETCH_ASSOC);
+    $all = $apexcybernet_pdo->query($union_sql)->fetchAll(PDO::FETCH_ASSOC);
 
     $total      = count($all);
     $sender_set = [];
@@ -276,7 +276,7 @@ try {
 // ── Top users ──
 $top_users = [];
 try {
-    $tu_st = $argonar_pdo->prepare("SELECT l.display_name, l.account_id, a.email,
+    $tu_st = $apexcybernet_pdo->prepare("SELECT l.display_name, l.account_id, a.email,
         COUNT(*) AS events, MAX(l.created_at) AS last_seen
         FROM activity_logs l LEFT JOIN accounts a ON a.id = l.account_id
         WHERE l.account_id IS NOT NULL $date_cond $site_cond $search_cond
@@ -289,7 +289,7 @@ try {
 $where_with_site = "WHERE 1=1 $date_cond $ev_cond $uf_cond $site_cond $search_cond";
 $count_sql = "SELECT COUNT(*) FROM activity_logs $where_with_site";
 try {
-    $cnt_st = $argonar_pdo->prepare($count_sql);
+    $cnt_st = $apexcybernet_pdo->prepare($count_sql);
     $cnt_st->execute($search_params);
     $total_rows = (int)$cnt_st->fetchColumn();
 } catch (Exception $e) { $total_rows = 0; }
@@ -298,7 +298,7 @@ $page   = min($page, $total_pages);
 $offset = ($page - 1) * $per_page;
 $rows   = [];
 try {
-    $data_st = $argonar_pdo->prepare("SELECT id, session_id, account_id, display_name, event_type,
+    $data_st = $apexcybernet_pdo->prepare("SELECT id, session_id, account_id, display_name, event_type,
         page_url, page_title, element_tag, element_text, element_href, element_id,
         referrer, ip, screen_w, created_at,
         country, city, browser, os, device_type, scroll_depth, time_on_page, load_time
@@ -309,24 +309,24 @@ try {
 
 // ── Max log ID for live feed baseline ──
 $max_id = 0;
-try { $max_id = (int)$argonar_pdo->query("SELECT MAX(id) FROM activity_logs")->fetchColumn(); } catch(Exception $e){}
+try { $max_id = (int)$apexcybernet_pdo->query("SELECT MAX(id) FROM activity_logs")->fetchColumn(); } catch(Exception $e){}
 
 // ── Live now (active in last 5 min) ──
 $live_now = 0;
-try { $live_now = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) $site_cond")->fetchColumn(); } catch(Exception $e){}
+try { $live_now = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) $site_cond")->fetchColumn(); } catch(Exception $e){}
 
 // ── Avg scroll depth ──
 $avg_scroll = null;
-try { $r = $argonar_pdo->query("SELECT ROUND(AVG(scroll_depth)) FROM activity_logs WHERE event_type='scroll' $date_cond $site_cond")->fetchColumn(); $avg_scroll = ($r !== false && $r !== null) ? (int)$r : null; } catch(Exception $e){}
+try { $r = $apexcybernet_pdo->query("SELECT ROUND(AVG(scroll_depth)) FROM activity_logs WHERE event_type='scroll' $date_cond $site_cond")->fetchColumn(); $avg_scroll = ($r !== false && $r !== null) ? (int)$r : null; } catch(Exception $e){}
 
 // ── Avg load time (ms) ──
 $avg_load_time = null;
-try { $r = $argonar_pdo->query("SELECT ROUND(AVG(load_time)) FROM activity_logs WHERE event_type='pageview' AND load_time IS NOT NULL AND load_time > 0 $date_cond $site_cond")->fetchColumn(); $avg_load_time = ($r !== false && $r !== null) ? (int)$r : null; } catch(Exception $e){}
+try { $r = $apexcybernet_pdo->query("SELECT ROUND(AVG(load_time)) FROM activity_logs WHERE event_type='pageview' AND load_time IS NOT NULL AND load_time > 0 $date_cond $site_cond")->fetchColumn(); $avg_load_time = ($r !== false && $r !== null) ? (int)$r : null; } catch(Exception $e){}
 
 // ── Top countries ──
 $top_countries = [];
 try {
-    $top_countries = $argonar_pdo->query("SELECT country, COUNT(DISTINCT session_id) AS sessions
+    $top_countries = $apexcybernet_pdo->query("SELECT country, COUNT(DISTINCT session_id) AS sessions
         FROM activity_logs WHERE country IS NOT NULL $date_cond $uf_cond $site_cond
         GROUP BY country ORDER BY sessions DESC LIMIT 12")->fetchAll();
 } catch(Exception $e){}
@@ -334,7 +334,7 @@ try {
 // ── Top browsers ──
 $top_browsers = [];
 try {
-    $top_browsers = $argonar_pdo->query("SELECT browser, COUNT(DISTINCT session_id) AS sessions
+    $top_browsers = $apexcybernet_pdo->query("SELECT browser, COUNT(DISTINCT session_id) AS sessions
         FROM activity_logs WHERE browser IS NOT NULL AND browser NOT IN ('Bot','Unknown') $date_cond $uf_cond $site_cond
         GROUP BY browser ORDER BY sessions DESC LIMIT 8")->fetchAll();
 } catch(Exception $e){}
@@ -342,7 +342,7 @@ try {
 // ── OS breakdown ──
 $top_os = [];
 try {
-    $top_os = $argonar_pdo->query("SELECT os, COUNT(DISTINCT session_id) AS sessions
+    $top_os = $apexcybernet_pdo->query("SELECT os, COUNT(DISTINCT session_id) AS sessions
         FROM activity_logs WHERE os IS NOT NULL AND os NOT IN ('Bot','Unknown') $date_cond $uf_cond $site_cond
         GROUP BY os ORDER BY sessions DESC LIMIT 6")->fetchAll();
 } catch(Exception $e){}
@@ -350,7 +350,7 @@ try {
 // ── UTM sources ──
 $top_utms = [];
 try {
-    $top_utms = $argonar_pdo->query("SELECT utm_source, utm_medium, utm_campaign, COUNT(DISTINCT session_id) AS sessions
+    $top_utms = $apexcybernet_pdo->query("SELECT utm_source, utm_medium, utm_campaign, COUNT(DISTINCT session_id) AS sessions
         FROM activity_logs WHERE utm_source IS NOT NULL $date_cond $site_cond
         GROUP BY utm_source, utm_medium, utm_campaign ORDER BY sessions DESC LIMIT 10")->fetchAll();
 } catch(Exception $e){}
@@ -358,7 +358,7 @@ try {
 // ── Scroll depth per page ──
 $scroll_pages = [];
 try {
-    $scroll_pages = $argonar_pdo->query("SELECT page_url, ROUND(AVG(scroll_depth)) AS avg_depth, COUNT(*) AS cnt
+    $scroll_pages = $apexcybernet_pdo->query("SELECT page_url, ROUND(AVG(scroll_depth)) AS avg_depth, COUNT(*) AS cnt
         FROM activity_logs WHERE event_type='scroll' $date_cond $site_cond
         GROUP BY page_url ORDER BY cnt DESC LIMIT 8")->fetchAll();
 } catch(Exception $e){}
@@ -366,14 +366,14 @@ try {
 // ── Recent JS errors ──
 $js_errors = [];
 try {
-    $js_errors = $argonar_pdo->query("SELECT element_text AS msg, COUNT(*) AS cnt, MAX(created_at) AS last_seen, page_url
+    $js_errors = $apexcybernet_pdo->query("SELECT element_text AS msg, COUNT(*) AS cnt, MAX(created_at) AS last_seen, page_url
         FROM activity_logs WHERE event_type='error' $date_cond $site_cond
         GROUP BY element_text, page_url ORDER BY cnt DESC LIMIT 10")->fetchAll();
 } catch(Exception $e){}
 
 // ── Auto-create chart_annotations table ──
 try {
-    $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS chart_annotations (
+    $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS chart_annotations (
         id INT AUTO_INCREMENT PRIMARY KEY,
         site VARCHAR(32) NOT NULL,
         annotation_date DATE NOT NULL,
@@ -386,7 +386,7 @@ try {
 
 // ── Auto-create goals table ──
 try {
-    $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS goals (
+    $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS goals (
         id INT AUTO_INCREMENT PRIMARY KEY,
         site VARCHAR(32) NOT NULL,
         name VARCHAR(120) NOT NULL,
@@ -399,7 +399,7 @@ try {
 
 // ── Auto-create alert_rules table ──
 try {
-    $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS alert_rules (
+    $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS alert_rules (
         id INT AUTO_INCREMENT PRIMARY KEY,
         site VARCHAR(32) NOT NULL,
         alert_type VARCHAR(32) NOT NULL,
@@ -420,7 +420,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_alert_rule') {
     $allowed_types = ['traffic_drop','error_spike','no_traffic'];
     if (!in_array($ar_type, $allowed_types)) $ar_type = 'traffic_drop';
     try {
-        $st = $argonar_pdo->prepare("INSERT INTO alert_rules (site, alert_type, name, threshold_pct, window_minutes, active) VALUES (?,?,?,?,?,1)");
+        $st = $apexcybernet_pdo->prepare("INSERT INTO alert_rules (site, alert_type, name, threshold_pct, window_minutes, active) VALUES (?,?,?,?,?,1)");
         $st->execute([$ar_site, $ar_type, $ar_name ?: null, $ar_thresh, $ar_window]);
     } catch (Exception $e) {}
     header('Location: ' . $page_file . '?dr=' . $date_range . '#pal-alerts'); exit;
@@ -429,14 +429,14 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_alert_rule') {
 // ── Handle del_alert_rule GET ──
 if (isset($_GET['action']) && $_GET['action'] === 'del_alert_rule' && isset($_GET['id'])) {
     $del_id = (int)$_GET['id'];
-    try { $argonar_pdo->prepare("DELETE FROM alert_rules WHERE id = ?")->execute([$del_id]); } catch (Exception $e) {}
+    try { $apexcybernet_pdo->prepare("DELETE FROM alert_rules WHERE id = ?")->execute([$del_id]); } catch (Exception $e) {}
     header('Location: ' . $page_file . '?dr=' . $date_range . '#pal-alerts'); exit;
 }
 
 // ── Toggle alert rule ──
 if (isset($_GET['toggle_alert'])) {
     $rule_id = (int)$_GET['toggle_alert'];
-    try { $argonar_pdo->prepare("UPDATE alert_rules SET active = 1 - active WHERE id = ?")->execute([$rule_id]); } catch (Exception $e) {}
+    try { $apexcybernet_pdo->prepare("UPDATE alert_rules SET active = 1 - active WHERE id = ?")->execute([$rule_id]); } catch (Exception $e) {}
     header('Location: ' . $page_file . '?dr=' . $date_range . '#pal-alerts'); exit;
 }
 
@@ -447,7 +447,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_goal') {
     $g_site    = trim($_POST['goal_site'] ?? $active_site);
     if ($g_name !== '' && $g_pattern !== '') {
         try {
-            $st = $argonar_pdo->prepare("INSERT INTO goals (site, name, url_pattern) VALUES (?,?,?)");
+            $st = $apexcybernet_pdo->prepare("INSERT INTO goals (site, name, url_pattern) VALUES (?,?,?)");
             $st->execute([$g_site, $g_name, $g_pattern]);
         } catch (Exception $e) {}
     }
@@ -455,14 +455,14 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_goal') {
 }
 if (isset($_GET['action']) && $_GET['action'] === 'del_goal' && isset($_GET['id'])) {
     $del_id = (int)$_GET['id'];
-    try { $argonar_pdo->prepare("DELETE FROM goals WHERE id = ?")->execute([$del_id]); } catch (Exception $e) {}
+    try { $apexcybernet_pdo->prepare("DELETE FROM goals WHERE id = ?")->execute([$del_id]); } catch (Exception $e) {}
     header('Location: ' . $page_file . '?dr=' . $date_range . '#pal-goals'); exit;
 }
 
 // ── Goals: query ──
 $goals_list = [];
 try {
-    $st = $argonar_pdo->prepare("SELECT * FROM goals WHERE site = ? ORDER BY id");
+    $st = $apexcybernet_pdo->prepare("SELECT * FROM goals WHERE site = ? ORDER BY id");
     $st->execute([$active_site]);
     $goals_list = $st->fetchAll();
 } catch (Exception $e) {}
@@ -473,7 +473,7 @@ foreach ($goals_list as $g) {
     $g_pat = '%' . str_replace(['%','_'], ['\%','\_'], $g['url_pattern']) . '%';
     $g_completions = 0;
     try {
-        $st = $argonar_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+        $st = $apexcybernet_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
             WHERE event_type='pageview' AND page_url LIKE ? $date_cond $site_cond");
         $st->execute([$g_pat]);
         $g_completions = (int)$st->fetchColumn();
@@ -499,7 +499,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_annotation') {
     if (!in_array($ann_color, $allowed_ann_colors)) $ann_color = '#fbbf24';
     if ($ann_date !== '' && $ann_label !== '') {
         try {
-            $st = $argonar_pdo->prepare("INSERT INTO chart_annotations (site, annotation_date, label, color) VALUES (?,?,?,?)");
+            $st = $apexcybernet_pdo->prepare("INSERT INTO chart_annotations (site, annotation_date, label, color) VALUES (?,?,?,?)");
             $st->execute([$active_site, $ann_date, $ann_label, $ann_color]);
         } catch (Exception $e) {}
     }
@@ -507,7 +507,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_annotation') {
 }
 if (isset($_GET['action']) && $_GET['action'] === 'del_annotation' && isset($_GET['id'])) {
     $del_id = (int)$_GET['id'];
-    try { $argonar_pdo->prepare("DELETE FROM chart_annotations WHERE id = ? AND site = ?")->execute([$del_id, $active_site]); } catch (Exception $e) {}
+    try { $apexcybernet_pdo->prepare("DELETE FROM chart_annotations WHERE id = ? AND site = ?")->execute([$del_id, $active_site]); } catch (Exception $e) {}
     header('Location: ' . $page_file . '?dr=' . $date_range . '#annotations'); exit;
 }
 
@@ -521,7 +521,7 @@ try {
         '90d'   => date('Y-m-d', strtotime('-90 days')),
         default => '2000-01-01',
     };
-    $st = $argonar_pdo->prepare("SELECT * FROM chart_annotations WHERE site = ? AND annotation_date >= ? ORDER BY annotation_date ASC");
+    $st = $apexcybernet_pdo->prepare("SELECT * FROM chart_annotations WHERE site = ? AND annotation_date >= ? ORDER BY annotation_date ASC");
     $st->execute([$active_site, $ann_from]);
     $annotations = $st->fetchAll();
 } catch (Exception $e) {}
@@ -534,7 +534,7 @@ $annotations_json = json_encode(array_map(fn($a) => [
 // ── Search queries ──
 $top_searches = [];
 try {
-    $top_searches = $argonar_pdo->query("SELECT element_text AS query, COUNT(*) AS cnt
+    $top_searches = $apexcybernet_pdo->query("SELECT element_text AS query, COUNT(*) AS cnt
         FROM activity_logs
         WHERE event_type='search' $date_cond $site_cond AND element_text IS NOT NULL
         GROUP BY element_text ORDER BY cnt DESC LIMIT 20")->fetchAll();
@@ -543,7 +543,7 @@ try {
 // ── Entry & Exit pages ──
 $entry_pages = [];
 try {
-    $entry_pages = $argonar_pdo->query("SELECT page_url, COUNT(*) AS entries
+    $entry_pages = $apexcybernet_pdo->query("SELECT page_url, COUNT(*) AS entries
         FROM activity_logs WHERE id IN (
             SELECT MIN(id) FROM activity_logs WHERE event_type='pageview' $date_cond $site_cond GROUP BY session_id
         ) GROUP BY page_url ORDER BY entries DESC LIMIT 10")->fetchAll();
@@ -551,7 +551,7 @@ try {
 
 $exit_pages = [];
 try {
-    $exit_pages = $argonar_pdo->query("SELECT page_url, COUNT(*) AS exits
+    $exit_pages = $apexcybernet_pdo->query("SELECT page_url, COUNT(*) AS exits
         FROM activity_logs WHERE id IN (
             SELECT MAX(id) FROM activity_logs WHERE event_type='pageview' $date_cond $site_cond GROUP BY session_id
         ) GROUP BY page_url ORDER BY exits DESC LIMIT 10")->fetchAll();
@@ -560,11 +560,11 @@ try {
 // ── Click heatmap ──
 $click_heatmap = [];
 try {
-    $pages_with_clicks = $argonar_pdo->query("SELECT page_url, COUNT(*) AS total_clicks
+    $pages_with_clicks = $apexcybernet_pdo->query("SELECT page_url, COUNT(*) AS total_clicks
         FROM activity_logs WHERE event_type='click' $date_cond $site_cond
         GROUP BY page_url ORDER BY total_clicks DESC LIMIT 8")->fetchAll();
     foreach ($pages_with_clicks as $pwc) {
-        $st = $argonar_pdo->prepare("SELECT COALESCE(NULLIF(element_text,''), element_id, element_tag, '?') AS label,
+        $st = $apexcybernet_pdo->prepare("SELECT COALESCE(NULLIF(element_text,''), element_id, element_tag, '?') AS label,
             COUNT(*) AS cnt FROM activity_logs
             WHERE event_type='click' AND page_url=? $date_cond $site_cond
             GROUP BY label ORDER BY cnt DESC LIMIT 3");
@@ -576,7 +576,7 @@ try {
 // ── 404 / error pages ──
 $pages_404 = [];
 try {
-    $pages_404 = $argonar_pdo->query("SELECT page_url, page_title, COUNT(*) AS hits, COUNT(DISTINCT session_id) AS sessions, MAX(created_at) AS last_seen
+    $pages_404 = $apexcybernet_pdo->query("SELECT page_url, page_title, COUNT(*) AS hits, COUNT(DISTINCT session_id) AS sessions, MAX(created_at) AS last_seen
         FROM activity_logs
         WHERE event_type='pageview' $date_cond $site_cond
         AND (page_title LIKE '%404%' OR page_title LIKE '%not found%' OR page_title LIKE '%Not Found%' OR page_url LIKE '%404%')
@@ -588,7 +588,7 @@ $identity_stats  = ['total' => 0, 'known' => 0, 'anon' => 0];
 $top_users_graph = [];
 $cross_site_users = [];
 try {
-    $ig_site = $argonar_pdo->prepare("SELECT
+    $ig_site = $apexcybernet_pdo->prepare("SELECT
         COUNT(*) as total,
         SUM(uid IS NOT NULL) as known,
         SUM(uid IS NULL) as anon
@@ -596,8 +596,8 @@ try {
     $ig_site->execute([$active_site]);
     $identity_stats = $ig_site->fetch() ?: $identity_stats;
 
-    if ($active_site === 'argonar') {
-        $tug = $argonar_pdo->prepare("SELECT g.uid, g.display_name,
+    if ($active_site === 'apexcybernet') {
+        $tug = $apexcybernet_pdo->prepare("SELECT g.uid, g.display_name,
             COUNT(DISTINCT g.session_id) as sessions,
             SUM(g.page_count) as pages,
             g.country, g.device_type, g.browser,
@@ -612,7 +612,7 @@ try {
         $tug->execute([$active_site]);
         $top_users_graph = $tug->fetchAll();
     } else {
-        $tug = $argonar_pdo->prepare("SELECT uid, display_name,
+        $tug = $apexcybernet_pdo->prepare("SELECT uid, display_name,
             COUNT(DISTINCT session_id) as sessions,
             SUM(page_count) as pages,
             country, device_type, browser,
@@ -625,7 +625,7 @@ try {
         $top_users_graph = $tug->fetchAll();
     }
 
-    $cross_site_users = $argonar_pdo->query("SELECT uid, display_name,
+    $cross_site_users = $apexcybernet_pdo->query("SELECT uid, display_name,
         COUNT(DISTINCT site) as site_count,
         GROUP_CONCAT(DISTINCT site ORDER BY site SEPARATOR ',') as sites,
         SUM(page_count) as total_pages
@@ -638,7 +638,7 @@ try {
 // ── PALANTIR: Funnels ──
 $funnels_data = [];
 try {
-    $funnel_rows = $argonar_pdo->prepare("SELECT * FROM funnels WHERE site = ? AND active = 1 ORDER BY id");
+    $funnel_rows = $apexcybernet_pdo->prepare("SELECT * FROM funnels WHERE site = ? AND active = 1 ORDER BY id");
     $funnel_rows->execute([$active_site]);
     foreach ($funnel_rows->fetchAll() as $f) {
         $steps = json_decode($f['steps'], true) ?: [];
@@ -646,7 +646,7 @@ try {
         foreach ($steps as $step) {
             $pat = '%' . str_replace(['%','_'], ['\%','\_'], $step['pattern']) . '%';
             try {
-                $sc = $argonar_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+                $sc = $apexcybernet_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
                     WHERE event_type='pageview' AND page_url LIKE ? $date_cond $site_cond");
                 $sc->execute([$pat]);
                 $step_counts[] = ['label' => $step['label'], 'pattern' => $step['pattern'], 'count' => (int)$sc->fetchColumn()];
@@ -666,7 +666,7 @@ $seg_pages    = max(0, (int)($_GET['seg_pages'] ?? 0));
 $seg_results  = [];
 $seg_countries_list = [];
 try {
-    $scl = $argonar_pdo->prepare("SELECT DISTINCT country FROM user_graph WHERE site=? AND country IS NOT NULL ORDER BY country");
+    $scl = $apexcybernet_pdo->prepare("SELECT DISTINCT country FROM user_graph WHERE site=? AND country IS NOT NULL ORDER BY country");
     $scl->execute([$active_site]);
     $seg_countries_list = $scl->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {}
@@ -677,7 +677,7 @@ if ($seg_country || $seg_device || $seg_utm || $seg_pages > 0) {
     if ($seg_utm)     { $sw[] = 'utm_source LIKE ?';  $sw_params[] = '%' . $seg_utm . '%'; }
     if ($seg_pages)   { $sw[] = 'page_count >= ?';    $sw_params[] = $seg_pages; }
     try {
-        $st = $argonar_pdo->prepare("SELECT session_id, uid, display_name, country, city,
+        $st = $apexcybernet_pdo->prepare("SELECT session_id, uid, display_name, country, city,
             device_type, browser, utm_source, utm_campaign, page_count, event_count, first_seen, last_seen
             FROM user_graph WHERE " . implode(' AND ', $sw) . " ORDER BY last_seen DESC LIMIT 50");
         $st->execute($sw_params);
@@ -689,8 +689,8 @@ if ($seg_country || $seg_device || $seg_utm || $seg_pages > 0) {
 $alert_rules_list = [];
 $recent_alert_log = [];
 try {
-    $alert_rules_list = $argonar_pdo->query("SELECT * FROM alert_rules ORDER BY active DESC, site, alert_type")->fetchAll();
-    $recent_alert_log = $argonar_pdo->query("SELECT * FROM alert_log ORDER BY fired_at DESC LIMIT 8")->fetchAll();
+    $alert_rules_list = $apexcybernet_pdo->query("SELECT * FROM alert_rules ORDER BY active DESC, site, alert_type")->fetchAll();
+    $recent_alert_log = $apexcybernet_pdo->query("SELECT * FROM alert_log ORDER BY fired_at DESC LIMIT 8")->fetchAll();
 } catch (Exception $e) {}
 
 $export_qs = http_build_query(array_filter([
@@ -717,7 +717,7 @@ $export_qs = http_build_query(array_filter([
         <?php elseif ($active_site==='alrisha'): ?>
         <span style="color:#34d399;"><i class="bi bi-graph-up-arrow"></i> Alrisha ERP</span>
         <?php else: ?>
-        <span style="color:#a78bfa;"><i class="bi bi-graph-up-arrow"></i> Argonar Analytics</span>
+        <span style="color:#a78bfa;"><i class="bi bi-graph-up-arrow"></i> Apex Cybernet Analytics</span>
         <?php endif; ?>
     </h1>
     <?php if ($live_now > 0): ?>
@@ -1137,8 +1137,8 @@ $export_qs = http_build_query(array_filter([
         <i class="bi bi-chevron-down pal-toggle"></i>
     </div>
     <div class="palantir-body">
-        <?php if ($active_site === 'argonar'): ?>
-        <!-- Live Users Now — injected by activity-argonar.php -->
+        <?php if ($active_site === 'apexcybernet'): ?>
+        <!-- Live Users Now — injected by activity-apexcybernet.php -->
         <div id="live-users-panel" style="background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.2); border-radius:10px; padding:0.85rem 1rem; margin-bottom:1.1rem;">
             <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.65rem;">
                 <span class="live-dot-sm"></span>
@@ -1167,17 +1167,17 @@ $export_qs = http_build_query(array_filter([
         <?php if ($top_users_graph): ?>
         <div style="overflow-x:auto; margin-bottom:1rem;">
         <table class="log-table">
-            <thead><tr><th>User</th><?php if ($active_site==='argonar'): ?><th>Role</th><?php endif; ?><th>Sessions</th><th>Pages</th><th>Device</th><th>Country</th><th>Last Seen</th></tr></thead>
+            <thead><tr><th>User</th><?php if ($active_site==='apexcybernet'): ?><th>Role</th><?php endif; ?><th>Sessions</th><th>Pages</th><th>Device</th><th>Country</th><th>Last Seen</th></tr></thead>
             <tbody>
             <?php foreach ($top_users_graph as $ug): ?>
             <tr>
                 <td>
                     <span class="user-tag"><?= htmlspecialchars($ug['display_name'] ?? '—') ?></span>
-                    <?php if ($active_site==='argonar' && !empty($ug['email'])): ?>
+                    <?php if ($active_site==='apexcybernet' && !empty($ug['email'])): ?>
                     <div style="font-size:0.65rem; color:#6b7280; margin-top:1px;"><?= htmlspecialchars($ug['email']) ?></div>
                     <?php endif; ?>
                 </td>
-                <?php if ($active_site==='argonar'): ?>
+                <?php if ($active_site==='apexcybernet'): ?>
                 <td>
                     <?php if (($ug['role'] ?? 'user') === 'merchant'): ?>
                     <span style="font-size:0.65rem; font-weight:700; padding:0.1rem 0.45rem; border-radius:99px; background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.3);">Merchant</span>
@@ -1384,7 +1384,7 @@ $export_qs = http_build_query(array_filter([
                                 <option value="no_traffic">No Traffic</option>
                             </select>
                             <select name="rule_site" style="background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:0.28rem 0.5rem; font-size:0.76rem;">
-                                <?php foreach (['argonar','ocpd','loan','alrisha'] as $rs): ?>
+                                <?php foreach (['apexcybernet','ocpd','loan','alrisha'] as $rs): ?>
                                 <option value="<?= $rs ?>" <?= $active_site === $rs ? 'selected' : '' ?>><?= ucfirst($rs) ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -1409,7 +1409,7 @@ $export_qs = http_build_query(array_filter([
 
                 <div style="margin-top:0.75rem; padding:0.65rem 0.85rem; background:var(--surface2); border-radius:8px; font-size:0.69rem; color:#6b7280; line-height:1.6;">
                     <div style="color:#9ca3af; font-weight:700; margin-bottom:3px;"><i class="bi bi-terminal"></i> Cron setup (every 15 min)</div>
-                    <code style="color:#a78bfa; word-break:break-all;">*/15 * * * * curl -s "https://argonar.co/cron/alerts.php?token=argonar-admin-2026-token"</code>
+                    <code style="color:#a78bfa; word-break:break-all;">*/15 * * * * curl -s "https://apexcybernet.com/cron/alerts.php?token=apexcybernet-admin-2026-token"</code>
                 </div>
             </div>
 
@@ -1728,7 +1728,7 @@ new Chart(ctx, {
         plugins:{
             legend:{ labels:{ color:'#9ca3af', font:{ size:11 }, boxWidth:12 } },
             tooltip:{ backgroundColor:'#1e1e28', borderColor:'rgba(255,255,255,0.08)', borderWidth:1, titleColor:'#e5e7eb', bodyColor:'#9ca3af' },
-            argonarAnnotations: {}
+            apexcybernetAnnotations: {}
         },
         scales:{
             x:{ grid:{ color:'rgba(255,255,255,0.04)' }, ticks:{ color:'#6b7280', font:{ size:10 }, maxTicksLimit:12 } },

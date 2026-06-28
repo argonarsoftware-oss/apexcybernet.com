@@ -1,12 +1,12 @@
 #!/bin/bash
-# Argonar Voice Signaling — idempotent installer.
+# Apex Cybernet Voice Signaling — idempotent installer.
 # Re-running is safe: it only changes things that are missing or out of date.
 # Does NOT install Node.js, apt packages, or anything system-wide.
 set -e
 
 cd "$(dirname "$0")"
 
-echo "── Argonar Voice deploy ──"
+echo "── Apex Cybernet Voice deploy ──"
 echo "Working dir: $(pwd)"
 echo
 
@@ -29,13 +29,13 @@ else
 fi
 
 # ── 3) systemd unit (copy only if different) ─────────────────────────────
-SYSTEMD_UNIT=/etc/systemd/system/argonar-voice.service
-if [ -f "$SYSTEMD_UNIT" ] && cmp -s argonar-voice.service "$SYSTEMD_UNIT"; then
-    echo "[3/5] skipping  : argonar-voice.service unchanged at $SYSTEMD_UNIT"
+SYSTEMD_UNIT=/etc/systemd/system/apexcybernet-voice.service
+if [ -f "$SYSTEMD_UNIT" ] && cmp -s apexcybernet-voice.service "$SYSTEMD_UNIT"; then
+    echo "[3/5] skipping  : apexcybernet-voice.service unchanged at $SYSTEMD_UNIT"
     RELOAD_NEEDED=0
 else
-    echo "[3/5] installing: argonar-voice.service → $SYSTEMD_UNIT"
-    cp -f argonar-voice.service "$SYSTEMD_UNIT"
+    echo "[3/5] installing: apexcybernet-voice.service → $SYSTEMD_UNIT"
+    cp -f apexcybernet-voice.service "$SYSTEMD_UNIT"
     RELOAD_NEEDED=1
 fi
 
@@ -45,23 +45,23 @@ if [ "$RELOAD_NEEDED" = "1" ]; then
     systemctl daemon-reload
 fi
 
-if systemctl is-enabled --quiet argonar-voice; then
-    echo "[4/5] skipping  : argonar-voice already enabled (starts on boot)"
+if systemctl is-enabled --quiet apexcybernet-voice; then
+    echo "[4/5] skipping  : apexcybernet-voice already enabled (starts on boot)"
 else
-    echo "[4/5] enabling  : argonar-voice (will start on boot)"
-    systemctl enable argonar-voice
+    echo "[4/5] enabling  : apexcybernet-voice (will start on boot)"
+    systemctl enable apexcybernet-voice
 fi
 
-if systemctl is-active --quiet argonar-voice; then
+if systemctl is-active --quiet apexcybernet-voice; then
     if [ "$RELOAD_NEEDED" = "1" ]; then
-        echo "[4/5] restarting: argonar-voice (unit file changed)"
-        systemctl restart argonar-voice
+        echo "[4/5] restarting: apexcybernet-voice (unit file changed)"
+        systemctl restart apexcybernet-voice
     else
-        echo "[4/5] skipping  : argonar-voice already running (not restarting)"
+        echo "[4/5] skipping  : apexcybernet-voice already running (not restarting)"
     fi
 else
-    echo "[4/5] starting  : argonar-voice"
-    systemctl start argonar-voice
+    echo "[4/5] starting  : apexcybernet-voice"
+    systemctl start apexcybernet-voice
 fi
 
 sleep 1
@@ -75,13 +75,13 @@ if curl -fsS --max-time 3 http://127.0.0.1:3000/rtc/health; then
 else
     echo
     echo "❌ Health check failed. Last 20 log lines:"
-    journalctl -u argonar-voice -n 20 --no-pager || true
+    journalctl -u apexcybernet-voice -n 20 --no-pager || true
     exit 1
 fi
 
 echo
 echo "── Next step ──"
-echo "Add this line to your HTTPS vhost for argonar.co (one time only):"
+echo "Add this line to your HTTPS vhost for apexcybernet.com (one time only):"
 echo "    Include $(pwd)/apache-voice.conf"
 echo "Then: sudo apachectl configtest && sudo systemctl reload apache2"
-echo "Verify:  curl -s https://argonar.co/rtc/health"
+echo "Verify:  curl -s https://apexcybernet.com/rtc/health"

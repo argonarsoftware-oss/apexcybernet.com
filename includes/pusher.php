@@ -5,8 +5,8 @@
  */
 
 define('PUSHER_APP_ID', '1');
-define('PUSHER_KEY',    'argonar_ws_key');
-define('PUSHER_SECRET', 'argonar_ws_secret_2026');
+define('PUSHER_KEY',    'apexcybernet_ws_key');
+define('PUSHER_SECRET', 'apexcybernet_ws_secret_2026');
 define('PUSHER_HOST',   '127.0.0.1');
 define('PUSHER_PORT',   6001);
 

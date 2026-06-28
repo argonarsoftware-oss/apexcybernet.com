@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Argonar POS Terminal</title>
+    <title>Apex Cybernet POS Terminal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -794,7 +794,7 @@
 <div class="pos-topbar">
     <div class="pos-logo">
         <div class="pos-logo-dot"></div>
-        <span class="pos-logo-text">Argonar</span>
+        <span class="pos-logo-text">Apex Cybernet</span>
         <span class="pos-logo-sub">&nbsp;POS</span>
     </div>
 
@@ -880,7 +880,7 @@
         <div id="stepMerchant" class="pos-card">
             <div class="pos-card-head">
                 <div class="pos-card-title"><i class="bi bi-shield-lock" style="color:var(--green);"></i> Merchant Login</div>
-                <div class="pos-card-sub">Enter your Argonar credentials to open the terminal</div>
+                <div class="pos-card-sub">Enter your Apex Cybernet credentials to open the terminal</div>
             </div>
             <div class="pos-card-body">
                 <div id="merchantError" class="pos-error hidden"></div>
@@ -902,7 +902,7 @@
         <div id="stepScan" class="pos-card hidden">
             <div class="pos-card-head">
                 <div class="pos-card-title"><i class="bi bi-qr-code-scan" style="color:var(--green);"></i> Scan Customer QR</div>
-                <div class="pos-card-sub">Point camera at the customer's Argonar Wallet QR code</div>
+                <div class="pos-card-sub">Point camera at the customer's Apex Cybernet Wallet QR code</div>
             </div>
             <div class="pos-card-body">
                 <div id="scanError" class="pos-error hidden"></div>
@@ -1260,7 +1260,7 @@ function openScan(mode) {
     const sub = document.querySelector('#stepScan .pos-card-sub');
     if (sub) sub.textContent = scanMode === 'sell'
         ? 'Point camera at the customer\'s Buy QR code'
-        : 'Point camera at the customer\'s Argonar Wallet QR code';
+        : 'Point camera at the customer\'s Apex Cybernet Wallet QR code';
     document.getElementById('scanStatus').textContent = 'Searching for QR…';
     hideError('scanError');
     startCamera();

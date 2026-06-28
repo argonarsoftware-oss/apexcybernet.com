@@ -1,17 +1,17 @@
-# Argonar
+# Apex Cybernet
 
 ## Project
 Blank state. Previous construction tools project archived in `archive/construction-tools` branch.
 
 ## Local Dev
-- XAMPP stack at `C:\xampp\htdocs\Argonar Construction`
-- Local URL: `http://localhost/Argonar%20Construction/`
-- MySQL: root, no password, database `argonar_construction`
+- XAMPP stack at `C:\xampp\htdocs\Apex Cybernet`
+- Local URL: `http://localhost/apexcybernet.com/`
+- MySQL: root, no password, database `apexcybernet`
 
 ## Auto-Deploy
-- GitHub repo: `kierl-j/Argonar-Construction`
+- GitHub repo: `argonarsoftware-oss/apexcybernet.com`
 - Commits with `[deploy]` in the message trigger auto-deploy to VPS
-- **Production URL**: https://argonar.co
+- **Production URL**: https://apexcybernet.com
 - **Always auto-deploy**: Every commit must include `[deploy]` and be pushed immediately. Do not wait to be asked.
 
 ## Coding Style

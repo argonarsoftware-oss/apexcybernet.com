@@ -1,8 +1,8 @@
 <?php
-$active_site = 'argonar';
-$page_file   = 'activity-argonar.php';
+$active_site = 'apexcybernet';
+$page_file   = 'activity-apexcybernet.php';
 require_once __DIR__ . '/../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/omni/auth.php';
 
 // ── AJAX: session timeline ──
@@ -11,7 +11,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'session') {
     $sid = substr(preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['sid'] ?? ''), 0, 64);
     if (!$sid) { echo json_encode([]); exit; }
     try {
-        $st = $argonar_pdo->prepare("SELECT id, event_type, page_url, page_title, element_tag, element_text,
+        $st = $apexcybernet_pdo->prepare("SELECT id, event_type, page_url, page_title, element_tag, element_text,
             element_href, element_id, referrer, ip, screen_w, created_at
             FROM activity_logs WHERE session_id = ? ORDER BY id ASC LIMIT 200");
         $st->execute([$sid]);
@@ -20,17 +20,17 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'session') {
     exit;
 }
 
-// ── AJAX: live users (argonar logged-in, last 5 min) ──
+// ── AJAX: live users (apexcybernet logged-in, last 5 min) ──
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'live_users') {
     header('Content-Type: application/json');
     try {
-        $st = $argonar_pdo->prepare("SELECT account_id, display_name,
+        $st = $apexcybernet_pdo->prepare("SELECT account_id, display_name,
             MAX(created_at) as last_active,
             MAX(page_url) as last_page,
             MAX(page_title) as last_title,
             device_type, country
             FROM activity_logs
-            WHERE site = 'argonar'
+            WHERE site = 'apexcybernet'
               AND created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
               AND account_id IS NOT NULL
             GROUP BY account_id, display_name, device_type, country
@@ -38,8 +38,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'live_users') {
             LIMIT 50");
         $st->execute();
         $users = $st->fetchAll(PDO::FETCH_ASSOC);
-        $guests = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
-            WHERE site='argonar' AND created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+        $guests = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+            WHERE site='apexcybernet' AND created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
             AND account_id IS NULL")->fetchColumn();
         echo json_encode(['users' => $users, 'guests' => $guests]);
     } catch (Exception $e) { echo json_encode(['users'=>[],'guests'=>0]); }
@@ -51,10 +51,10 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'live') {
     header('Content-Type: application/json');
     $after = max(0, (int)($_GET['after'] ?? 0));
     try {
-        $st = $argonar_pdo->prepare("SELECT id, session_id, account_id, display_name, event_type,
+        $st = $apexcybernet_pdo->prepare("SELECT id, session_id, account_id, display_name, event_type,
             page_url, page_title, element_tag, element_text, element_href, ip, created_at
             FROM activity_logs WHERE id > ?
-            AND (site='argonar' OR site IS NULL OR site='')
+            AND (site='apexcybernet' OR site IS NULL OR site='')
             ORDER BY id DESC LIMIT 30");
         $st->execute([$after]);
         echo json_encode($st->fetchAll(PDO::FETCH_ASSOC));
@@ -75,21 +75,21 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'retarget') {
     };
     if (!$url) { echo json_encode(['users'=>[],'guest_sessions'=>0]); exit; }
     try {
-        $st = $argonar_pdo->prepare("SELECT l.account_id, l.display_name, a.email,
+        $st = $apexcybernet_pdo->prepare("SELECT l.account_id, l.display_name, a.email,
             COUNT(*) AS visits, MAX(l.created_at) AS last_seen
             FROM activity_logs l
             LEFT JOIN accounts a ON a.id = l.account_id
             WHERE l.account_id IS NOT NULL AND l.page_url LIKE ?
-            AND (l.site='argonar' OR l.site IS NULL OR l.site='')
+            AND (l.site='apexcybernet' OR l.site IS NULL OR l.site='')
             $date_c
             GROUP BY l.account_id, l.display_name, a.email
             ORDER BY visits DESC LIMIT 200");
         $st->execute(['%' . $url . '%']);
         $users = $st->fetchAll(PDO::FETCH_ASSOC);
 
-        $gs = $argonar_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+        $gs = $apexcybernet_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
             WHERE account_id IS NULL AND page_url LIKE ?
-            AND (site='argonar' OR site IS NULL OR site='')
+            AND (site='apexcybernet' OR site IS NULL OR site='')
             $date_c");
         $gs->execute(['%' . $url . '%']);
         $guest_sessions = (int)$gs->fetchColumn();
@@ -111,24 +111,24 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
         '30d'   => "AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
         default => "",
     };
-    $ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $argonar_pdo->quote($event_filter) : "";
+    $ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $apexcybernet_pdo->quote($event_filter) : "";
     $uf_cond = match($user_filter) {
         'loggedin' => "AND account_id IS NOT NULL",
         'guest'    => "AND account_id IS NULL",
         default    => "",
     };
-    $site_cond = "AND (site='argonar' OR site IS NULL OR site='')";
+    $site_cond = "AND (site='apexcybernet' OR site IS NULL OR site='')";
     $search_cond = $search !== '' ? "AND (page_url LIKE ? OR display_name LIKE ? OR ip LIKE ?)" : '';
     $like = '%' . $search . '%';
     $params = $search !== '' ? [$like, $like, $like] : [];
     $where = "WHERE 1=1 $date_cond $ev_cond $uf_cond $site_cond $search_cond";
 
     header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="activity_argonar_' . date('Ymd_His') . '.csv"');
+    header('Content-Disposition: attachment; filename="activity_apexcybernet_' . date('Ymd_His') . '.csv"');
     $out = fopen('php://output', 'w');
     fputcsv($out, ['ID','Time','Type','Session','User','Display Name','Page URL','Page Title','Element','Href','Referrer','IP','Screen W']);
     try {
-        $st = $argonar_pdo->prepare("SELECT id, created_at, event_type, session_id, account_id, display_name,
+        $st = $apexcybernet_pdo->prepare("SELECT id, created_at, event_type, session_id, account_id, display_name,
             page_url, page_title, element_text, element_href, referrer, ip, screen_w
             FROM activity_logs $where ORDER BY id DESC LIMIT 50000");
         $st->execute($params);
@@ -167,7 +167,7 @@ $prev_cond = match($date_range) {
     '30d'   => "AND created_at >= DATE_SUB(NOW(), INTERVAL 60 DAY) AND created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)",
     default => "AND 1=0",
 };
-$ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $argonar_pdo->quote($event_filter) : "";
+$ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $apexcybernet_pdo->quote($event_filter) : "";
 $uf_cond = match($user_filter) {
     'loggedin' => "AND account_id IS NOT NULL",
     'guest'    => "AND account_id IS NULL",
@@ -182,12 +182,12 @@ if ($search !== '') {
 }
 
 // ── Sidebar quick-stats ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
@@ -197,7 +197,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Argonar Analytics — Omniscient</title>
+<title>Apex Cybernet Analytics — Omniscient</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -216,9 +216,9 @@ try {
 </div><!-- /.omni-layout -->
 
 <script>
-// ── Live Users Now (argonar only) ──
+// ── Live Users Now (apexcybernet only) ──
 function fetchLiveUsers() {
-    fetch('activity-argonar.php?ajax=live_users')
+    fetch('activity-apexcybernet.php?ajax=live_users')
         .then(r => r.json())
         .then(data => {
             const list = document.getElementById('live-users-list');

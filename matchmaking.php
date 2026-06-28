@@ -32,12 +32,12 @@ if (!isset($valid_games[$game_slug])) {
 }
 
 $game_name = $valid_games[$game_slug];
-$pageTitle = "Solo Player Entry — Argonar $game_name Tournament";
-$pageDescription = "Don't have a team? Enter solo for the Argonar $game_name Tournament. ₱100 solo entry. Get matched with players of similar rank to form a team automatically.";
+$pageTitle = "Solo Player Entry — Apex Cybernet $game_name Tournament";
+$pageDescription = "Don't have a team? Enter solo for the Apex Cybernet $game_name Tournament. ₱100 solo entry. Get matched with players of similar rank to form a team automatically.";
 $canonicalUrl = canonical_url('matchmaking.php?game=' . $game_slug);
 $extraHead = breadcrumb_jsonld([
-    ['name' => 'Home',       'url' => 'https://argonar.co/'],
-    ['name' => 'Solo Entry', 'url' => 'https://argonar.co/matchmaking.php?game=' . $game_slug],
+    ['name' => 'Home',       'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Solo Entry', 'url' => 'https://apexcybernet.com/matchmaking.php?game=' . $game_slug],
 ]);
 $errors = [];
 

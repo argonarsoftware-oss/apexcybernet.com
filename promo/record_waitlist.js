@@ -5,7 +5,7 @@
  *   cd promo/
  *   node record_waitlist.js
  *
- * Output: promo/argonar-waitlist-reel.mp4 (1080x1920, 30fps, ~52 seconds, with music)
+ * Output: promo/apexcybernet-waitlist-reel.mp4 (1080x1920, 30fps, ~52 seconds, with music)
  *
  * Requires: npm install  (puppeteer + puppeteer-screen-recorder already in package.json)
  *           ffmpeg available in PATH
@@ -18,9 +18,9 @@ const path = require('path');
 const fs   = require('fs');
 
 const REEL_URL    = `file://${path.resolve(__dirname, 'reel_waitlist.html')}`;
-const VIDEO_RAW   = path.resolve(__dirname, 'argonar-waitlist-reel-noaudio.mp4');
+const VIDEO_RAW   = path.resolve(__dirname, 'apexcybernet-waitlist-reel-noaudio.mp4');
 const MUSIC_FILE  = 'C:/Users/kirfenia/Downloads/TheFatRat - Warrior Song (DOTA 2 Music Pack).mp3';
-const OUTPUT      = path.resolve(__dirname, 'argonar-waitlist-reel.mp4');
+const OUTPUT      = path.resolve(__dirname, 'apexcybernet-waitlist-reel.mp4');
 const DURATION    = 52000; // 52 seconds
 
 (async () => {

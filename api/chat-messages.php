@@ -93,7 +93,7 @@ function cs_log_message(PDO $pdo, int $me, ?int $peer_id, ?int $group_id, string
             (session_id, site, account_id, display_name, event_type,
              page_url, page_title, element_tag, element_text, element_href, element_id,
              referrer, ip, user_agent)
-            VALUES (?, 'argonar', ?, ?, 'chat', ?, ?, 'chat', ?, ?, ?, ?, ?, ?)")
+            VALUES (?, 'apexcybernet', ?, ?, 'chat', ?, ?, 'chat', ?, ?, ?, ?, ?, ?)")
         ->execute([
             $ctx['sid'], $me, $senderName,
             $ctx['ref'], $recipient_name,                // page_title shows the recipient (historical snapshot)

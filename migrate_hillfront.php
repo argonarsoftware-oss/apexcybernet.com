@@ -14,7 +14,7 @@ $ref_code = 'ACC-' . strtoupper(bin2hex(random_bytes(4)));
 
 $pdo->prepare("INSERT INTO accounts (email, display_name, password_hash, ref_code, ref_type, claim_status)
                VALUES (?, 'hillfront', ?, ?, 'team', 'approved')")
-    ->execute(['hillfront@argonar.co', $hash, $ref_code]);
+    ->execute(['hillfront@apexcybernet.com', $hash, $ref_code]);
 
 echo "Created merchant account:\n";
 echo "  Username: hillfront\n";

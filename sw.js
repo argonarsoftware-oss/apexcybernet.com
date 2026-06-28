@@ -1,10 +1,10 @@
-// Argonar Service Worker
-const CACHE_NAME = 'argonar-v1';
+// Apex Cybernet Service Worker
+const CACHE_NAME = 'apexcybernet-v1';
 
 // Static assets to pre-cache on install
 const PRECACHE = [
     '/css/app.css',
-    '/images/argonar-logo.svg',
+    '/images/apexcybernet-logo.svg',
     '/images/hcoin-icon.png',
     '/images/favicon.svg',
     '/icons/icon.php?size=192',

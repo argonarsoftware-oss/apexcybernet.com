@@ -12,17 +12,17 @@ $active_site = 'omni';
 $page_file   = 'omni/ask.php';
 
 require_once __DIR__ . '/../../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/pipelines/taxonomy.php';
 
 // ── Sidebar stats ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
@@ -66,7 +66,7 @@ $TEMPLATES = [
     'harvest_candidates' => [
         'title' => 'BR-0009 harvest candidates',
         'tags'  => ['harvest', 'br-0009', 'conversion'],
-        'why'   => 'Persons with both paragliding BOOKINGS and Argonar participation (tournament team or event). Thick cross-biz relationships = right targets to convert social goodwill into real-asset line items.',
+        'why'   => 'Persons with both paragliding BOOKINGS and Apex Cybernet participation (tournament team or event). Thick cross-biz relationships = right targets to convert social goodwill into real-asset line items.',
         'sql'   => "SELECT p.id, p.ref, p.label,
                            SUM(l.relation='BOOKED')       AS bookings,
                            SUM(l.relation='PARTICIPATED') AS participations,
@@ -84,25 +84,25 @@ $TEMPLATES = [
     'top_hc' => [
         'title' => 'Top HC holders',
         'tags'  => ['wallet', 'whales'],
-        'why'   => 'Argonar Persons ordered by current HC balance. Top of this list holds real purchasing leverage.',
+        'why'   => 'Apex Cybernet Persons ordered by current HC balance. Top of this list holds real purchasing leverage.',
         'sql'   => "SELECT p.id, p.ref, p.label,
                            CAST(JSON_UNQUOTE(JSON_EXTRACT(p.props, '$.h_coins')) AS DECIMAL(20,2)) AS h_coins
                     FROM omni_objects p
-                    WHERE p.type='Person' AND p.business='argonar'
+                    WHERE p.type='Person' AND p.business='apexcybernet'
                       AND JSON_EXTRACT(p.props, '$.h_coins') IS NOT NULL
                     ORDER BY h_coins DESC
                     LIMIT 50",
         'cols'  => ['label','h_coins'],
     ],
     'dormant_persons' => [
-        'title' => 'Dormant argonar Persons (no Event in 7 days)',
+        'title' => 'Dormant apexcybernet Persons (no Event in 7 days)',
         'tags'  => ['retention', 'winback'],
-        'why'   => 'Approved argonar accounts with no session activity in the last 7 days. Winback-campaign targets.',
+        'why'   => 'Approved apexcybernet accounts with no session activity in the last 7 days. Winback-campaign targets.',
         'sql'   => "SELECT p.id, p.ref, p.label,
                            CAST(JSON_UNQUOTE(JSON_EXTRACT(p.props, '$.h_coins')) AS DECIMAL(20,2)) AS h_coins,
                            JSON_UNQUOTE(JSON_EXTRACT(p.props, '$.claim_status')) AS claim_status
                     FROM omni_objects p
-                    WHERE p.type='Person' AND p.business='argonar'
+                    WHERE p.type='Person' AND p.business='apexcybernet'
                       AND JSON_UNQUOTE(JSON_EXTRACT(p.props, '$.claim_status')) = 'approved'
                       AND NOT EXISTS (
                           SELECT 1 FROM omni_links l
@@ -115,19 +115,19 @@ $TEMPLATES = [
                     LIMIT 100",
         'cols'  => ['label','h_coins','claim_status'],
     ],
-    'loan_argonar_overlap' => [
-        'title' => 'Borrowers also on Argonar',
+    'loan_apexcybernet_overlap' => [
+        'title' => 'Borrowers also on Apex Cybernet',
         'tags'  => ['risk', 'overlap', 'collateral'],
-        'why'   => 'Borrowers in the lending book who also have an Argonar account. Cross-book recovery surface — HC balance is potential offset collateral.',
-        'sql'   => "SELECT DISTINCT p.label AS argonar_account, p.ref, p2.label AS loan_account, p2.ref AS loan_ref
+        'why'   => 'Borrowers in the lending book who also have an Apex Cybernet account. Cross-book recovery surface — HC balance is potential offset collateral.',
+        'sql'   => "SELECT DISTINCT p.label AS apexcybernet_account, p.ref, p2.label AS loan_account, p2.ref AS loan_ref
                     FROM omni_objects p
                     JOIN omni_links l1 ON l1.from_id = p.id AND l1.relation='BELONGS_TO'
-                    JOIN omni_objects b1 ON b1.id = l1.to_id AND b1.type='Business' AND b1.business='argonar'
+                    JOIN omni_objects b1 ON b1.id = l1.to_id AND b1.type='Business' AND b1.business='apexcybernet'
                     JOIN omni_objects p2 ON LOWER(p2.label) = LOWER(p.label) AND p2.type='Person' AND p2.business='loan'
-                    WHERE p.type='Person' AND p.business='argonar'
+                    WHERE p.type='Person' AND p.business='apexcybernet'
                     ORDER BY p.label
                     LIMIT 100",
-        'cols'  => ['argonar_account','loan_account'],
+        'cols'  => ['apexcybernet_account','loan_account'],
     ],
     'loans_by_status' => [
         'title' => 'Loans by status',
@@ -205,7 +205,7 @@ if ($mode === 'template' && isset($TEMPLATES[$tpl_id])) {
     $title = $tpl['title'];
     $sql_used = preg_replace('/\s+/', ' ', trim($tpl['sql']));
     try {
-        $results = $argonar_pdo->query($tpl['sql'])->fetchAll(PDO::FETCH_ASSOC);
+        $results = $apexcybernet_pdo->query($tpl['sql'])->fetchAll(PDO::FETCH_ASSOC);
         $cols = $tpl['cols'];
     } catch (Exception $e) { $err = $e->getMessage(); }
 }
@@ -227,7 +227,7 @@ if ($mode === 'pattern') {
     $title = 'Pattern browse';
     $sql_used = $sql;
     try {
-        $st = $argonar_pdo->prepare($sql);
+        $st = $apexcybernet_pdo->prepare($sql);
         foreach ($binds as $k=>$v) $st->bindValue($k, $v);
         $st->execute();
         $results = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -236,7 +236,7 @@ if ($mode === 'pattern') {
 }
 
 function bizc3(string $biz): string {
-    $c = ['argonar'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#fbbf24','alrisha'=>'#34d399','global'=>'#94a3b8'];
+    $c = ['apexcybernet'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#fbbf24','alrisha'=>'#34d399','global'=>'#94a3b8'];
     return $c[$biz] ?? '#94a3b8';
 }
 ?>
@@ -306,7 +306,7 @@ function bizc3(string $biz): string {
                   <td>
                     <?php $v = $r[$c] ?? ''; if ($c === 'business'): ?>
                       <span class="ask-tag" style="background:<?= bizc3($v) ?>22;color:<?= bizc3($v) ?>;"><?= htmlspecialchars($v) ?></span>
-                    <?php elseif (in_array($c, ['label','argonar_account','loan_account','captain','br','teams']) && !empty($r['ref'] ?? $r['loan_ref'] ?? '')): ?>
+                    <?php elseif (in_array($c, ['label','apexcybernet_account','loan_account','captain','br','teams']) && !empty($r['ref'] ?? $r['loan_ref'] ?? '')): ?>
                       <a href="explore.php?ref=<?= urlencode((string)($r['ref'] ?? $r['loan_ref'])) ?>" style="color:#e2e8f0;text-decoration:none;"><?= htmlspecialchars((string)$v) ?></a>
                     <?php else: ?>
                       <?= htmlspecialchars((string)$v) ?>
@@ -363,7 +363,7 @@ function bizc3(string $biz): string {
           <label>Business</label>
           <select name="biz">
             <option value="">— any —</option>
-            <?php foreach (['argonar','ocpd','loan','alrisha','global'] as $b): ?>
+            <?php foreach (['apexcybernet','ocpd','loan','alrisha','global'] as $b): ?>
               <option value="<?= $b ?>" <?= ($_GET['biz']??'')===$b?'selected':'' ?>><?= ucfirst($b) ?></option>
             <?php endforeach; ?>
           </select>

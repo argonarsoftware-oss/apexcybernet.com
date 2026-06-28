@@ -168,11 +168,11 @@ m_head(htmlspecialchars($display_name) . ' — Profile');
         <!-- Avatar -->
         <div class="pf-av-wrap">
             <?php if (!empty($profile['profile_picture'])): ?>
-                <img src="https://argonar.co/<?= htmlspecialchars($profile['profile_picture']) ?>" class="pf-av" style="border-radius:<?= $avatar_radius ?>;" alt="">
+                <img src="https://apexcybernet.com/<?= htmlspecialchars($profile['profile_picture']) ?>" class="pf-av" style="border-radius:<?= $avatar_radius ?>;" alt="">
             <?php elseif ($profile['ref_type'] === 'team' && !empty($registration['team_logo'])): ?>
-                <img src="https://argonar.co/<?= htmlspecialchars($registration['team_logo']) ?>" class="pf-av-team" alt="">
+                <img src="https://apexcybernet.com/<?= htmlspecialchars($registration['team_logo']) ?>" class="pf-av-team" alt="">
             <?php elseif ($profile['ref_type'] === 'solo' && !empty($registration['profile_photo'])): ?>
-                <img src="https://argonar.co/<?= htmlspecialchars($registration['profile_photo']) ?>" class="pf-av" alt="">
+                <img src="https://apexcybernet.com/<?= htmlspecialchars($registration['profile_photo']) ?>" class="pf-av" alt="">
             <?php else: ?>
                 <div class="pf-av-init" style="border-radius:<?= $avatar_radius ?>;"><?= htmlspecialchars($initials_pf) ?></div>
             <?php endif; ?>
@@ -331,7 +331,7 @@ m_head(htmlspecialchars($display_name) . ' — Profile');
             <!-- Photo upload -->
             <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
                 <div id="avatarPreview" style="width:64px;height:64px;border-radius:<?= $avatar_radius ?>;overflow:hidden;border:2px solid var(--accent);flex-shrink:0;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:1.6rem;">
-                    <?php if (!empty($profile['profile_picture'])): ?><img src="https://argonar.co/<?= htmlspecialchars($profile['profile_picture']) ?>" style="width:100%;height:100%;object-fit:cover;"><?php else: ?><i class="bi bi-person-fill"></i><?php endif; ?>
+                    <?php if (!empty($profile['profile_picture'])): ?><img src="https://apexcybernet.com/<?= htmlspecialchars($profile['profile_picture']) ?>" style="width:100%;height:100%;object-fit:cover;"><?php else: ?><i class="bi bi-person-fill"></i><?php endif; ?>
                 </div>
                 <div>
                     <label style="display:inline-flex;align-items:center;gap:0.3rem;cursor:pointer;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:8px;padding:0.4rem 0.75rem;font-size:0.75rem;color:var(--accent-l);font-weight:700;">

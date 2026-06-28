@@ -30,7 +30,7 @@ m_head('Sign In');
     <div style="text-align:center;margin-bottom:2rem;">
         <img src="<?= m_base('../images/hcoin-icon.png') ?>" style="width:64px;height:64px;border-radius:18px;margin-bottom:1rem;" onerror="this.style.display='none'">
         <div style="font-size:1.5rem;font-weight:900;color:#fff;">HCoin Wallet</div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Sign in to your Argonar account</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Sign in to your Apex Cybernet account</div>
     </div>
 
     <?php if ($error): ?>
@@ -62,7 +62,7 @@ m_head('Sign In');
             <i class="bi bi-person-plus-fill" style="color:var(--accent-l);"></i> Create an Account
         </a>
     </div>
-    <a href="https://argonar.co/index.php?prefer_full=1" style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding:0.9rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);text-decoration:none;">
+    <a href="https://apexcybernet.com/index.php?prefer_full=1" style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding:0.9rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);text-decoration:none;">
         <div style="display:flex;align-items:center;gap:0.75rem;">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,0.12);color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:1rem;">
                 <i class="bi bi-trophy-fill"></i>

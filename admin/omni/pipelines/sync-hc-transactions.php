@@ -3,42 +3,42 @@
  * sync-hc-transactions.php — h_coin_transactions → Transaction objects.
  *
  * Each row → Transaction object + PAID/RECEIVED links between Persons.
- * Credits from 'purchase'/'welcome_bonus' link from Business(argonar) as issuer.
+ * Credits from 'purchase'/'welcome_bonus' link from Business(apexcybernet) as issuer.
  */
 
 require_once __DIR__ . '/taxonomy.php';
-if (!isset($argonar_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $argonar_pdo = $pdo; }
+if (!isset($apexcybernet_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $apexcybernet_pdo = $pdo; }
 
-$run_id = omni_start_run($argonar_pdo, 'sync-hc-transactions');
+$run_id = omni_start_run($apexcybernet_pdo, 'sync-hc-transactions');
 $objs = 0; $links = 0; $err = null;
 
 try {
     // Incremental: only process rows newer than the last run's max source_id
-    $last_sid = (int)$argonar_pdo->query(
+    $last_sid = (int)$apexcybernet_pdo->query(
         "SELECT COALESCE(MAX(CAST(source_id AS UNSIGNED)), 0)
          FROM omni_objects
          WHERE type='Transaction' AND source_table='h_coin_transactions'"
     )->fetchColumn();
 
     try {
-        $cols = $argonar_pdo->query("SHOW COLUMNS FROM h_coin_transactions")->fetchAll(PDO::FETCH_COLUMN);
+        $cols = $apexcybernet_pdo->query("SHOW COLUMNS FROM h_coin_transactions")->fetchAll(PDO::FETCH_COLUMN);
     } catch (Exception $e) { $cols = []; }
     if (empty($cols)) {
-        omni_finish_run($argonar_pdo, $run_id, 0, 0, 'h_coin_transactions table missing');
+        omni_finish_run($apexcybernet_pdo, $run_id, 0, 0, 'h_coin_transactions table missing');
         return ['pipeline'=>'sync-hc-transactions','objs'=>0,'links'=>0,'err'=>'missing table'];
     }
     $has = fn($c) => in_array($c, $cols, true);
     $has_ref = $has('ref');
 
     $select = 'id, account_id, type, amount, reason, created_at' . ($has_ref ? ', ref' : '');
-    $stmt = $argonar_pdo->prepare("SELECT $select FROM h_coin_transactions WHERE id > ? ORDER BY id ASC LIMIT 20000");
+    $stmt = $apexcybernet_pdo->prepare("SELECT $select FROM h_coin_transactions WHERE id > ? ORDER BY id ASC LIMIT 20000");
     $stmt->execute([$last_sid]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $biz_argonar = omni_id_for_ref($argonar_pdo, 'global:business:argonar');
+    $biz_apexcybernet = omni_id_for_ref($apexcybernet_pdo, 'global:business:apexcybernet');
 
     foreach ($rows as $r) {
-        $tx_ref = omni_ref('argonar', 'transaction', 'hc:' . $r['id']);
+        $tx_ref = omni_ref('apexcybernet', 'transaction', 'hc:' . $r['id']);
         $amount = (float)$r['amount'];
         $reason = (string)($r['reason'] ?? '');
         $type_d = (string)($r['type'] ?? 'credit');
@@ -50,10 +50,10 @@ try {
             $reason ?: 'tx'
         );
 
-        $tx_id = omni_upsert_object($argonar_pdo, [
+        $tx_id = omni_upsert_object($apexcybernet_pdo, [
             'ref'          => $tx_ref,
             'type'         => 'Transaction',
-            'business'     => 'argonar',
+            'business'     => 'apexcybernet',
             'label'        => $label,
             'props'        => [
                 'currency'   => 'HC',
@@ -69,26 +69,26 @@ try {
         ]);
         $objs++;
 
-        $person_ref = omni_ref('argonar', 'person', $r['account_id']);
-        $person_id  = omni_id_for_ref($argonar_pdo, $person_ref);
+        $person_ref = omni_ref('apexcybernet', 'person', $r['account_id']);
+        $person_id  = omni_id_for_ref($apexcybernet_pdo, $person_ref);
 
         if ($person_id) {
             if ($type_d === 'credit') {
                 // Money in: Person RECEIVED Transaction
-                if (omni_link($argonar_pdo, $person_id, $tx_id, 'RECEIVED', ['occurred_at'=>$occ])) $links++;
-                if (in_array($reason, ['purchase','welcome_bonus','topup'], true) && $biz_argonar) {
-                    if (omni_link($argonar_pdo, $biz_argonar, $tx_id, 'PAID', ['occurred_at'=>$occ])) $links++;
+                if (omni_link($apexcybernet_pdo, $person_id, $tx_id, 'RECEIVED', ['occurred_at'=>$occ])) $links++;
+                if (in_array($reason, ['purchase','welcome_bonus','topup'], true) && $biz_apexcybernet) {
+                    if (omni_link($apexcybernet_pdo, $biz_apexcybernet, $tx_id, 'PAID', ['occurred_at'=>$occ])) $links++;
                 }
             } else {
-                if (omni_link($argonar_pdo, $person_id, $tx_id, 'PAID', ['occurred_at'=>$occ])) $links++;
+                if (omni_link($apexcybernet_pdo, $person_id, $tx_id, 'PAID', ['occurred_at'=>$occ])) $links++;
             }
         }
     }
 
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links);
 } catch (Exception $e) {
     $err = $e->getMessage();
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links, $err);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links, $err);
 }
 
 if (php_sapi_name() === 'cli' || (isset($_GET['verbose']) && $_GET['verbose'])) {

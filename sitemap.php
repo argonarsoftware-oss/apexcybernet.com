@@ -12,7 +12,7 @@ function sm_url(string $loc, ?string $lastmod = null, string $changefreq = 'week
     return $s;
 }
 
-$base  = 'https://argonar.co';
+$base  = 'https://apexcybernet.com';
 $today = date('Y-m-d');
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";

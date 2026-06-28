@@ -13,7 +13,7 @@ require_once __DIR__ . '/../includes/db.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-// Login-gated: this endpoint lists approved Argonar accounts. Guests
+// Login-gated: this endpoint lists approved Apex Cybernet accounts. Guests
 // should never enumerate users, so return an empty array for them.
 if (empty($_SESSION['account_id'])) {
     echo json_encode([]);

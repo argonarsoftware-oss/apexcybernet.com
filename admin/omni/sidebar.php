@@ -3,14 +3,14 @@
 // ── Alrisha last sync ──
 $alrisha_last_push = null;
 try {
-    $alp = $argonar_pdo->query("SELECT pushed_at FROM alrisha_snapshots ORDER BY pushed_at DESC LIMIT 1");
+    $alp = $apexcybernet_pdo->query("SELECT pushed_at FROM alrisha_snapshots ORDER BY pushed_at DESC LIMIT 1");
     $alp_row = $alp ? $alp->fetch() : null;
     if ($alp_row) $alrisha_last_push = $alp_row['pushed_at'];
 } catch (Exception $e) {}
 // ── Wiki queue pending count ──
 $wiki_pending = 0;
 try {
-    $wiki_pending = (int)$argonar_pdo->query("SELECT COUNT(*) FROM player_wikis WHERE (wiki_html IS NULL OR wiki_html='') AND answers_json IS NOT NULL")->fetchColumn();
+    $wiki_pending = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM player_wikis WHERE (wiki_html IS NULL OR wiki_html='') AND answers_json IS NOT NULL")->fetchColumn();
 } catch (Exception $e) {}
 ?>
 <aside class="omni-sidebar">
@@ -24,7 +24,7 @@ try {
 
         <?php
         $biz = [
-            'argonar' => ['name'=>'Argonar',  'domain'=>'argonar.co',               'icon_bg'=>'rgba(124,58,237,0.18)',  'icon_color'=>'#a78bfa', 'letter'=>'A', 'active_bg'=>'rgba(124,58,237,0.1)',  'active_border'=>'rgba(124,58,237,0.25)', 'page'=>'activity-argonar.php'],
+            'apexcybernet' => ['name'=>'Apex Cybernet',  'domain'=>'apexcybernet.com',               'icon_bg'=>'rgba(124,58,237,0.18)',  'icon_color'=>'#a78bfa', 'letter'=>'A', 'active_bg'=>'rgba(124,58,237,0.1)',  'active_border'=>'rgba(124,58,237,0.25)', 'page'=>'activity-apexcybernet.php'],
             'loan'    => ['name'=>'Loan',     'domain'=>'argonarsoftware.com',      'icon_bg'=>'rgba(167,139,250,0.15)', 'icon_color'=>'#c4b5fd', 'letter'=>'L', 'active_bg'=>'rgba(167,139,250,0.08)', 'active_border'=>'rgba(167,139,250,0.25)', 'page'=>'activity-loan.php'],
             'alrisha' => ['name'=>'Alrisha',  'domain'=>'alrisha ERP',              'icon_bg'=>'rgba(52,211,153,0.15)',  'icon_color'=>'#34d399', 'letter'=>'E', 'active_bg'=>'rgba(52,211,153,0.08)',  'active_border'=>'rgba(52,211,153,0.25)',  'page'=>'activity-alrisha.php'],
         ];

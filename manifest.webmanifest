@@ -1,7 +1,7 @@
 {
-    "name": "Argonar Tournament",
-    "short_name": "Argonar",
-    "description": "H-Coins wallet, esports predictions, and tournament bracket for Argonar.",
+    "name": "Apex Cybernet Tournament",
+    "short_name": "Apex Cybernet",
+    "description": "H-Coins wallet, esports predictions, and tournament bracket for Apex Cybernet.",
     "start_url": "/dashboard.php",
     "scope": "/",
     "display": "standalone",

@@ -1,5 +1,5 @@
 /**
- * Argonar Voice Signaling Server
+ * Apex Cybernet Voice Signaling Server
  *
  * Dependency-free (except express). Uses Server-Sent Events for server→client push.
  * Clients POST SDP/ICE payloads; server relays them to the addressed peer via SSE.
@@ -145,5 +145,5 @@ app.post('/rtc/mic', (req, res) => {
 });
 
 app.listen(PORT, '127.0.0.1', () => {
-    console.log(`[argonar-voice] listening on 127.0.0.1:${PORT}`);
+    console.log(`[apexcybernet-voice] listening on 127.0.0.1:${PORT}`);
 });

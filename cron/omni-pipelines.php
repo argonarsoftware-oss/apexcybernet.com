@@ -3,7 +3,7 @@
  * Omniscient pipeline runner — cron entry point.
  *
  * Hit from cron every 15 minutes:
- *   *\/15 * * * * curl -s "https://argonar.co/cron/omni-pipelines.php?k=argonar-omni-2026" >/dev/null 2>&1
+ *   *\/15 * * * * curl -s "https://apexcybernet.com/cron/omni-pipelines.php?k=apexcybernet-omni-2026" >/dev/null 2>&1
  *
  * Or manually via browser (kirfenia session required) or CLI.
  *
@@ -11,11 +11,11 @@
  * stays in one place and the cron entry is just the public URL.
  */
 
-$token_ok = PHP_SAPI === 'cli' || (($_GET['k'] ?? '') === 'argonar-omni-2026');
+$token_ok = PHP_SAPI === 'cli' || (($_GET['k'] ?? '') === 'apexcybernet-omni-2026');
 if (!$token_ok) {
     http_response_code(403);
     exit("Forbidden\n");
 }
 
-$_GET['k'] = 'argonar-omni-2026';
+$_GET['k'] = 'apexcybernet-omni-2026';
 require __DIR__ . '/../admin/omni/pipelines/run.php';

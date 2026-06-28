@@ -1,11 +1,11 @@
 <?php
 /**
- * Argonar Alert Engine
+ * Apex Cybernet Alert Engine
  * Run every 15 minutes via server cron:
- *   *\/15 * * * * curl -s "https://argonar.co/cron/alerts.php?token=argonar-admin-2026-token" >/dev/null 2>&1
- * Or trigger manually: https://argonar.co/cron/alerts.php?token=argonar-admin-2026-token
+ *   *\/15 * * * * curl -s "https://apexcybernet.com/cron/alerts.php?token=apexcybernet-admin-2026-token" >/dev/null 2>&1
+ * Or trigger manually: https://apexcybernet.com/cron/alerts.php?token=apexcybernet-admin-2026-token
  */
-if (PHP_SAPI !== 'cli' && ($_GET['token'] ?? '') !== 'argonar-admin-2026-token') {
+if (PHP_SAPI !== 'cli' && ($_GET['token'] ?? '') !== 'apexcybernet-admin-2026-token') {
     http_response_code(403); exit('Forbidden');
 }
 
@@ -26,7 +26,7 @@ if (file_exists($loan_env)) {
 function send_alert_email(string $to, string $subject, string $body, ?string $brevo_key): bool {
     if ($brevo_key) {
         $payload = json_encode([
-            'sender'      => ['email' => 'argonarsoftware@gmail.com', 'name' => 'Argonar Alerts'],
+            'sender'      => ['email' => 'argonarsoftware@gmail.com', 'name' => 'Apex Cybernet Alerts'],
             'to'          => [['email' => $to]],
             'subject'     => $subject,
             'textContent' => $body,
@@ -41,7 +41,7 @@ function send_alert_email(string $to, string $subject, string $body, ?string $br
         $r = @file_get_contents('https://api.brevo.com/v3/smtp/email', false, $ctx);
         return $r !== false && strpos($r, '"messageId"') !== false;
     }
-    return mail($to, $subject, $body, "From: alerts@argonar.co\r\nContent-Type: text/plain; charset=UTF-8");
+    return mail($to, $subject, $body, "From: alerts@apexcybernet.com\r\nContent-Type: text/plain; charset=UTF-8");
 }
 
 $now   = date('Y-m-d H:i:s');
@@ -77,8 +77,8 @@ foreach ($rules as $rule) {
     // Build site WHERE condition
     if ($site === 'all') {
         $site_cond = '';
-    } elseif ($site === 'argonar') {
-        $site_cond = "AND (site='argonar' OR site IS NULL OR site='')";
+    } elseif ($site === 'apexcybernet') {
+        $site_cond = "AND (site='apexcybernet' OR site IS NULL OR site='')";
     } else {
         $site_cond = "AND site='" . addslashes($site) . "'";
     }
@@ -153,12 +153,12 @@ foreach ($rules as $rule) {
             $pdo->prepare("UPDATE alert_rules SET last_fired = NOW() WHERE id = ?")
                 ->execute([$rule['id']]);
 
-            $labels = ['argonar'=>'Argonar.co','ocpd'=>'Oslob Paragliding','loan'=>'Argonar Software','all'=>'All Sites'];
+            $labels = ['apexcybernet'=>'Apex Cybernet.co','ocpd'=>'Oslob Paragliding','loan'=>'Apex Cybernet','all'=>'All Sites'];
             $label  = $labels[$site] ?? $site;
             $sent   = send_alert_email(
                 $email,
-                "[Argonar Alert] {$label} — " . strtoupper(str_replace('_', ' ', $type)),
-                "ALERT FIRED\n\n{$message}\n\nTime: {$now}\n\nDashboard: https://argonar.co/admin/activity.php?site={$site}\n\n---\nArgonar Analytics · argonarsoftware.com",
+                "[Apex Cybernet Alert] {$label} — " . strtoupper(str_replace('_', ' ', $type)),
+                "ALERT FIRED\n\n{$message}\n\nTime: {$now}\n\nDashboard: https://apexcybernet.com/admin/activity.php?site={$site}\n\n---\nApex Cybernet Analytics · argonarsoftware.com",
                 $brevo_key
             );
 

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../includes/db.php';
 
 // Token auth
-if (isset($_GET['token']) && $_GET['token'] === 'argonar-admin-2026-token') {
+if (isset($_GET['token']) && $_GET['token'] === 'apexcybernet-admin-2026-token') {
     $_SESSION['admin_logged_in'] = true; $_SESSION['admin_username'] = 'admin'; $_SESSION['admin_role'] = 'admin';
 }
 if (empty($_SESSION['admin_logged_in'])) {
@@ -36,7 +36,7 @@ $valid_games = [
     'dota2'     => 'Dota 2',
 ];
 
-$pageTitle = 'View ' . ($type === 'team' ? 'Team' : 'Solo Player') . ' — Argonar Tournament';
+$pageTitle = 'View ' . ($type === 'team' ? 'Team' : 'Solo Player') . ' — Apex Cybernet Tournament';
 ?>
 <!DOCTYPE html>
 <html lang="en">

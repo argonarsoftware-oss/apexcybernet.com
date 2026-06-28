@@ -6,7 +6,7 @@
  * Body: {
  *   "token":    "uid:ts:sig",    — user's QR token
  *   "amount":   500,             — HC to charge
- *   "merchant": "MerchantName"   — merchant's display_name (their argonar account)
+ *   "merchant": "MerchantName"   — merchant's display_name (their apexcybernet account)
  * }
  */
 require_once __DIR__ . '/../includes/db.php';

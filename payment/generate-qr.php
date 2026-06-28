@@ -34,7 +34,7 @@ function buildQRPhPayload(float $amount): string {
     $payload .= '54' . str_pad(strlen($amtStr), 2, '0', STR_PAD_LEFT) . $amtStr;
 
     $payload .= '5802PH';
-    $payload .= '5914Argonar Softwr';
+    $payload .= '5914Apex Cybernet Softwr';
     $payload .= '6008Inayawan';
     $payload .= '61041234';
 

@@ -1,10 +1,10 @@
-# Argonar Construction - Memory
+# Apex Cybernet - Memory
 
 ## User Preferences
 - **Always auto-deploy**: Commit with `[deploy]` and `git push` after every change — don't wait to be asked
 
 ## Production URL
-- **Domain**: https://argonar.co
+- **Domain**: https://apexcybernet.com
 
 ## Migration Workflow
 - Create `migrate_<name>.php` in project root

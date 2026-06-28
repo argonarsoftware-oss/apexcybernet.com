@@ -2,21 +2,21 @@
 /**
  * admin/omni/pipelines/run.php — master pipeline runner.
  *
- * Auth: cron token (?k=argonar-omni-2026) OR logged-in admin (kirfenia).
+ * Auth: cron token (?k=apexcybernet-omni-2026) OR logged-in admin (kirfenia).
  * Runs every sync-*.php in a safe order and prints a summary.
  *
  * Usage:
- *   curl -s 'https://argonar.co/admin/omni/pipelines/run.php?k=argonar-omni-2026'
- *   Local: http://localhost/Argonar%20Construction/admin/omni/pipelines/run.php?k=argonar-omni-2026
+ *   curl -s 'https://apexcybernet.com/admin/omni/pipelines/run.php?k=apexcybernet-omni-2026'
+ *   Local: http://localhost/apexcybernet.com/admin/omni/pipelines/run.php?k=apexcybernet-omni-2026
  */
 
 header('Content-Type: text/plain; charset=utf-8');
 require_once __DIR__ . '/../../../includes/db.php';
 require_once __DIR__ . '/taxonomy.php';
 
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 
-const OMNI_CRON_KEY = 'argonar-omni-2026';
+const OMNI_CRON_KEY = 'apexcybernet-omni-2026';
 
 $ok_token = isset($_GET['k']) && hash_equals(OMNI_CRON_KEY, $_GET['k']);
 $ok_admin = !empty($_SESSION['admin_logged_in']) && ($_SESSION['admin_username'] ?? '') === 'kirfenia';
@@ -77,9 +77,9 @@ echo "  errors:           " . count($errors) . "\n";
 
 // Graph totals
 try {
-    $by_type = $argonar_pdo->query("SELECT type, COUNT(*) c FROM omni_objects GROUP BY type ORDER BY c DESC")->fetchAll(PDO::FETCH_KEY_PAIR);
+    $by_type = $apexcybernet_pdo->query("SELECT type, COUNT(*) c FROM omni_objects GROUP BY type ORDER BY c DESC")->fetchAll(PDO::FETCH_KEY_PAIR);
     echo "\n── Ontology totals ──\n";
     foreach ($by_type as $t => $c) echo "  $t: $c\n";
-    $link_total = (int)$argonar_pdo->query("SELECT COUNT(*) FROM omni_links")->fetchColumn();
+    $link_total = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM omni_links")->fetchColumn();
     echo "  (links: $link_total)\n";
 } catch (Exception $e) {}

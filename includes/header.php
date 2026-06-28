@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title><?= htmlspecialchars($pageTitle ?? 'Argonar Tournament — Dota 2 Esports Cebu') ?></title>
+    <title><?= htmlspecialchars($pageTitle ?? 'Apex Cybernet Tournament — Dota 2 Esports Cebu') ?></title>
 
     <?php
     // ── SEO defaults ──
-    $defaultTitle       = 'Argonar Tournament — Dota 2 Esports Cebu';
-    $defaultDescription = 'Argonar Dota 2 Tournament — 5v5 double elimination, cash prize TBD. ₱500/team · ₱100/solo entry. May 30, 2026 at PGL Ibabao, Mandaue, Cebu.';
+    $defaultTitle       = 'Apex Cybernet Tournament — Dota 2 Esports Cebu';
+    $defaultDescription = 'Apex Cybernet Dota 2 Tournament — 5v5 double elimination, cash prize TBD. ₱500/team · ₱100/solo entry. May 30, 2026 at PGL Ibabao, Mandaue, Cebu.';
     $effectiveTitle     = $pageTitle ?? $defaultTitle;
     $metaDescription    = $pageDescription ?? $defaultDescription;
-    $metaKeywords       = 'Argonar Tournament, Dota 2 Cebu, Cebu esports, Dota 2 Philippines, gaming tournament Cebu, PGL Ibabao, Mandaue Cebu, double elimination Dota, paid entry esports';
-    $metaOgImage        = $ogImage ?? 'https://argonar.co/og-image.php';
-    $metaOgImageAlt     = $ogImageAlt ?? 'Argonar Dota 2 Tournament — Fight for Glory, cash prize TBD';
+    $metaKeywords       = 'Apex Cybernet Tournament, Dota 2 Cebu, Cebu esports, Dota 2 Philippines, gaming tournament Cebu, PGL Ibabao, Mandaue Cebu, double elimination Dota, paid entry esports';
+    $metaOgImage        = $ogImage ?? 'https://apexcybernet.com/og-image.php';
+    $metaOgImageAlt     = $ogImageAlt ?? 'Apex Cybernet Dota 2 Tournament — Fight for Glory, cash prize TBD';
 
     // Canonical URL — strip query string AND honor proxied HTTPS
     $isHttps = (
@@ -22,7 +22,7 @@
         || (($_SERVER['SERVER_PORT'] ?? '') == 443)
     );
     $scheme = $isHttps ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'argonar.co';
+    $host = $_SERVER['HTTP_HOST'] ?? 'apexcybernet.com';
     $reqPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
     // Allow individual pages to override with $canonicalUrl (e.g. include a query param like ?game=dota2)
     $metaCanonical = $canonicalUrl ?? ($scheme . '://' . $host . $reqPath);
@@ -33,11 +33,11 @@
     <meta name="keywords" content="<?= htmlspecialchars($metaKeywords) ?>">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
     <meta name="googlebot" content="index, follow">
-    <meta name="author" content="<?= !empty($hideCompany) ? 'Argonar' : 'Argonar Software OPC' ?>">
-    <meta name="publisher" content="<?= !empty($hideCompany) ? 'Argonar' : 'Argonar Software OPC' ?>">
+    <meta name="author" content="<?= !empty($hideCompany) ? 'Apex Cybernet' : 'Apex Cybernet' ?>">
+    <meta name="publisher" content="<?= !empty($hideCompany) ? 'Apex Cybernet' : 'Apex Cybernet' ?>">
     <meta name="theme-color" content="#7c3aed">
-    <meta name="application-name" content="Argonar Tournament">
-    <meta name="apple-mobile-web-app-title" content="Argonar">
+    <meta name="application-name" content="Apex Cybernet Tournament">
+    <meta name="apple-mobile-web-app-title" content="Apex Cybernet">
     <link rel="canonical" href="<?= htmlspecialchars($metaCanonical) ?>">
     <?php
     require_once __DIR__ . '/seo_config.php';
@@ -49,7 +49,7 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="<?= htmlspecialchars($ogType ?? 'website') ?>">
-    <meta property="og:site_name" content="Argonar Tournament">
+    <meta property="og:site_name" content="Apex Cybernet Tournament">
     <meta property="og:title" content="<?= htmlspecialchars($effectiveTitle) ?>">
     <meta property="og:description" content="<?= htmlspecialchars($metaDescription) ?>">
     <meta property="og:image" content="<?= htmlspecialchars($metaOgImage) ?>">
@@ -79,7 +79,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://listener.argonar.co">
+    <link rel="dns-prefetch" href="https://listener.apexcybernet.com">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -91,10 +91,10 @@
     {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "<?= !empty($hideCompany) ? 'Argonar' : 'Argonar Software OPC' ?>",
-        "alternateName": "Argonar",
-        "url": "https://argonar.co",
-        "logo": "https://argonar.co/images/argonar-logo.svg",
+        "name": "<?= !empty($hideCompany) ? 'Apex Cybernet' : 'Apex Cybernet' ?>",
+        "alternateName": "Apex Cybernet",
+        "url": "https://apexcybernet.com",
+        "logo": "https://apexcybernet.com/images/apexcybernet-logo.svg",
         "sameAs": [
             "https://www.facebook.com/argonarsoftware"
         ],
@@ -113,8 +113,8 @@
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "Argonar Tournament",
-        "url": "https://argonar.co"
+        "name": "Apex Cybernet Tournament",
+        "url": "https://apexcybernet.com"
     }
     </script>
 
@@ -167,7 +167,7 @@
         function beam(events) {
             if (!events.length) return;
             try {
-                var data = JSON.stringify({sid:sid, uid:UID, site:'argonar', sw:screen.width, events:events});
+                var data = JSON.stringify({sid:sid, uid:UID, site:'apexcybernet', sw:screen.width, events:events});
                 if (navigator.sendBeacon) navigator.sendBeacon(TRACK, new Blob([data],{type:'application/json'}));
                 else { var x=new XMLHttpRequest(); x.open('POST',TRACK,true); x.setRequestHeader('Content-Type','application/json'); x.send(data); }
             } catch(e){}
@@ -278,7 +278,7 @@
 <nav class="navbar">
     <div class="container nav-container">
         <a class="navbar-brand" href="<?= base_url() ?>">
-            <i class="bi bi-controller"></i> Argonar <span>Tournament</span>
+            <i class="bi bi-controller"></i> Apex Cybernet <span>Tournament</span>
         </a>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
             <i class="bi bi-list"></i>

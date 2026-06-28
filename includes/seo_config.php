@@ -22,8 +22,8 @@ if (!defined('META_PIXEL_ID')) define('META_PIXEL_ID', '');
 // Get your key at https://resend.com/api-keys (free tier: 3000/mo).
 // From address must be on a domain you've verified in Resend.
 if (!defined('RESEND_API_KEY'))  define('RESEND_API_KEY',  're_RDWAjP9o_2QAJedqqA6UDweDF83GmAhYc');
-if (!defined('MAIL_FROM_ADDR'))  define('MAIL_FROM_ADDR',  'no-reply@argonar.co');
-if (!defined('MAIL_FROM_NAME'))  define('MAIL_FROM_NAME',  'Argonar');
+if (!defined('MAIL_FROM_ADDR'))  define('MAIL_FROM_ADDR',  'no-reply@apexcybernet.com');
+if (!defined('MAIL_FROM_NAME'))  define('MAIL_FROM_NAME',  'Apex Cybernet');
 
 /**
  * Returns true if the current request is an admin or api endpoint that

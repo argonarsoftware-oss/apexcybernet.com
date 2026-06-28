@@ -175,7 +175,7 @@ if ($user) {
 
         if ($dbOrder) {
             $orderCoins = $dbOrder['coins'];
-            $res = listenerCreateOrder($ref, (float)$dbOrder['peso_amount'], "Argonar H-Coins: {$dbOrder['coins']} coins");
+            $res = listenerCreateOrder($ref, (float)$dbOrder['peso_amount'], "Apex Cybernet H-Coins: {$dbOrder['coins']} coins");
             if ($res) {
                 if (!empty($res['success'])) {
                     $activeOrder = true;
@@ -207,8 +207,8 @@ if ($user) {
 
 $checkUrl   = base_url("coins.php?action=check");
 $successUrl = base_url("coins.php?tab=buy&paid=1");
-$pageTitle  = 'H-Coins — Argonar';
-$pageDescription = 'Buy or sell H-Coins on the Argonar platform.';
+$pageTitle  = 'H-Coins — Apex Cybernet';
+$pageDescription = 'Buy or sell H-Coins on the Apex Cybernet platform.';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -254,7 +254,7 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <div style="display:flex;align-items:center;gap:0.55rem;background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.18);border-radius:9px;padding:0.55rem 0.7rem;font-size:0.75rem;color:var(--text-muted);">
                     <i class="bi bi-arrow-left-right" style="color:#a78bfa;font-size:1rem;flex-shrink:0;"></i>
-                    <span><strong style="color:var(--text-main);">Send & Receive</strong> — transfer H-Coins to other Argonar users</span>
+                    <span><strong style="color:var(--text-main);">Send & Receive</strong> — transfer H-Coins to other Apex Cybernet users</span>
                 </div>
             </div>
             <div style="margin-top:0.5rem;display:flex;align-items:center;gap:0.55rem;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:9px;padding:0.55rem 0.7rem;font-size:0.75rem;color:var(--text-muted);">
@@ -293,7 +293,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div style="text-align:center; margin-bottom:1rem;">
                     <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.75rem;">Scan QR with any banking or e-wallet app</div>
                     <img src="<?= base_url('payment/generate-qr.php?amount=' . number_format($payAmount, 2, '.', '')) ?>" alt="QR Code" style="width:200px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.2); margin:0 auto;">
-                    <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.5rem;">QR Ph (InstaPay) — Argonar Software</div>
+                    <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.5rem;">QR Ph (InstaPay) — Apex Cybernet</div>
                 </div>
                 <div id="statusBox" style="border:2px dashed var(--border); border-radius:12px; padding:1rem; text-align:center; margin-bottom:1rem;">
                     <div id="statusWaiting">
@@ -361,7 +361,7 @@ require_once __DIR__ . '/includes/header.php';
                         <span style="color:var(--text);"><?= htmlspecialchars($activeSell['gcash_number']) ?></span>
                     </div>
                     <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.75rem; text-align:center;">
-                        <i class="bi bi-info-circle"></i> Argonar will purchase your coins and send the GCash transfer within 24 hours.
+                        <i class="bi bi-info-circle"></i> Apex Cybernet will purchase your coins and send the GCash transfer within 24 hours.
                     </div>
                 </div>
             <?php else: ?>
@@ -369,7 +369,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div style="background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.2); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1rem; font-size:0.8rem;">
                     <div style="font-weight:700; color:var(--success); margin-bottom:0.3rem;"><i class="bi bi-info-circle-fill"></i> How selling works</div>
                     <div style="color:var(--text-muted); line-height:1.6;">
-                        Argonar instantly buys your H-Coins at <strong style="color:#fbbf24;">₱<?= BUYBACK_RATE ?>/coin</strong>. List your coins, and we'll send the peso amount to your GCash within 24 hours. Minimum: <?= MIN_SELL ?> H-Coins.
+                        Apex Cybernet instantly buys your H-Coins at <strong style="color:#fbbf24;">₱<?= BUYBACK_RATE ?>/coin</strong>. List your coins, and we'll send the peso amount to your GCash within 24 hours. Minimum: <?= MIN_SELL ?> H-Coins.
                     </div>
                 </div>
 

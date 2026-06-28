@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/db.php';
 
-if (isset($_GET['token']) && $_GET['token'] === 'argonar-admin-2026-token') {
+if (isset($_GET['token']) && $_GET['token'] === 'apexcybernet-admin-2026-token') {
     $_SESSION['admin_logged_in'] = true;
     $_SESSION['admin_username'] = 'admin';
     $_SESSION['admin_role'] = 'admin';
@@ -529,7 +529,7 @@ $pageTitle = 'Merchant Management — Admin';
 
                     <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); font-size:0.72rem; color:var(--text-muted); line-height:1.6;">
                         <i class="bi bi-info-circle"></i>
-                        Only approved accounts are listed. Merchants can log into the POS terminal with their Argonar username and password to accept H-Coin payments from customers.
+                        Only approved accounts are listed. Merchants can log into the POS terminal with their Apex Cybernet username and password to accept H-Coin payments from customers.
                     </div>
                     <?php endif; ?>
                 </div>

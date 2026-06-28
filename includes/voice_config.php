@@ -9,7 +9,7 @@ function voice_secret(): string {
     if ($cached !== null) return $cached;
     $paths = [
         __DIR__ . '/../voice-signal/.voice-secret',
-        '/etc/argonar/voice.secret',
+        '/etc/apexcybernet/voice.secret',
     ];
     foreach ($paths as $p) {
         if (is_readable($p)) { $cached = trim(@file_get_contents($p)); return $cached; }
@@ -23,7 +23,7 @@ function voice_ice_servers(int $ttl_seconds = 600): array {
     $turn_secret = is_readable($turn_secret_file) ? trim((string)@file_get_contents($turn_secret_file)) : '';
 
     // Determine public host of our TURN (same as web host by default)
-    $turn_host = $_SERVER['HTTP_HOST'] ?? 'argonar.co';
+    $turn_host = $_SERVER['HTTP_HOST'] ?? 'apexcybernet.com';
     $turn_host = preg_replace('/:\d+$/', '', $turn_host); // strip port
 
     $servers = [
@@ -33,7 +33,7 @@ function voice_ice_servers(int $ttl_seconds = 600): array {
     if ($turn_secret !== '') {
         // coturn use-auth-secret format: username = "<expiry_unix>:<user_label>", password = HMAC-SHA1(secret, username) base64
         $expiry = time() + $ttl_seconds;
-        $user   = $expiry . ':argonar';
+        $user   = $expiry . ':apexcybernet';
         $pass   = base64_encode(hash_hmac('sha1', $user, $turn_secret, true));
         $servers[] = ['urls' => 'turn:' . $turn_host . ':3478?transport=udp', 'username' => $user, 'credential' => $pass];
         $servers[] = ['urls' => 'turn:' . $turn_host . ':3478?transport=tcp', 'username' => $user, 'credential' => $pass];

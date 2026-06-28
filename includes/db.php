@@ -2,10 +2,10 @@
 session_start();
 
 // QR pay HMAC secret — used to sign and verify wallet QR tokens
-define('QR_HMAC_SECRET', 'argonar_qr_secret_2026');
+define('QR_HMAC_SECRET', 'apexcybernet_qr_secret_2026');
 
 $host = 'localhost';
-$dbname = 'argonar_construction';
+$dbname = 'apexcybernet';
 $user = 'root';
 $pass = '';
 
@@ -34,14 +34,14 @@ function get_flash() {
 function base_url($path = '') {
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     if (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false) {
-        return '/Argonar%20Construction/' . ltrim($path, '/');
+        return '/apexcybernet.com/' . ltrim($path, '/');
     }
     return '/' . ltrim($path, '/');
 }
 
 /**
  * Build a BreadcrumbList JSON-LD <script> tag.
- * @param array $crumbs ordered array of ['name' => 'Home', 'url' => 'https://argonar.co/']
+ * @param array $crumbs ordered array of ['name' => 'Home', 'url' => 'https://apexcybernet.com/']
  * @return string ready-to-echo <script> tag (or empty string if invalid)
  */
 function breadcrumb_jsonld(array $crumbs): string {
@@ -69,5 +69,5 @@ function breadcrumb_jsonld(array $crumbs): string {
  * Helper to build a sitewide canonical URL for a page path.
  */
 function canonical_url(string $path = ''): string {
-    return 'https://argonar.co/' . ltrim($path, '/');
+    return 'https://apexcybernet.com/' . ltrim($path, '/');
 }

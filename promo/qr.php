@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Argonar H-Coins</title>
+<title>Apex Cybernet H-Coins</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap');
 
@@ -396,8 +396,8 @@ body {
 
     <!-- Brand -->
     <div class="brand">
-        <img src="../images/argonar-logo.svg" alt="Argonar">
-        <span class="brand-text">Argonar</span>
+        <img src="../images/apexcybernet-logo.svg" alt="Apex Cybernet">
+        <span class="brand-text">Apex Cybernet</span>
     </div>
 
     <!-- Coin hero -->
@@ -428,7 +428,7 @@ body {
         <div class="qr-frame">
             <div class="qr-frame-inner">
                 <div class="qr-bg">
-                    <img src="qr-image.php?size=800" alt="Scan to join Argonar">
+                    <img src="qr-image.php?size=800" alt="Scan to join Apex Cybernet">
                 </div>
             </div>
         </div>
@@ -462,7 +462,7 @@ body {
     <div class="bottom">
         <div class="url-badge">
             <span class="dot"></span>
-            argonar.co
+            apexcybernet.com
         </div>
         <div class="free-badge">
             &#10003; 100% Free

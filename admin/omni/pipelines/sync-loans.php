@@ -7,9 +7,9 @@
  */
 
 require_once __DIR__ . '/taxonomy.php';
-if (!isset($argonar_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $argonar_pdo = $pdo; }
+if (!isset($apexcybernet_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $apexcybernet_pdo = $pdo; }
 
-$run_id = omni_start_run($argonar_pdo, 'sync-loans');
+$run_id = omni_start_run($apexcybernet_pdo, 'sync-loans');
 $objs = 0; $links = 0; $err = null;
 
 try {
@@ -29,12 +29,12 @@ try {
     } catch (Exception $e) { $loan_pdo = null; }
 
     if (!$loan_pdo) {
-        omni_finish_run($argonar_pdo, $run_id, 0, 0, 'Loan DB unreachable');
+        omni_finish_run($apexcybernet_pdo, $run_id, 0, 0, 'Loan DB unreachable');
         return ['pipeline'=>'sync-loans','objs'=>0,'links'=>0,'err'=>'loan DB unreachable'];
     }
 
     // Ensure Business(loan)
-    $biz_loan_id = omni_upsert_object($argonar_pdo, [
+    $biz_loan_id = omni_upsert_object($apexcybernet_pdo, [
         'ref'=>'global:business:loan','type'=>'Business','business'=>'loan',
         'label'=>'Loan PH',
         'props'=>['domain'=>'argonarsoftware.com','kind'=>'lending'],
@@ -56,13 +56,13 @@ try {
         foreach ($bs as $b) {
             $name = trim(($b['first_name'] ?? '') . ' ' . ($b['last_name'] ?? '')) ?: ($b['email'] ?? ('Borrower #' . $b['borrower_id']));
             $ref  = omni_ref('loan', 'person', $b['borrower_id']);
-            $pid = omni_upsert_object($argonar_pdo, [
+            $pid = omni_upsert_object($apexcybernet_pdo, [
                 'ref'=>$ref,'type'=>'Person','business'=>'loan','label'=>$name,
                 'props'=>$b,
                 'source_table'=>'borrowers','source_id'=>(string)$b['borrower_id'],
             ]);
             $objs++;
-            if (omni_link($argonar_pdo, $pid, $biz_loan_id, 'BELONGS_TO')) $links++;
+            if (omni_link($apexcybernet_pdo, $pid, $biz_loan_id, 'BELONGS_TO')) $links++;
         }
     }
 
@@ -83,7 +83,7 @@ try {
             $p = (float)($l['principal_amount'] ?? 0);
             $label = '₱' . number_format($p, 2) . ' · ' . ($l['status'] ?? '');
             $ref = omni_ref('loan','loan',$l['loan_id']);
-            $lid = omni_upsert_object($argonar_pdo, [
+            $lid = omni_upsert_object($apexcybernet_pdo, [
                 'ref'=>$ref,'type'=>'Loan','business'=>'loan','label'=>$label,
                 'props'=>$l,
                 'source_table'=>'loans','source_id'=>(string)$l['loan_id'],
@@ -92,19 +92,19 @@ try {
 
             if (!empty($l['borrower_id'])) {
                 $p_ref = omni_ref('loan','person',$l['borrower_id']);
-                $pid = omni_id_for_ref($argonar_pdo, $p_ref);
-                if ($pid && omni_link($argonar_pdo, $pid, $lid, 'BORROWED', ['occurred_at'=>$l['disbursed_at'] ?? ($l['created_at'] ?? null)])) {
+                $pid = omni_id_for_ref($apexcybernet_pdo, $p_ref);
+                if ($pid && omni_link($apexcybernet_pdo, $pid, $lid, 'BORROWED', ['occurred_at'=>$l['disbursed_at'] ?? ($l['created_at'] ?? null)])) {
                     $links++;
                 }
             }
-            if (omni_link($argonar_pdo, $lid, $biz_loan_id, 'BELONGS_TO')) $links++;
+            if (omni_link($apexcybernet_pdo, $lid, $biz_loan_id, 'BELONGS_TO')) $links++;
         }
     }
 
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links);
 } catch (Exception $e) {
     $err = $e->getMessage();
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links, $err);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links, $err);
 }
 
 if (php_sapi_name() === 'cli' || (isset($_GET['verbose']) && $_GET['verbose'])) {

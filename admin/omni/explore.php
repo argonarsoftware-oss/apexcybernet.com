@@ -5,7 +5,7 @@
  * Single-surface ontology browser.
  *   ?q=<text>               — search label / ref
  *   ?type=Person|Loan|...   — filter by type
- *   ?biz=argonar|loan|...   — filter by business
+ *   ?biz=apexcybernet|loan|...   — filter by business
  *   ?id=<obj_id>            — detail view
  *   ?ref=<ref>              — detail by ref
  *   ?action=<type>&object_id=...  — record an action (POST)
@@ -16,7 +16,7 @@ $active_site = 'omni';
 $page_file   = 'omni/explore.php';
 
 require_once __DIR__ . '/../../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/auth.php';                 // kirfenia gate
 require_once __DIR__ . '/pipelines/taxonomy.php';
 
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
     $payload     = json_decode($payload_raw, true) ?: [];
     $status      = $_POST['execute'] ?? null === '1' ? 'proposed' : 'proposed'; // execute handled in Phase 4
     if ($object_id && $action_type) {
-        omni_record_action($argonar_pdo, [
+        omni_record_action($apexcybernet_pdo, [
             'object_id'   => $object_id,
             'action_type' => $action_type,
             'payload'     => $payload,
@@ -43,19 +43,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type'])) {
 if (isset($_GET['ajax']) && $_GET['ajax'] === 'graph') {
     header('Content-Type: application/json');
     $id = (int)($_GET['id'] ?? 0);
-    $n  = omni_neighbors($argonar_pdo, $id, 80);
-    $root = omni_object_by_id($argonar_pdo, $id);
+    $n  = omni_neighbors($apexcybernet_pdo, $id, 80);
+    $root = omni_object_by_id($apexcybernet_pdo, $id);
     echo json_encode(['root'=>$root, 'neighbors'=>$n]);
     exit;
 }
 
 // ── Sidebar stats (same shape as other omni pages) ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
@@ -67,16 +67,16 @@ $type = trim((string)($_GET['type'] ?? ''));
 $biz  = trim((string)($_GET['biz']  ?? ''));
 $sel_id  = (int)($_GET['id']  ?? 0);
 $sel_ref = trim((string)($_GET['ref'] ?? ''));
-if (!$sel_id && $sel_ref) $sel_id = omni_id_for_ref($argonar_pdo, $sel_ref);
+if (!$sel_id && $sel_ref) $sel_id = omni_id_for_ref($apexcybernet_pdo, $sel_ref);
 
 // ── Totals banner ──
 $totals = ['objects'=>0,'links'=>0,'actions'=>0,'businesses'=>0,'by_type'=>[]];
 try {
-    $totals['objects'] = (int)$argonar_pdo->query("SELECT COUNT(*) FROM omni_objects")->fetchColumn();
-    $totals['links']   = (int)$argonar_pdo->query("SELECT COUNT(*) FROM omni_links")->fetchColumn();
-    $totals['actions'] = (int)$argonar_pdo->query("SELECT COUNT(*) FROM omni_actions")->fetchColumn();
-    $totals['businesses'] = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT business) FROM omni_objects")->fetchColumn();
-    $totals['by_type'] = $argonar_pdo->query("SELECT type, COUNT(*) c FROM omni_objects GROUP BY type ORDER BY c DESC")->fetchAll(PDO::FETCH_KEY_PAIR);
+    $totals['objects'] = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM omni_objects")->fetchColumn();
+    $totals['links']   = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM omni_links")->fetchColumn();
+    $totals['actions'] = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM omni_actions")->fetchColumn();
+    $totals['businesses'] = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT business) FROM omni_objects")->fetchColumn();
+    $totals['by_type'] = $apexcybernet_pdo->query("SELECT type, COUNT(*) c FROM omni_objects GROUP BY type ORDER BY c DESC")->fetchAll(PDO::FETCH_KEY_PAIR);
 } catch (Exception $e) {}
 
 // ── Search results (or browse-by-type list) ──
@@ -92,7 +92,7 @@ $sql = "SELECT id, ref, type, business, label, updated_at FROM omni_objects";
 if ($where) $sql .= " WHERE " . implode(' AND ', $where);
 $sql .= " ORDER BY updated_at DESC LIMIT 100";
 try {
-    $st = $argonar_pdo->prepare($sql);
+    $st = $apexcybernet_pdo->prepare($sql);
     foreach ($binds as $k=>$v) $st->bindValue($k,$v);
     $st->execute();
     $results = $st->fetchAll(PDO::FETCH_ASSOC);
@@ -101,11 +101,11 @@ try {
 // ── Detail view ──
 $selected = null; $neighbors = ['in'=>[],'out'=>[]]; $actions_recent = [];
 if ($sel_id) {
-    $selected = omni_object_by_id($argonar_pdo, $sel_id);
+    $selected = omni_object_by_id($apexcybernet_pdo, $sel_id);
     if ($selected) {
-        $neighbors = omni_neighbors($argonar_pdo, $sel_id, 200);
+        $neighbors = omni_neighbors($apexcybernet_pdo, $sel_id, 200);
         try {
-            $st = $argonar_pdo->prepare("SELECT * FROM omni_actions WHERE object_id = ? ORDER BY performed_at DESC LIMIT 50");
+            $st = $apexcybernet_pdo->prepare("SELECT * FROM omni_actions WHERE object_id = ? ORDER BY performed_at DESC LIMIT 50");
             $st->execute([$sel_id]);
             $actions_recent = $st->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {}
@@ -153,14 +153,14 @@ foreach ($neighbors['in']  as $n) $timeline[] = ['dir'=>'in',  'n'=>$n, 'at'=>$n
 usort($timeline, function($a,$b){ return strcmp((string)$b['at'], (string)$a['at']); });
 
 $biz_color = [
-    'argonar' => '#a78bfa',
+    'apexcybernet' => '#a78bfa',
     'ocpd'    => '#38bdf8',
     'loan'    => '#fbbf24',
     'alrisha' => '#34d399',
     'global'  => '#94a3b8',
 ];
 function bizc(string $biz): string {
-    $c = ['argonar'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#fbbf24','alrisha'=>'#34d399','global'=>'#94a3b8'];
+    $c = ['apexcybernet'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#fbbf24','alrisha'=>'#34d399','global'=>'#94a3b8'];
     return $c[$biz] ?? '#94a3b8';
 }
 ?>
@@ -228,7 +228,7 @@ function bizc(string $biz): string {
     <button type="button" onclick="document.getElementById('expl-manual').style.display = document.getElementById('expl-manual').style.display === 'none' ? 'block' : 'none';" style="margin-left:auto;background:rgba(124,58,237,0.12);color:#c4b5fd;border:1px solid rgba(124,58,237,0.3);font-size:0.8rem;padding:0.3rem 0.7rem;border-radius:6px;cursor:pointer;">
       <i class="bi bi-book"></i> How to use
     </button>
-    <a href="pipelines/run.php?k=argonar-omni-2026" target="_blank" style="color:#6ee7b7;text-decoration:none;font-size:0.8rem;border:1px solid rgba(52,211,153,0.3);padding:0.3rem 0.7rem;border-radius:6px;">Run pipelines ↗</a>
+    <a href="pipelines/run.php?k=apexcybernet-omni-2026" target="_blank" style="color:#6ee7b7;text-decoration:none;font-size:0.8rem;border:1px solid rgba(52,211,153,0.3);padding:0.3rem 0.7rem;border-radius:6px;">Run pipelines ↗</a>
   </div>
 
   <!-- Manual / usage guide (collapsed by default) -->
@@ -238,7 +238,7 @@ function bizc(string $biz): string {
       <button type="button" onclick="document.getElementById('expl-manual').style.display='none';" style="background:none;border:none;color:#94a3b8;font-size:1.2rem;cursor:pointer;padding:0;line-height:1;">&times;</button>
     </div>
 
-    <p style="margin:0 0 0.8rem 0;"><b style="color:#c4b5fd;">What this is.</b> A single surface over the ontology — every Person, Transaction, Team, Loan, Decision, Booking, Listing across all four businesses (Argonar · OCPD · Loan · Alrisha) is a typed <em>object</em>, and every relationship between them is a typed <em>link</em>. You search the graph, not the tables.</p>
+    <p style="margin:0 0 0.8rem 0;"><b style="color:#c4b5fd;">What this is.</b> A single surface over the ontology — every Person, Transaction, Team, Loan, Decision, Booking, Listing across all four businesses (Apex Cybernet · OCPD · Loan · Alrisha) is a typed <em>object</em>, and every relationship between them is a typed <em>link</em>. You search the graph, not the tables.</p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.8rem 1.4rem;margin-bottom:0.8rem;">
       <div>
@@ -247,7 +247,7 @@ function bizc(string $biz): string {
       </div>
       <div>
         <div style="color:#fbbf24;font-weight:800;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">② Search bar</div>
-        Free text matches label + ref. Narrow with <b>type</b> + <b>business</b> filters. Example: <code style="font-family:monospace;color:#6ee7b7;">q=kierl · type=Person · biz=argonar</code>.
+        Free text matches label + ref. Narrow with <b>type</b> + <b>business</b> filters. Example: <code style="font-family:monospace;color:#6ee7b7;">q=kierl · type=Person · biz=apexcybernet</code>.
       </div>
       <div>
         <div style="color:#fbbf24;font-weight:800;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">③ Results list</div>
@@ -278,7 +278,7 @@ function bizc(string $biz): string {
       <div style="color:#6ee7b7;font-weight:800;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem;">Recipes — questions to answer by clicking around</div>
       <ul style="margin:0; padding-left:1.2rem; color:#cbd5e1; font-size:0.8rem;">
         <li><b>"Who captains which teams?"</b> — filter <em>type=Team</em>, open any team, follow the <code>← CAPTAIN_OF</code> link backward to the captain Person.</li>
-        <li><b>"Which Argonar users also book paragliding?"</b> — filter <em>type=Person · biz=argonar</em>, open a person, look for <code>→ BOOKED</code> edges. Cross-business overlap = harvest candidate.</li>
+        <li><b>"Which Apex Cybernet users also book paragliding?"</b> — filter <em>type=Person · biz=apexcybernet</em>, open a person, look for <code>→ BOOKED</code> edges. Cross-business overlap = harvest candidate.</li>
         <li><b>"Who has defaulted loans?"</b> — filter <em>type=Loan</em>, sort by timestamp, open rows where status != active. The captain/borrower Person is one hop away via <code>← BORROWED</code>.</li>
         <li><b>"What decisions touch this person?"</b> — open the Person, scroll to inbound; any <code>IMPACTS</code> edge from a Decision (BR-XXXX) appears there.</li>
         <li><b>"Is this marketplace listing sold, and to whom?"</b> — filter <em>type=Listing</em>, open it, check for outbound <code>→</code> + inbound <code>← BOUGHT</code>.</li>
@@ -323,7 +323,7 @@ function bizc(string $biz): string {
     </select>
     <select name="biz">
       <option value="">All businesses</option>
-      <?php foreach (['argonar','ocpd','loan','alrisha','global'] as $b): ?>
+      <?php foreach (['apexcybernet','ocpd','loan','alrisha','global'] as $b): ?>
       <option value="<?= $b ?>" <?= $biz===$b?'selected':'' ?>><?= ucfirst($b) ?></option>
       <?php endforeach; ?>
     </select>

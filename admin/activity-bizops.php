@@ -2,12 +2,12 @@
 $active_site = 'bizops';
 $page_file   = 'activity-bizops.php';
 require_once __DIR__ . '/../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/omni/auth.php';
 
 // ── Auto-create decision_log table ──
 try {
-    $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS decision_log (
+    $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS decision_log (
         id           INT AUTO_INCREMENT PRIMARY KEY,
         decided_at   DATE NOT NULL,
         title        VARCHAR(220) NOT NULL,
@@ -35,7 +35,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'dl_list') {
     if ($biz !== 'all')     { $where .= ' AND business=?'; $params[] = $biz; }
     if ($q !== '')          { $where .= ' AND (title LIKE ? OR action_taken LIKE ? OR result_text LIKE ? OR tags LIKE ?)'; $like = "%$q%"; $params = array_merge($params, [$like,$like,$like,$like]); }
     try {
-        $st = $argonar_pdo->prepare("SELECT * FROM decision_log $where ORDER BY decided_at DESC, id DESC LIMIT 100");
+        $st = $apexcybernet_pdo->prepare("SELECT * FROM decision_log $where ORDER BY decided_at DESC, id DESC LIMIT 100");
         $st->execute($params);
         echo json_encode($st->fetchAll(PDO::FETCH_ASSOC));
     } catch (Exception $e) { echo json_encode([]); }
@@ -58,12 +58,12 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'dl_save' && $_SERVER['REQUEST_MET
     if (!$title) { echo json_encode(['ok'=>false,'error'=>'Title required']); exit; }
     try {
         if ($id > 0) {
-            $argonar_pdo->prepare("UPDATE decision_log SET decided_at=?,title=?,context_text=?,action_taken=?,result_text=?,impact_text=?,outcome=?,tags=?,business=?,updated_at=NOW() WHERE id=?")
+            $apexcybernet_pdo->prepare("UPDATE decision_log SET decided_at=?,title=?,context_text=?,action_taken=?,result_text=?,impact_text=?,outcome=?,tags=?,business=?,updated_at=NOW() WHERE id=?")
                 ->execute([$decided_at,$title,$context_text,$action_taken,$result_text,$impact_text,$outcome,$tags,$business,$id]);
         } else {
-            $argonar_pdo->prepare("INSERT INTO decision_log (decided_at,title,context_text,action_taken,result_text,impact_text,outcome,tags,business) VALUES (?,?,?,?,?,?,?,?,?)")
+            $apexcybernet_pdo->prepare("INSERT INTO decision_log (decided_at,title,context_text,action_taken,result_text,impact_text,outcome,tags,business) VALUES (?,?,?,?,?,?,?,?,?)")
                 ->execute([$decided_at,$title,$context_text,$action_taken,$result_text,$impact_text,$outcome,$tags,$business]);
-            $id = (int)$argonar_pdo->lastInsertId();
+            $id = (int)$apexcybernet_pdo->lastInsertId();
         }
         echo json_encode(['ok'=>true,'id'=>$id]);
     } catch (Exception $e) { echo json_encode(['ok'=>false,'error'=>$e->getMessage()]); }
@@ -74,18 +74,18 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'dl_delete' && $_SERVER['REQUEST_M
     header('Content-Type: application/json');
     $b = json_decode(file_get_contents('php://input'), true) ?: [];
     $id = (int)($b['id'] ?? 0);
-    try { $argonar_pdo->prepare("DELETE FROM decision_log WHERE id=?")->execute([$id]); echo json_encode(['ok'=>true]); }
+    try { $apexcybernet_pdo->prepare("DELETE FROM decision_log WHERE id=?")->execute([$id]); echo json_encode(['ok'=>true]); }
     catch (Exception $e) { echo json_encode(['ok'=>false]); }
     exit;
 }
 
 // ── Decision Log stats for badge ──
 $dl_total = 0;
-try { $dl_total = (int)$argonar_pdo->query("SELECT COUNT(*) FROM decision_log")->fetchColumn(); } catch (Exception $e) {}
+try { $dl_total = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM decision_log")->fetchColumn(); } catch (Exception $e) {}
 
 // ── Auto-create utm_links table ──
 try {
-    $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS utm_links (
+    $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS utm_links (
         id          INT AUTO_INCREMENT PRIMARY KEY,
         label       VARCHAR(120) NOT NULL,
         business    VARCHAR(32)  NOT NULL,
@@ -95,7 +95,7 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     // Seed default links if table is empty
-    $count = (int)$argonar_pdo->query("SELECT COUNT(*) FROM utm_links")->fetchColumn();
+    $count = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM utm_links")->fetchColumn();
     if ($count === 0) {
         $seeds = [
             ['OCPD — Facebook Feed Ad',        'ocpd',    'Facebook',  'https://oslobcebuparagliding.com/?utm_source=fb&utm_medium=paid&utm_campaign=ocpd'],
@@ -104,20 +104,20 @@ try {
             ['OCPD — Instagram Reel Ad',        'ocpd',    'Instagram', 'https://oslobcebuparagliding.com/?utm_source=ig&utm_medium=paid&utm_campaign=ocpd-reel'],
             ['OCPD — Facebook Organic Post',   'ocpd',    'Facebook',  'https://oslobcebuparagliding.com/?utm_source=fb&utm_medium=social&utm_campaign=ocpd-org'],
             ['OCPD — Booking Page Direct Ad',  'ocpd',    'Facebook',  'https://oslobcebuparagliding.com/booking?utm_source=fb&utm_medium=paid&utm_campaign=ocpd-bk'],
-            ['Argonar — Facebook Feed Ad',     'argonar', 'Facebook',  'https://argonar.co/?utm_source=fb&utm_medium=paid&utm_campaign=arg-t'],
-            ['Argonar — Facebook Organic Post','argonar', 'Facebook',  'https://argonar.co/?utm_source=fb&utm_medium=social&utm_campaign=arg-org'],
-            ['Argonar — Instagram Ad',         'argonar', 'Instagram', 'https://argonar.co/?utm_source=ig&utm_medium=paid&utm_campaign=arg-t'],
-            ['Argonar — Register CTA Ad',      'argonar', 'Facebook',  'https://argonar.co/login.php?tab=register&utm_source=fb&utm_medium=paid&utm_campaign=arg-reg'],
-            ['Argonar — Market Page Ad',       'argonar', 'Facebook',  'https://argonar.co/marketplace.php?utm_source=fb&utm_medium=paid&utm_campaign=arg-mkt'],
-            ['Argonar — Coins Page Ad',        'argonar', 'Facebook',  'https://argonar.co/coins.php?utm_source=fb&utm_medium=paid&utm_campaign=arg-hc'],
+            ['Apex Cybernet — Facebook Feed Ad',     'apexcybernet', 'Facebook',  'https://apexcybernet.com/?utm_source=fb&utm_medium=paid&utm_campaign=arg-t'],
+            ['Apex Cybernet — Facebook Organic Post','apexcybernet', 'Facebook',  'https://apexcybernet.com/?utm_source=fb&utm_medium=social&utm_campaign=arg-org'],
+            ['Apex Cybernet — Instagram Ad',         'apexcybernet', 'Instagram', 'https://apexcybernet.com/?utm_source=ig&utm_medium=paid&utm_campaign=arg-t'],
+            ['Apex Cybernet — Register CTA Ad',      'apexcybernet', 'Facebook',  'https://apexcybernet.com/login.php?tab=register&utm_source=fb&utm_medium=paid&utm_campaign=arg-reg'],
+            ['Apex Cybernet — Market Page Ad',       'apexcybernet', 'Facebook',  'https://apexcybernet.com/marketplace.php?utm_source=fb&utm_medium=paid&utm_campaign=arg-mkt'],
+            ['Apex Cybernet — Coins Page Ad',        'apexcybernet', 'Facebook',  'https://apexcybernet.com/coins.php?utm_source=fb&utm_medium=paid&utm_campaign=arg-hc'],
         ];
-        $ins = $argonar_pdo->prepare("INSERT INTO utm_links (label, business, platform, url) VALUES (?,?,?,?)");
+        $ins = $apexcybernet_pdo->prepare("INSERT INTO utm_links (label, business, platform, url) VALUES (?,?,?,?)");
         foreach ($seeds as $s) $ins->execute($s);
     }
 
     // Migrate existing rows — shorten long UTM params in-place (runs once)
     if ($count > 0) {
-        $has_long = (int)$argonar_pdo->query("SELECT COUNT(*) FROM utm_links WHERE url LIKE '%utm_medium=paid_social%'")->fetchColumn();
+        $has_long = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM utm_links WHERE url LIKE '%utm_medium=paid_social%'")->fetchColumn();
         if ($has_long > 0) {
             $fixes = [
                 ['utm_source=facebook',              'utm_source=fb'],
@@ -125,21 +125,21 @@ try {
                 ['utm_medium=paid_social',           'utm_medium=paid'],
                 ['utm_campaign=ocpd-paragliding',    'utm_campaign=ocpd'],
                 ['utm_campaign=ocpd-booking',        'utm_campaign=ocpd-bk'],
-                ['utm_campaign=argonar-tournament',  'utm_campaign=arg-t'],
-                ['utm_campaign=argonar-organic',     'utm_campaign=arg-org'],
-                ['utm_campaign=argonar-register',    'utm_campaign=arg-reg'],
-                ['utm_campaign=argonar-market',      'utm_campaign=arg-mkt'],
-                ['utm_campaign=argonar-coins',       'utm_campaign=arg-hc'],
+                ['utm_campaign=apexcybernet-tournament',  'utm_campaign=arg-t'],
+                ['utm_campaign=apexcybernet-organic',     'utm_campaign=arg-org'],
+                ['utm_campaign=apexcybernet-register',    'utm_campaign=arg-reg'],
+                ['utm_campaign=apexcybernet-market',      'utm_campaign=arg-mkt'],
+                ['utm_campaign=apexcybernet-coins',       'utm_campaign=arg-hc'],
                 ['&utm_content=feed-ad',             ''],
                 ['&utm_content=story-ad',            ''],
                 ['&utm_content=reel-ad',             ''],
                 ['&utm_content=cta-book-now',        ''],
                 ['&utm_content=cta-register',        ''],
                 // fix register.php → login.php?tab=register
-                ['argonar.co/register.php?',         'argonar.co/login.php?tab=register&'],
+                ['apexcybernet.com/register.php?',         'apexcybernet.com/login.php?tab=register&'],
             ];
             foreach ($fixes as [$from, $to]) {
-                $argonar_pdo->prepare("UPDATE utm_links SET url = REPLACE(url, ?, ?) WHERE url LIKE ?")->execute([$from, $to, '%'.$from.'%']);
+                $apexcybernet_pdo->prepare("UPDATE utm_links SET url = REPLACE(url, ?, ?) WHERE url LIKE ?")->execute([$from, $to, '%'.$from.'%']);
             }
         }
     }
@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_u
               . '&utm_campaign='. urlencode($campaign)
               . ($content ? '&utm_content='.urlencode($content) : '');
         try {
-            $argonar_pdo->prepare("INSERT INTO utm_links (label, business, platform, url) VALUES (?,?,?,?)")
+            $apexcybernet_pdo->prepare("INSERT INTO utm_links (label, business, platform, url) VALUES (?,?,?,?)")
                 ->execute([$label, $business ?: 'other', $platform ?: 'Facebook', $full]);
         } catch (Exception $e) {}
     }
@@ -171,14 +171,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_u
 
 // ── Handle delete UTM link ──
 if (isset($_GET['del_utm'])) {
-    try { $argonar_pdo->prepare("DELETE FROM utm_links WHERE id=?")->execute([(int)$_GET['del_utm']]); } catch (Exception $e) {}
+    try { $apexcybernet_pdo->prepare("DELETE FROM utm_links WHERE id=?")->execute([(int)$_GET['del_utm']]); } catch (Exception $e) {}
     header('Location: activity-bizops.php#pal-utm'); exit;
 }
 
 // ── Fetch all UTM links ──
 $utm_links = [];
 try {
-    $utm_links = $argonar_pdo->query("SELECT * FROM utm_links ORDER BY business, platform, id")->fetchAll();
+    $utm_links = $apexcybernet_pdo->query("SELECT * FROM utm_links ORDER BY business, platform, id")->fetchAll();
 } catch (Exception $e) {}
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -221,7 +221,7 @@ try {
 $emp = [
     'ocpd'    => ['name'=>'OCPD',    'icon'=>'bi-airplane-fill', 'color'=>'#34d399', 'rev_now'=>0, 'rev_prev'=>0, 'cust_now'=>0, 'cust_total'=>0, 'avg'=>0, 'last30_growth'=>null, 'unit'=>'bookings'],
     'loan'    => ['name'=>'Loan PH', 'icon'=>'bi-cash-stack',     'color'=>'#fbbf24', 'rev_now'=>0, 'rev_prev'=>0, 'cust_now'=>0, 'cust_total'=>0, 'avg'=>0, 'last30_growth'=>null, 'unit'=>'loans'],
-    'argonar' => ['name'=>'Argonar', 'icon'=>'bi-trophy-fill',    'color'=>'#a78bfa', 'rev_now'=>0, 'rev_prev'=>0, 'cust_now'=>0, 'cust_total'=>0, 'avg'=>0, 'last30_growth'=>null, 'unit'=>'players'],
+    'apexcybernet' => ['name'=>'Apex Cybernet', 'icon'=>'bi-trophy-fill',    'color'=>'#a78bfa', 'rev_now'=>0, 'rev_prev'=>0, 'cust_now'=>0, 'cust_total'=>0, 'avg'=>0, 'last30_growth'=>null, 'unit'=>'players'],
 ];
 
 // OCPD — full ticket price (packages × pax − voucher)
@@ -267,26 +267,26 @@ if ($loan_pdo_e) {
     } catch (Exception $e) {}
 }
 
-// Argonar — HCoin sales (purchase reason) + season passes
+// Apex Cybernet — HCoin sales (purchase reason) + season passes
 try {
-    $r = $argonar_pdo->query("SELECT
+    $r = $apexcybernet_pdo->query("SELECT
         COALESCE(SUM(CASE WHEN reason='purchase' AND created_at >= DATE_FORMAT(NOW(),'%Y-%m-01') THEN amount ELSE 0 END),0) AS rev_now,
         COALESCE(SUM(CASE WHEN reason='purchase' AND created_at >= DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y-%m-01') AND created_at < DATE_FORMAT(NOW(),'%Y-%m-01') THEN amount ELSE 0 END),0) AS rev_prev,
         COUNT(DISTINCT CASE WHEN reason='purchase' AND created_at >= DATE_FORMAT(NOW(),'%Y-%m-01') THEN account_id END) AS cust_now,
         COUNT(DISTINCT CASE WHEN reason='purchase' THEN account_id END) AS cust_total
         FROM h_coin_transactions")->fetch(PDO::FETCH_ASSOC);
     if ($r) {
-        // HC purchases are stored in HC, ₱1 ≈ 1 HC for argonar season 1
-        $emp['argonar']['rev_now']    = (float)$r['rev_now'];
-        $emp['argonar']['rev_prev']   = (float)$r['rev_prev'];
-        $emp['argonar']['cust_now']   = (int)$r['cust_now'];
-        $emp['argonar']['cust_total'] = (int)$r['cust_total'];
-        $emp['argonar']['avg']        = $emp['argonar']['cust_now'] > 0 ? round($emp['argonar']['rev_now'] / $emp['argonar']['cust_now']) : 0;
+        // HC purchases are stored in HC, ₱1 ≈ 1 HC for apexcybernet season 1
+        $emp['apexcybernet']['rev_now']    = (float)$r['rev_now'];
+        $emp['apexcybernet']['rev_prev']   = (float)$r['rev_prev'];
+        $emp['apexcybernet']['cust_now']   = (int)$r['cust_now'];
+        $emp['apexcybernet']['cust_total'] = (int)$r['cust_total'];
+        $emp['apexcybernet']['avg']        = $emp['apexcybernet']['cust_now'] > 0 ? round($emp['apexcybernet']['rev_now'] / $emp['apexcybernet']['cust_now']) : 0;
     }
     // Add season pass revenue if table exists
     try {
-        $sp = (float)$argonar_pdo->query("SELECT COALESCE(SUM(price),0) FROM season_passes WHERE status='active' AND created_at >= DATE_FORMAT(NOW(),'%Y-%m-01')")->fetchColumn();
-        $emp['argonar']['rev_now'] += $sp;
+        $sp = (float)$apexcybernet_pdo->query("SELECT COALESCE(SUM(price),0) FROM season_passes WHERE status='active' AND created_at >= DATE_FORMAT(NOW(),'%Y-%m-01')")->fetchColumn();
+        $emp['apexcybernet']['rev_now'] += $sp;
     } catch (Exception $e) {}
 } catch (Exception $e) {}
 
@@ -301,10 +301,10 @@ $emp_total_prev = array_sum(array_column($emp, 'rev_prev'));
 $emp_growth     = $emp_total_prev > 0 ? round(100 * ($emp_total_now - $emp_total_prev) / $emp_total_prev, 1) : null;
 
 // ── Cross-pollination: customers active in 2+ businesses (the real moat) ──
-$cross_overlap = ['ocpd_argonar' => 0, 'ocpd_loan' => 0, 'loan_argonar' => 0, 'all_three' => 0];
+$cross_overlap = ['ocpd_apexcybernet' => 0, 'ocpd_loan' => 0, 'loan_apexcybernet' => 0, 'all_three' => 0];
 $cross_emails  = [];
 try {
-    $argo_emails = array_map('strtolower', array_filter($argonar_pdo->query("SELECT DISTINCT email FROM accounts WHERE email IS NOT NULL AND email != ''")->fetchAll(PDO::FETCH_COLUMN)));
+    $argo_emails = array_map('strtolower', array_filter($apexcybernet_pdo->query("SELECT DISTINCT email FROM accounts WHERE email IS NOT NULL AND email != ''")->fetchAll(PDO::FETCH_COLUMN)));
     $ocpd_emails = $ocpd_pdo_e ? array_map('strtolower', array_filter($ocpd_pdo_e->query("SELECT DISTINCT email FROM bookings WHERE email IS NOT NULL AND email != ''")->fetchAll(PDO::FETCH_COLUMN))) : [];
     // Loan uses borrower table; emails likely in borrowers
     $loan_emails = [];
@@ -314,8 +314,8 @@ try {
     $set_a = array_flip($argo_emails);
     $set_o = array_flip($ocpd_emails);
     $set_l = array_flip($loan_emails);
-    foreach ($ocpd_emails as $em) { if (isset($set_a[$em])) $cross_overlap['ocpd_argonar']++; if (isset($set_l[$em])) $cross_overlap['ocpd_loan']++; }
-    foreach ($loan_emails as $em) { if (isset($set_a[$em])) $cross_overlap['loan_argonar']++; }
+    foreach ($ocpd_emails as $em) { if (isset($set_a[$em])) $cross_overlap['ocpd_apexcybernet']++; if (isset($set_l[$em])) $cross_overlap['ocpd_loan']++; }
+    foreach ($loan_emails as $em) { if (isset($set_a[$em])) $cross_overlap['loan_apexcybernet']++; }
     foreach ($ocpd_emails as $em) { if (isset($set_a[$em]) && isset($set_l[$em])) $cross_overlap['all_three']++; }
 } catch (Exception $e) {}
 
@@ -382,22 +382,22 @@ if ($ocpd_pdo_e) {
         }
     } catch (Exception $e) {}
 }
-// Argonar: admin_credit HC transactions
+// Apex Cybernet: admin_credit HC transactions
 try {
-    $r = $argonar_pdo->query("SELECT COUNT(DISTINCT account_id) c, COALESCE(SUM(amount),0) v FROM h_coin_transactions WHERE reason='admin_credit' AND type='credit'")->fetch();
+    $r = $apexcybernet_pdo->query("SELECT COUNT(DISTINCT account_id) c, COALESCE(SUM(amount),0) v FROM h_coin_transactions WHERE reason='admin_credit' AND type='credit'")->fetch();
     $psy['reciprocity']['count'] += (int)$r['c'];
     $psy['reciprocity']['value'] += (float)$r['v'];
-    $rs = $argonar_pdo->query("SELECT a.display_name, a.email, SUM(t.amount) v FROM h_coin_transactions t JOIN accounts a ON a.id=t.account_id WHERE t.reason='admin_credit' AND t.type='credit' GROUP BY a.id, a.display_name, a.email ORDER BY v DESC LIMIT 3")->fetchAll();
-    foreach ($rs as $row) $psy['reciprocity']['samples'][] = ['name'=>$row['display_name'], 'email'=>$row['email'], 'amount'=>number_format((float)$row['v']).' HC gifted', 'source'=>'Argonar'];
+    $rs = $apexcybernet_pdo->query("SELECT a.display_name, a.email, SUM(t.amount) v FROM h_coin_transactions t JOIN accounts a ON a.id=t.account_id WHERE t.reason='admin_credit' AND t.type='credit' GROUP BY a.id, a.display_name, a.email ORDER BY v DESC LIMIT 3")->fetchAll();
+    foreach ($rs as $row) $psy['reciprocity']['samples'][] = ['name'=>$row['display_name'], 'email'=>$row['email'], 'amount'=>number_format((float)$row['v']).' HC gifted', 'source'=>'Apex Cybernet'];
 } catch (Exception $e) {}
 
 // ── COMMITMENT: registered tournament teams/solos, season pass holders, repeat OCPD bookers ──
-// Argonar: active Season 1 teams
+// Apex Cybernet: active Season 1 teams
 try {
-    $r = $argonar_pdo->query("SELECT COUNT(*) c FROM teams WHERE status IN ('approved','confirmed','pending')")->fetch();
+    $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM teams WHERE status IN ('approved','confirmed','pending')")->fetch();
     $psy['commitment']['count'] += (int)$r['c'];
-    $rs = $argonar_pdo->query("SELECT team_name AS name, game, status, created_at FROM teams WHERE status IN ('approved','confirmed') ORDER BY created_at DESC LIMIT 3")->fetchAll();
-    foreach ($rs as $row) $psy['commitment']['samples'][] = ['name'=>$row['name'], 'email'=>$row['game'].' · '.$row['status'], 'amount'=>'Season 1 team', 'source'=>'Argonar'];
+    $rs = $apexcybernet_pdo->query("SELECT team_name AS name, game, status, created_at FROM teams WHERE status IN ('approved','confirmed') ORDER BY created_at DESC LIMIT 3")->fetchAll();
+    foreach ($rs as $row) $psy['commitment']['samples'][] = ['name'=>$row['name'], 'email'=>$row['game'].' · '.$row['status'], 'amount'=>'Season 1 team', 'source'=>'Apex Cybernet'];
 } catch (Exception $e) {}
 // OCPD: repeat customers (>1 booking)
 if ($ocpd_pdo_e) {
@@ -427,9 +427,9 @@ if ($loan_pdo_e) {
         $psy['sunk_cost']['value'] += (float)$r['v'];
     } catch (Exception $e) {}
 }
-// Argonar: pending tournament teams
+// Apex Cybernet: pending tournament teams
 try {
-    $r = $argonar_pdo->query("SELECT COUNT(*) c FROM teams WHERE status='pending'")->fetch();
+    $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM teams WHERE status='pending'")->fetch();
     $psy['sunk_cost']['count'] += (int)$r['c'];
 } catch (Exception $e) {}
 
@@ -445,23 +445,23 @@ if ($loan_pdo_e) {
     } catch (Exception $e) {}
 }
 try {
-    $r = $argonar_pdo->query("SELECT COALESCE(SUM(amount),0) v FROM h_coin_transactions WHERE reason='admin_credit' AND type='credit'")->fetch();
+    $r = $apexcybernet_pdo->query("SELECT COALESCE(SUM(amount),0) v FROM h_coin_transactions WHERE reason='admin_credit' AND type='credit'")->fetch();
     $psy['authority']['value'] += (float)$r['v'];
 } catch (Exception $e) {}
 
 // ── LIKING: users with deep engagement — many sessions or long relationship ──
 try {
-    $r = $argonar_pdo->query("SELECT COUNT(*) c FROM (
+    $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM (
         SELECT account_id FROM activity_logs WHERE account_id IS NOT NULL
         GROUP BY account_id HAVING COUNT(DISTINCT session_id) >= 5
     ) t")->fetch();
     $psy['liking']['count'] += (int)$r['c'];
-    $rs = $argonar_pdo->query("SELECT a.display_name, a.email, COUNT(DISTINCT l.session_id) AS sess
+    $rs = $apexcybernet_pdo->query("SELECT a.display_name, a.email, COUNT(DISTINCT l.session_id) AS sess
         FROM activity_logs l JOIN accounts a ON a.id=l.account_id
         WHERE l.account_id IS NOT NULL
         GROUP BY a.id, a.display_name, a.email HAVING sess >= 5
         ORDER BY sess DESC LIMIT 3")->fetchAll();
-    foreach ($rs as $row) $psy['liking']['samples'][] = ['name'=>$row['display_name'], 'email'=>$row['email'], 'amount'=>$row['sess'].' sessions', 'source'=>'Argonar'];
+    foreach ($rs as $row) $psy['liking']['samples'][] = ['name'=>$row['display_name'], 'email'=>$row['email'], 'amount'=>$row['sess'].' sessions', 'source'=>'Apex Cybernet'];
 } catch (Exception $e) {}
 
 // ── SCARCITY / LOSS-AVERSION: active unpaid loans, pending bookings near event date, season passes expiring ──
@@ -474,7 +474,7 @@ if ($ocpd_pdo_e) {
     } catch (Exception $e) {}
 }
 try {
-    $r = $argonar_pdo->query("SELECT COUNT(*) c FROM season_passes WHERE status='active' AND expires_at IS NOT NULL AND expires_at <= DATE_ADD(NOW(), INTERVAL 30 DAY)")->fetch();
+    $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM season_passes WHERE status='active' AND expires_at IS NOT NULL AND expires_at <= DATE_ADD(NOW(), INTERVAL 30 DAY)")->fetch();
     $psy['scarcity']['count'] += (int)$r['c'];
 } catch (Exception $e) {}
 
@@ -492,12 +492,12 @@ foreach ($emp as $k => $b) {
 }
 
 // ── Sidebar quick-stats ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
@@ -505,19 +505,19 @@ try {
 // ── Panel 1: Opportunity Score ──
 // For each site: traffic health (30), engagement (25), retention (25), growth (20)
 $opp_scores = [];
-$sites_scored = ['argonar', 'ocpd', 'loan'];
+$sites_scored = ['apexcybernet', 'ocpd', 'loan'];
 
 foreach ($sites_scored as $site) {
-    $site_cond = ($site === 'argonar') ? "(site='argonar' OR site IS NULL OR site='')" : "site='$site'";
+    $site_cond = ($site === 'apexcybernet') ? "(site='apexcybernet' OR site IS NULL OR site='')" : "site='$site'";
     $score = 0;
     $breakdown = [];
 
     // Traffic health: sessions this week vs last week (30 pts)
     $sessions_this_week = 0; $sessions_last_week = 0;
     try {
-        $sessions_this_week = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+        $sessions_this_week = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
             WHERE $site_cond AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
-        $sessions_last_week = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+        $sessions_last_week = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
             WHERE $site_cond AND created_at >= DATE_SUB(NOW(), INTERVAL 14 DAY)
             AND created_at < DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
     } catch (Exception $e) {}
@@ -534,7 +534,7 @@ foreach ($sites_scored as $site) {
     // Engagement: avg session depth (25 pts)
     $avg_depth = 0;
     try {
-        $avg_depth = (float)$argonar_pdo->query("SELECT AVG(ev) FROM (
+        $avg_depth = (float)$apexcybernet_pdo->query("SELECT AVG(ev) FROM (
             SELECT COUNT(*) as ev FROM activity_logs
             WHERE $site_cond AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
             GROUP BY session_id) t")->fetchColumn();
@@ -549,9 +549,9 @@ foreach ($sites_scored as $site) {
     // Retention: % users who returned (25 pts)
     $retention_pct = 0;
     try {
-        $total_users = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT account_id) FROM activity_logs
+        $total_users = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT account_id) FROM activity_logs
             WHERE $site_cond AND account_id IS NOT NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-        $returning_users = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT account_id) FROM (
+        $returning_users = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT account_id) FROM (
             SELECT account_id, COUNT(DISTINCT DATE(created_at)) as days
             FROM activity_logs
             WHERE $site_cond AND account_id IS NOT NULL
@@ -566,9 +566,9 @@ foreach ($sites_scored as $site) {
     // Growth: MoM pageview positive = 20 pts
     $pvs_this_month = 0; $pvs_last_month = 0;
     try {
-        $pvs_this_month = (int)$argonar_pdo->query("SELECT COUNT(*) FROM activity_logs
+        $pvs_this_month = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM activity_logs
             WHERE $site_cond AND event_type='pageview' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-        $pvs_last_month = (int)$argonar_pdo->query("SELECT COUNT(*) FROM activity_logs
+        $pvs_last_month = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM activity_logs
             WHERE $site_cond AND event_type='pageview'
             AND created_at >= DATE_SUB(NOW(), INTERVAL 60 DAY)
             AND created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
@@ -594,12 +594,12 @@ foreach ($sites_scored as $site) {
 // ── Panel 2: Traffic Conversion Gaps ──
 $conversion_gaps = [];
 try {
-    $st = $argonar_pdo->query("SELECT page_url,
+    $st = $apexcybernet_pdo->query("SELECT page_url,
         COUNT(CASE WHEN event_type='pageview' THEN 1 END) as pvs,
         COUNT(CASE WHEN event_type='click' THEN 1 END) as clks,
         ROUND(COUNT(CASE WHEN event_type='click' THEN 1 END) / GREATEST(COUNT(CASE WHEN event_type='pageview' THEN 1 END),1) * 100, 1) as eng_rate
         FROM activity_logs
-        WHERE (site='argonar' OR site IS NULL OR site='')
+        WHERE (site='apexcybernet' OR site IS NULL OR site='')
         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
         GROUP BY page_url
         HAVING pvs > 20 AND eng_rate < 10
@@ -610,9 +610,9 @@ try {
 // ── Panel 3: Geographic Expansion ──
 $geo_data = [];
 try {
-    $st = $argonar_pdo->query("SELECT country, COUNT(DISTINCT session_id) as sessions,
+    $st = $apexcybernet_pdo->query("SELECT country, COUNT(DISTINCT session_id) as sessions,
         ROUND(AVG(events_per_session),1) as avg_depth,
-        GROUP_CONCAT(DISTINCT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END ORDER BY site SEPARATOR ', ') as sites
+        GROUP_CONCAT(DISTINCT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END ORDER BY site SEPARATOR ', ') as sites
         FROM (
           SELECT session_id, country, site, COUNT(*) as events_per_session
           FROM activity_logs
@@ -629,10 +629,10 @@ try {
 // ── Panel 4: Demand Signals ──
 $demand_signals = [];
 try {
-    $st = $argonar_pdo->query("SELECT COALESCE(NULLIF(element_text,''), element_href, element_tag, '?') AS label,
+    $st = $apexcybernet_pdo->query("SELECT COALESCE(NULLIF(element_text,''), element_href, element_tag, '?') AS label,
         COUNT(*) as clicks,
         COUNT(DISTINCT session_id) as unique_sessions,
-        CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as site
+        CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as site
         FROM activity_logs
         WHERE event_type='click'
         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
@@ -644,8 +644,8 @@ try {
 // ── Panel 5: Retention Leaks ──
 $retention_leaks = [];
 try {
-    $st = $argonar_pdo->query("SELECT
-        CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as site,
+    $st = $apexcybernet_pdo->query("SELECT
+        CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as site,
         COUNT(DISTINCT session_id) as lapsed_sessions,
         COUNT(DISTINCT account_id) as lapsed_known_users
         FROM activity_logs
@@ -666,7 +666,7 @@ try {
 // ── Panel 6: Peak Demand Windows ──
 $peak_windows_raw = [];
 try {
-    $st = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as site,
+    $st = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as site,
         HOUR(created_at) as hr,
         DAYNAME(created_at) as dow,
         COUNT(DISTINCT session_id) as sessions
@@ -687,10 +687,10 @@ foreach ($peak_windows_raw as $r) {
 
 $date_range = 'all';
 
-// ── Revenue Engine: connect to argonar_market for H-Coin data ──
+// ── Revenue Engine: connect to apexcybernet_market for H-Coin data ──
 $market_pdo = null;
 try {
-    $market_pdo = new PDO('mysql:host=localhost;dbname=argonar_market', 'root', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $market_pdo = new PDO('mysql:host=localhost;dbname=apexcybernet_market', 'root', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 } catch (Exception $e) {}
 
 // Account & subscription metrics
@@ -699,10 +699,10 @@ $rev_accounts_month   = 0;
 $rev_subs_active      = 0;
 $rev_sub_mrr          = 0.0;
 try {
-    $rev_accounts_total  = (int)$argonar_pdo->query("SELECT COUNT(*) FROM accounts")->fetchColumn();
-    $rev_accounts_month  = (int)$argonar_pdo->query("SELECT COUNT(*) FROM accounts WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-    $rev_subs_active     = (int)$argonar_pdo->query("SELECT COUNT(*) FROM subscriptions WHERE status='active'")->fetchColumn();
-    $rev_sub_mrr         = (float)$argonar_pdo->query("SELECT COALESCE(SUM(amount_paid),0) FROM subscriptions WHERE status='active'")->fetchColumn();
+    $rev_accounts_total  = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM accounts")->fetchColumn();
+    $rev_accounts_month  = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM accounts WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
+    $rev_subs_active     = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM subscriptions WHERE status='active'")->fetchColumn();
+    $rev_sub_mrr         = (float)$apexcybernet_pdo->query("SELECT COALESCE(SUM(amount_paid),0) FROM subscriptions WHERE status='active'")->fetchColumn();
 } catch (Exception $e) {}
 
 // Tournament metrics
@@ -710,13 +710,13 @@ $rev_teams_total   = 0;
 $rev_solo_total    = 0;
 $rev_paid_entries  = 0;
 try {
-    $rev_teams_total  = (int)$argonar_pdo->query("SELECT COUNT(*) FROM teams")->fetchColumn();
-    $rev_solo_total   = (int)$argonar_pdo->query("SELECT COUNT(*) FROM solo_players")->fetchColumn();
-    $rev_paid_entries = (int)$argonar_pdo->query("SELECT COUNT(*) FROM teams WHERE status='approved'")->fetchColumn();
-    $rev_paid_entries += (int)$argonar_pdo->query("SELECT COUNT(*) FROM solo_players WHERE status='approved'")->fetchColumn();
+    $rev_teams_total  = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM teams")->fetchColumn();
+    $rev_solo_total   = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM solo_players")->fetchColumn();
+    $rev_paid_entries = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM teams WHERE status='approved'")->fetchColumn();
+    $rev_paid_entries += (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM solo_players WHERE status='approved'")->fetchColumn();
 } catch (Exception $e) {}
 
-// H-Coin metrics from argonar_market
+// H-Coin metrics from apexcybernet_market
 $rev_hcoin_volume   = 0.0;
 $rev_hcoin_txns     = 0;
 $rev_market_fees    = 0.0;
@@ -732,27 +732,27 @@ if ($market_pdo) {
     } catch (Exception $e) {}
 }
 
-// Behavior: untapped segments on argonar.co
+// Behavior: untapped segments on apexcybernet.com
 $rev_coins_visitors   = 0;
 $rev_market_visitors  = 0;
 $rev_guest_sessions   = 0;
-$rev_argonar_sessions = 0;
+$rev_apexcybernet_sessions = 0;
 try {
-    $sc = "(site='argonar' OR site IS NULL OR site='')";
-    $rev_coins_visitors   = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND page_url LIKE '%coin%' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-    $rev_market_visitors  = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND page_url LIKE '%market%' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-    $rev_guest_sessions   = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND account_id IS NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-    $rev_argonar_sessions = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
+    $sc = "(site='apexcybernet' OR site IS NULL OR site='')";
+    $rev_coins_visitors   = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND page_url LIKE '%coin%' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
+    $rev_market_visitors  = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND page_url LIKE '%market%' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
+    $rev_guest_sessions   = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND account_id IS NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
+    $rev_apexcybernet_sessions = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs WHERE $sc AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
 } catch (Exception $e) {}
 
 // Compute register-conversion rate
-$rev_register_rate = $rev_argonar_sessions > 0 ? round(($rev_accounts_total / max(1,$rev_argonar_sessions)) * 100, 1) : 0;
+$rev_register_rate = $rev_apexcybernet_sessions > 0 ? round(($rev_accounts_total / max(1,$rev_apexcybernet_sessions)) * 100, 1) : 0;
 
 // ── Reels Maker data ──
-// Best post time from argonar peak windows
+// Best post time from apexcybernet peak windows
 $reel_best_time = 'evenings';
-if (!empty($peak_windows['argonar'])) {
-    $pw = $peak_windows['argonar'][0];
+if (!empty($peak_windows['apexcybernet'])) {
+    $pw = $peak_windows['apexcybernet'][0];
     $h = (int)$pw['hr'];
     $ampm = $h < 12 ? ($h === 0 ? '12am' : $h.'am') : ($h === 12 ? '12pm' : ($h-12).'pm');
     $reel_best_time = $pw['dow'] . 's at ' . $ampm;
@@ -773,8 +773,8 @@ foreach ($demand_signals as $ds) {
 // Top page people engage with (exclude homepage)
 $reel_top_feature = 'tournaments';
 try {
-    $tp = $argonar_pdo->query("SELECT page_url, COUNT(*) as cnt FROM activity_logs
-        WHERE (site='argonar' OR site IS NULL OR site='')
+    $tp = $apexcybernet_pdo->query("SELECT page_url, COUNT(*) as cnt FROM activity_logs
+        WHERE (site='apexcybernet' OR site IS NULL OR site='')
         AND event_type='pageview' AND page_url NOT LIKE '%index%' AND page_url != '/'
         AND page_url NOT LIKE '%login%' AND page_url NOT LIKE '%register%'
         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
@@ -785,13 +785,13 @@ try {
 // Active prediction pool total
 $reel_predict_pool = 0;
 try {
-    $reel_predict_pool = (int)$argonar_pdo->query("SELECT COALESCE(SUM(wager),0) FROM match_predictions WHERE status='active'")->fetchColumn();
+    $reel_predict_pool = (int)$apexcybernet_pdo->query("SELECT COALESCE(SUM(wager),0) FROM match_predictions WHERE status='active'")->fetchColumn();
 } catch (Exception $e) {}
 
 // UTM links for reels
-$reel_utm_awareness   = 'https://argonar.co/?utm_source=ig&utm_medium=reel&utm_campaign=arg-aw';
-$reel_utm_engagement  = 'https://argonar.co/predict.php?utm_source=ig&utm_medium=reel&utm_campaign=arg-pred';
-$reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig&utm_medium=reel&utm_campaign=arg-reg';
+$reel_utm_awareness   = 'https://apexcybernet.com/?utm_source=ig&utm_medium=reel&utm_campaign=arg-aw';
+$reel_utm_engagement  = 'https://apexcybernet.com/predict.php?utm_source=ig&utm_medium=reel&utm_campaign=arg-pred';
+$reel_utm_conversion  = 'https://apexcybernet.com/login.php?tab=register&utm_source=ig&utm_medium=reel&utm_campaign=arg-reg';
 ?>
 
 <!DOCTYPE html>
@@ -826,7 +826,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
 .redflag-row td { background: rgba(248,113,113,0.04) !important; }
 
 .site-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; border-radius: 99px; padding: 0.1rem 0.45rem; }
-.site-badge.argonar { background:rgba(124,58,237,0.18); color:#a78bfa; }
+.site-badge.apexcybernet { background:rgba(124,58,237,0.18); color:#a78bfa; }
 .site-badge.ocpd    { background:rgba(56,189,248,0.15); color:#38bdf8; }
 .site-badge.loan    { background:rgba(167,139,250,0.15); color:#c4b5fd; }
 .site-badge.alrisha { background:rgba(52,211,153,0.15); color:#34d399; }
@@ -1002,7 +1002,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <?php foreach ($opp_scores as $site => $d):
                 $score = $d['score'];
                 $color = $score >= 70 ? '#34d399' : ($score >= 40 ? '#fbbf24' : '#f87171');
-                $names = ['argonar'=>'Argonar','ocpd'=>'OCPD','loan'=>'Loan'];
+                $names = ['apexcybernet'=>'Apex Cybernet','ocpd'=>'OCPD','loan'=>'Loan'];
             ?>
             <div class="opp-card">
                 <div class="opp-label"><?= htmlspecialchars($names[$site] ?? $site) ?></div>
@@ -1186,7 +1186,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
         <?php else: ?>
         <div class="leak-grid">
             <?php foreach ($retention_leaks as $site => $l):
-                $site_names = ['argonar'=>'Argonar','ocpd'=>'OCPD','loan'=>'Loan'];
+                $site_names = ['apexcybernet'=>'Apex Cybernet','ocpd'=>'OCPD','loan'=>'Loan'];
                 $known = (int)$l['lapsed_known_users'];
                 $sess = (int)$l['lapsed_sessions'];
             ?>
@@ -1220,7 +1220,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
         <?php else: ?>
         <div class="peak-grid">
             <?php foreach ($peak_windows as $site => $slots):
-                $site_names = ['argonar'=>'Argonar','ocpd'=>'OCPD','loan'=>'Loan'];
+                $site_names = ['apexcybernet'=>'Apex Cybernet','ocpd'=>'OCPD','loan'=>'Loan'];
                 // Build plain-English insight
                 $hours_str = [];
                 foreach ($slots as $sl) {
@@ -1256,7 +1256,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
     <div class="palantir-header" onclick="palToggle('pal-revenue')">
         <i class="bi bi-currency-dollar pal-icon" style="color:#34d399;"></i>
         <span>Revenue Engine</span>
-        <span class="pal-badge" style="background:rgba(52,211,153,0.15);color:#34d399;border-color:rgba(52,211,153,0.3);">Argonar · What to build next</span>
+        <span class="pal-badge" style="background:rgba(52,211,153,0.15);color:#34d399;border-color:rgba(52,211,153,0.3);">Apex Cybernet · What to build next</span>
         <i class="bi bi-chevron-down pal-toggle"></i>
     </div>
     <div class="palantir-body">
@@ -1301,7 +1301,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <i class="bi bi-people" style="color:#fbbf24;margin-right:4px;"></i>Untapped Segments — Playbook
         </div>
         <?php if ($rev_guest_sessions === 0 && $rev_coins_visitors === 0 && $rev_market_visitors === 0): ?>
-        <div style="font-size:0.75rem;color:#4b5563;">Run ads to argonar.co to populate segment data.</div>
+        <div style="font-size:0.75rem;color:#4b5563;">Run ads to apexcybernet.com to populate segment data.</div>
         <?php else: ?>
         <div class="seg-playbook-grid">
 
@@ -1311,7 +1311,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
                 <div class="sc-num" style="color:#fbbf24;"><?= number_format($rev_guest_sessions) ?></div>
                 <div class="sc-meta">
                     <div class="sc-title">Unregistered Visitors</div>
-                    <div class="sc-why">Browsed Argonar in the last 30 days but never created an account. These are warm leads — they found you, they just need a push.</div>
+                    <div class="sc-why">Browsed Apex Cybernet in the last 30 days but never created an account. These are warm leads — they found you, they just need a push.</div>
                 </div>
             </div>
             <span class="sc-status" style="background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.2);">
@@ -1332,7 +1332,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
                 </li>
                 <li>
                     <span class="step-num" style="background:rgba(251,191,36,0.15);color:#fbbf24;">4</span>
-                    <span><strong style="color:#e5e7eb;">Retarget on Facebook</strong> — upload a Custom Audience of these sessions (use the Seed CSV from OCPD FB Intelligence) and run a ₱150/day "Join Argonar" ad.</span>
+                    <span><strong style="color:#e5e7eb;">Retarget on Facebook</strong> — upload a Custom Audience of these sessions (use the Seed CSV from OCPD FB Intelligence) and run a ₱150/day "Join Apex Cybernet" ad.</span>
                 </li>
             </ul>
             <div class="sc-impact" style="background:rgba(251,191,36,0.08);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);">
@@ -1458,7 +1458,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
         <div class="rev-opp-card" style="border-color:rgba(96,165,250,0.2);">
             <span class="roc-rank">#4</span>
             <div class="roc-icon">⭐</div>
-            <div class="roc-title">Argonar Pro Pass</div>
+            <div class="roc-title">Apex Cybernet Pro Pass</div>
             <div class="roc-desc">Monthly subscription at ₱149/month. Perks: no ads, early tournament registration, profile badge, 100 H-Coins/month bonus, exclusive Discord/community access. Subscriptions table is already built.</div>
             <div class="roc-potential" style="background:rgba(96,165,250,0.12);color:#60a5fa;">₱149/mo · Recurring MRR</div>
             <div class="roc-data">
@@ -1482,7 +1482,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <span class="roc-rank">#6</span>
             <div class="roc-icon">🏢</div>
             <div class="roc-title">Tournament Naming Rights</div>
-            <div class="roc-desc">Sell sponsors the ability to brand a tournament: "BRAND presents: Argonar Cup". Local gaming cafes, peripheral brands, and energy drink companies pay ₱2,000–₱10,000/tournament for brand exposure.</div>
+            <div class="roc-desc">Sell sponsors the ability to brand a tournament: "BRAND presents: Apex Cybernet Cup". Local gaming cafes, peripheral brands, and energy drink companies pay ₱2,000–₱10,000/tournament for brand exposure.</div>
             <div class="roc-potential" style="background:rgba(251,191,36,0.1);color:#fbbf24;">₱2,000–₱10,000 per event · Zero tech cost</div>
             <div class="roc-data">Tournaments are implicit (via <code>game</code> field on teams/matches) — needs a new lightweight <code>tournaments</code> table with sponsor fields, or a sponsor row per game/season. Display logo on bracket screen + tournament heading.</div>
         </div>
@@ -1491,7 +1491,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <span class="roc-rank">#7</span>
             <div class="roc-icon">🎓</div>
             <div class="roc-title">Coaching Marketplace</div>
-            <div class="roc-desc">Let top-ranked tournament players sell 1-on-1 coaching sessions via the platform. Argonar takes 15–20% cut. Coaches set their own price (₱100–₱500/hr).</div>
+            <div class="roc-desc">Let top-ranked tournament players sell 1-on-1 coaching sessions via the platform. Apex Cybernet takes 15–20% cut. Coaches set their own price (₱100–₱500/hr).</div>
             <div class="roc-potential" style="background:rgba(52,211,153,0.1);color:#34d399;">15–20% of each session · High engagement</div>
             <div class="roc-data">Requires new <code>coaching_sessions</code> table (coach_id, booked_time, status, price) + coach profile pages (reuses tournament_results rank data). Not reusable from marketplace_listings — different shape.</div>
         </div>
@@ -1500,7 +1500,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <span class="roc-rank">#8</span>
             <div class="roc-icon">👕</div>
             <div class="roc-title">Team Merch Store</div>
-            <div class="roc-desc">Let teams sell branded merch (jerseys, mousepads) through Argonar. Print-on-demand integration (e.g. Printful). Platform takes 10% commission. Teams love having official storefronts — drives pride and virality.</div>
+            <div class="roc-desc">Let teams sell branded merch (jerseys, mousepads) through Apex Cybernet. Print-on-demand integration (e.g. Printful). Platform takes 10% commission. Teams love having official storefronts — drives pride and virality.</div>
             <div class="roc-potential" style="background:rgba(167,139,250,0.1);color:#a78bfa;">10% per sale · Viral team identity</div>
             <div class="roc-data">Requires: team store page + product upload + payment + POD webhook · <?= number_format($rev_teams_total) ?> teams to launch with</div>
         </div>
@@ -1559,7 +1559,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <div class="roc-desc">Sell a full-year sponsorship bundle: ₱50k Bronze (logo on 3 tournaments) · ₱150k Silver (all events + bracket watermark) · ₱500k Gold (naming rights + banner ads + hosted segments). Target internet cafes, peripherals brands, energy drinks, telcos — the same ones already advertising on local esports.</div>
             <div class="roc-potential" style="background:rgba(96,165,250,0.12);color:#60a5fa;">₱200k–₱2.5M/yr · 3–5 sponsors</div>
             <div class="roc-data">
-                Build a one-page <code>sponsor.php</code> pitch deck with audience metrics. <?= number_format($rev_accounts_total) ?> accounts + <?= number_format($rev_argonar_sessions) ?> last-30d sessions is already a pitchable reach.
+                Build a one-page <code>sponsor.php</code> pitch deck with audience metrics. <?= number_format($rev_accounts_total) ?> accounts + <?= number_format($rev_apexcybernet_sessions) ?> last-30d sessions is already a pitchable reach.
             </div>
         </div>
 
@@ -1578,7 +1578,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <span class="roc-rank">#6</span>
             <div class="roc-icon">🏛️</div>
             <div class="roc-title">DOST-PCIEERD Startup Grant Fund</div>
-            <div class="roc-desc">Apply for DOST-PCIEERD's Startup Grant Fund — up to ₱5M for R&amp;D over an 18-month project. Non-repayable if deliverables hit. You qualify: needs DTI/SEC registration (1–7 years old) + a working prototype (Argonar is already live).</div>
+            <div class="roc-desc">Apply for DOST-PCIEERD's Startup Grant Fund — up to ₱5M for R&amp;D over an 18-month project. Non-repayable if deliverables hit. You qualify: needs DTI/SEC registration (1–7 years old) + a working prototype (Apex Cybernet is already live).</div>
             <div class="roc-potential" style="background:rgba(251,191,36,0.1);color:#fbbf24;">Up to ₱5M · 18-mo project · Zero dilution</div>
             <div class="roc-data">
                 R&amp;D angles that fit: matchmaking/skill-rating algorithm, prediction-pool fraud/collusion detection, esports analytics platform for Philippine orgs. Apply via DPMIS (DOST Project Management Information System) — <strong>not</strong> PhilGEPS. Proposal ~10–20 pages.
@@ -1677,7 +1677,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <span class="roc-rank">#15</span>
             <div class="roc-icon">🧡</div>
             <div class="roc-title">Community Patronage (Patreon-style)</div>
-            <div class="roc-desc">Creator-economy model: a pure "support Argonar" tier separate from the Pro Pass. Superfans pay monthly for Discord-only content, behind-the-scenes tournament planning, direct chat with organizers, and voting power on feature priorities. Recurring revenue now sits at the center of creator business models (creator economy hit ~$280B in 2026).</div>
+            <div class="roc-desc">Creator-economy model: a pure "support Apex Cybernet" tier separate from the Pro Pass. Superfans pay monthly for Discord-only content, behind-the-scenes tournament planning, direct chat with organizers, and voting power on feature priorities. Recurring revenue now sits at the center of creator business models (creator economy hit ~$280B in 2026).</div>
             <div class="roc-potential" style="background:rgba(248,113,113,0.12);color:#f87171;">₱99–₱499/mo · 50–200 patrons typical</div>
             <div class="roc-data">
                 Platform: <strong>Patreon</strong> (global, 5–12% fee) or build in-house via subscriptions table. 100 patrons × ₱199 avg = ₱19,900/mo. Works even at small scale because superfans self-select.
@@ -1707,7 +1707,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <div style="font-size:0.74rem;color:#9ca3af;line-height:1.6;">
                 The arrangement is currently informal. That makes it worth ~0 to an investor, acquirer, or estate executor.
                 A 2-page Memorandum of Agreement (MOA) with: <em>(1)</em> "perpetual" defined with a clean term + automatic renewal,
-                <em>(2)</em> specific performance — the café is obligated to host Argonar events, <em>(3)</em> transfer clause — the
+                <em>(2)</em> specific performance — the café is obligated to host Apex Cybernet events, <em>(3)</em> transfer clause — the
                 right survives a sale of the café. <strong style="color:#e5e7eb;">~₱5–10k legal fee · 1–2 weeks.</strong>
                 Do this <em>before</em> replicating the pattern at other venues — otherwise you keep building on sand.
             </div>
@@ -1830,8 +1830,8 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
         <?php
         $by_biz = [];
         foreach ($utm_links as $lnk) $by_biz[$lnk['business']][] = $lnk;
-        $biz_labels = ['ocpd'=>'OCPD Paragliding','argonar'=>'Argonar Tournament','loan'=>'Loan','other'=>'Other'];
-        $biz_colors = ['ocpd'=>'#38bdf8','argonar'=>'#a78bfa','loan'=>'#c4b5fd','other'=>'#9ca3af'];
+        $biz_labels = ['ocpd'=>'OCPD Paragliding','apexcybernet'=>'Apex Cybernet Tournament','loan'=>'Loan','other'=>'Other'];
+        $biz_colors = ['ocpd'=>'#38bdf8','apexcybernet'=>'#a78bfa','loan'=>'#c4b5fd','other'=>'#9ca3af'];
         $platform_icons = ['Facebook'=>'bi-facebook','Instagram'=>'bi-instagram','Email'=>'bi-envelope-fill','Twitter'=>'bi-twitter-x'];
         foreach ($by_biz as $biz => $links):
             $col = $biz_colors[$biz] ?? '#9ca3af';
@@ -1874,7 +1874,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
                     <input name="label" required placeholder="Label (e.g. OCPD Reel Ad)" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:#e5e7eb;font-size:0.75rem;padding:0.35rem 0.6rem;outline:none;width:100%;">
                     <select name="business" style="background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:#e5e7eb;font-size:0.75rem;padding:0.35rem 0.6rem;outline:none;width:100%;">
                         <option value="ocpd">OCPD</option>
-                        <option value="argonar">Argonar</option>
+                        <option value="apexcybernet">Apex Cybernet</option>
                         <option value="loan">Loan</option>
                         <option value="other">Other</option>
                     </select>
@@ -1899,12 +1899,12 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
     </div>
 </div>
 
-<!-- ══ Reels Maker — Argonar.co ══ -->
+<!-- ══ Reels Maker — Apex Cybernet.co ══ -->
 <div class="palantir-section" id="pal-reels">
     <div class="palantir-header" onclick="palToggle(this)">
         <i class="bi bi-play-circle-fill pal-icon" style="color:#f472b6;"></i>
         <span>Reels Maker</span>
-        <span class="pal-badge" style="background:rgba(244,114,182,0.15);color:#f472b6;border-color:rgba(244,114,182,0.25);">Argonar.co · IG &amp; FB Reels</span>
+        <span class="pal-badge" style="background:rgba(244,114,182,0.15);color:#f472b6;border-color:rgba(244,114,182,0.25);">Apex Cybernet.co · IG &amp; FB Reels</span>
         <i class="bi bi-chevron-down pal-toggle"></i>
     </div>
     <div class="palantir-body">
@@ -1942,7 +1942,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
         </div>
         <div class="reel-divider"></div>
         <div class="reel-snap-item">
-            <div class="reel-snap-val" style="color:#34d399;"><?= number_format($rev_argonar_sessions) ?></div>
+            <div class="reel-snap-val" style="color:#34d399;"><?= number_format($rev_apexcybernet_sessions) ?></div>
             <div class="reel-snap-lbl">Sessions (30d)</div>
         </div>
         <div class="reel-divider"></div>
@@ -1965,7 +1965,7 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
     </div>
 
     <p style="font-size:0.76rem;color:#6b7280;margin-bottom:1.1rem;">
-        Three ready-to-record Reel scripts generated from your Argonar analytics. Each includes a 3-second hook, on-screen text guide, caption, hashtags, and a UTM link to track conversions.
+        Three ready-to-record Reel scripts generated from your Apex Cybernet analytics. Each includes a 3-second hook, on-screen text guide, caption, hashtags, and a UTM link to track conversions.
     </p>
 
     <div class="reel-grid">
@@ -1982,19 +1982,19 @@ $reel_utm_conversion  = 'https://argonar.co/login.php?tab=register&utm_source=ig
             <div>
                 <div class="reel-label">On-Screen Script</div>
                 <div class="reel-script" id="reel1-script">0:00 — Hook text on screen: "Ever wanted to get PAID to play games?"
-0:03 — Show Argonar homepage / tournament bracket
-0:05 — Text: "Argonar.co — Free to join"
+0:03 — Show Apex Cybernet homepage / tournament bracket
+0:05 — Text: "Apex Cybernet.co — Free to join"
 0:07 — Show predict.php / H-Coins balance screen
 0:09 — Text: "Predict match winners → Earn H-Coins"
 0:12 — Text: "<?= number_format($rev_accounts_total) ?>+ players already in"
-0:15 — CTA: "Join for free → argonar.co"</div>
+0:15 — CTA: "Join for free → apexcybernet.com"</div>
             </div>
 
             <div>
                 <div class="reel-label">Caption</div>
                 <div class="reel-caption" id="reel1-caption">POV: You just found the gaming platform that actually rewards you 🎮💰
 
-Argonar is a free tournament platform where you can:
+Apex Cybernet is a free tournament platform where you can:
 🏆 Enter esports tournaments
 🔮 Predict match winners &amp; earn H-Coins
 🛒 Trade in the marketplace
@@ -2006,7 +2006,7 @@ Argonar is a free tournament platform where you can:
 
             <div>
                 <div class="reel-label">Hashtags</div>
-                <div class="reel-tags" id="reel1-tags">#Argonar #EsportsPH #GamingTournament #FreeToPlay #MobileGaming #EsportsCommunity #GamingPH #OnlineTournament #GamingLife #HCoins</div>
+                <div class="reel-tags" id="reel1-tags">#Apex Cybernet #EsportsPH #GamingTournament #FreeToPlay #MobileGaming #EsportsCommunity #GamingPH #OnlineTournament #GamingLife #HCoins</div>
             </div>
 
             <div class="reel-actions">
@@ -2037,12 +2037,12 @@ Argonar is a free tournament platform where you can:
 <?php endif; ?>0:07 — Text: "Pick a side. Stake H-Coins."
 0:10 — Text: "Winners split the entire pool 🏆"
 0:13 — Text: "Use coins to enter tournaments or cash out"
-0:16 — CTA: "Predict now → argonar.co"</div>
+0:16 — CTA: "Predict now → apexcybernet.com"</div>
             </div>
 
             <div>
                 <div class="reel-label">Caption</div>
-                <div class="reel-caption" id="reel2-caption">This Argonar feature is actually insane 🤯
+                <div class="reel-caption" id="reel2-caption">This Apex Cybernet feature is actually insane 🤯
 
 "Predict" lets you stake H-Coins on esports match outcomes. If your team wins — you split the pool with everyone else who picked correctly 💰
 
@@ -2058,7 +2058,7 @@ Argonar is a free tournament platform where you can:
 
             <div>
                 <div class="reel-label">Hashtags</div>
-                <div class="reel-tags" id="reel2-tags">#ArgonarPredict #EsportsBetting #Dota2PH #MLBBPredictions #GamingPH #EarnOnline #HCoins #EsportsPH #PredictAndWin #MobileLegendsph</div>
+                <div class="reel-tags" id="reel2-tags">#ApexCybernetPredict #EsportsBetting #Dota2PH #MLBBPredictions #GamingPH #EarnOnline #HCoins #EsportsPH #PredictAndWin #MobileLegendsph</div>
             </div>
 
             <div class="reel-actions">
@@ -2090,7 +2090,7 @@ Argonar is a free tournament platform where you can:
 0:10 — Text: "Double elimination bracket"
 0:12 — Text: "₱500 entry · instant confirmation"
 0:14 — Urgency: "Slots are filling fast ⚡"
-0:16 — CTA: "Register now → argonar.co"</div>
+0:16 — CTA: "Register now → apexcybernet.com"</div>
             </div>
 
             <div>
@@ -2108,12 +2108,12 @@ Here's what you get:
 Register your team 👇
 <?= $reel_utm_conversion ?>
 
-#ArgonarTournament #EsportsCebu #DotaTournament #MLBBTournament #GamingPH #EsportsPH #CebuGaming #TournamentPH</div>
+#ApexCybernetTournament #EsportsCebu #DotaTournament #MLBBTournament #GamingPH #EsportsPH #CebuGaming #TournamentPH</div>
             </div>
 
             <div>
                 <div class="reel-label">Hashtags</div>
-                <div class="reel-tags" id="reel3-tags">#ArgonarTournament #EsportsCebu #DotaTournament #MLBBTournament #GamingPH #EsportsPH #CebuGaming #TournamentPH #EsportsRegistration #CompetitiveGaming</div>
+                <div class="reel-tags" id="reel3-tags">#ApexCybernetTournament #EsportsCebu #DotaTournament #MLBBTournament #GamingPH #EsportsPH #CebuGaming #TournamentPH #EsportsRegistration #CompetitiveGaming</div>
             </div>
 
             <div class="reel-actions">

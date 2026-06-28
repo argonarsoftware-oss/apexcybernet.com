@@ -1,12 +1,12 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 
-$pageTitle = 'Tournament Rules — Argonar Dota 2 Tournament';
-$pageDescription = 'Official Argonar Dota 2 Tournament rules — double elimination format, Dota 2 captains mode, fair play, violations, prize claiming. Read before you register.';
+$pageTitle = 'Tournament Rules — Apex Cybernet Dota 2 Tournament';
+$pageDescription = 'Official Apex Cybernet Dota 2 Tournament rules — double elimination format, Dota 2 captains mode, fair play, violations, prize claiming. Read before you register.';
 $canonicalUrl = canonical_url('rules.php');
 $extraHead = breadcrumb_jsonld([
-    ['name' => 'Home',             'url' => 'https://argonar.co/'],
-    ['name' => 'Tournament Rules', 'url' => 'https://argonar.co/rules.php'],
+    ['name' => 'Home',             'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Tournament Rules', 'url' => 'https://apexcybernet.com/rules.php'],
 ]);
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/he-chrome.php';
@@ -59,7 +59,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
             <div class="he-card-section-label">Schedule</div>
             <ul>
                 <li>Match schedules posted at least 24 hours before each round.</li>
-                <li>Updates go to the Argonar Facebook page + Messenger.</li>
+                <li>Updates go to the Apex Cybernet Facebook page + Messenger.</li>
                 <li>Reschedules need both teams + admin to agree, 12+ hours in advance.</li>
             </ul>
         </div>
@@ -69,7 +69,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
             <ul>
                 <li><strong>Respect opponents.</strong> Win or lose, give a GG.</li>
                 <li><strong>No toxicity.</strong> Trash talk that crosses into harassment, slurs, or personal attacks is not tolerated.</li>
-                <li>Violators are banned from all future Argonar events.</li>
+                <li>Violators are banned from all future Apex Cybernet events.</li>
                 <li>Issues and disputes go straight to the admin — don't argue with the other team.</li>
             </ul>
         </div>
@@ -83,8 +83,8 @@ require_once __DIR__ . '/includes/he-chrome.php';
                 <li><strong>Match fixing</strong> — collusion, intentional losses, or score manipulation = permanent ban for everyone involved.</li>
                 <li><strong>Lying about skill</strong> — treated the same as rank manipulation.</li>
                 <li><strong>Complaints &amp; reports</strong> — taken into consideration when evaluating penalties. <a href="<?= base_url('dispute.php') ?>" style="color:var(--accent-light); text-decoration:underline;">File a complaint</a>.</li>
-                <li><strong>Penalties</strong> — warnings, DQ, prize forfeiture, or permanent ban — at Argonar's discretion.</li>
-                <li><strong>All decisions final.</strong> Argonar reserves the right to act to maintain integrity.</li>
+                <li><strong>Penalties</strong> — warnings, DQ, prize forfeiture, or permanent ban — at Apex Cybernet's discretion.</li>
+                <li><strong>All decisions final.</strong> Apex Cybernet reserves the right to act to maintain integrity.</li>
             </ul>
         </div>
 

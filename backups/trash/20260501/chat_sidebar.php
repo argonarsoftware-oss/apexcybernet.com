@@ -739,7 +739,7 @@ $cs_me       = (int)($_SESSION['account_id'] ?? 0);
         <span class="cs-tab-badge hidden" id="csTabBadge">0</span>
     </button>
     <div class="cs-head">
-        <div class="cs-head-title"><i class="bi bi-people-fill"></i> Argonar Players</div>
+        <div class="cs-head-title"><i class="bi bi-people-fill"></i> Apex Cybernet Players</div>
         <span class="cs-head-count" id="csCount"></span>
         <button class="cs-head-btn cs-tips-btn" title="Chat tips" onclick="csToggleTips(event)"><i class="bi bi-question-circle"></i></button>
     </div>
@@ -790,7 +790,7 @@ $cs_me       = (int)($_SESSION['account_id'] ?? 0);
         <div class="cs-modal-sub">Pick a name and add at least one other player.</div>
         <div style="display:flex;align-items:flex-start;gap:0.5rem;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:0.55rem 0.75rem;margin-bottom:0.85rem;font-size:0.72rem;color:#fde68a;text-align:left;">
             <i class="bi bi-lock-fill" style="margin-top:2px;"></i>
-            <div><strong>Private group.</strong> Only the members you add can see this group in their sidebar. Nobody else on Argonar will know it exists.</div>
+            <div><strong>Private group.</strong> Only the members you add can see this group in their sidebar. Nobody else on Apex Cybernet will know it exists.</div>
         </div>
         <input type="text" id="csNgName" maxlength="80" placeholder="Group name…"
             style="width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:0.6rem 0.85rem;font-size:0.9rem;font-family:inherit;outline:none;margin-bottom:0.75rem;">
@@ -846,7 +846,7 @@ $cs_me       = (int)($_SESSION['account_id'] ?? 0);
         <button class="cs-modal-close" onclick="csCloseModal()"><i class="bi bi-x-lg"></i></button>
         <div class="cs-modal-icon"><i class="bi bi-chat-heart-fill"></i></div>
         <div class="cs-modal-title" id="csModalTitle">Join the conversation</div>
-        <div class="cs-modal-sub" id="csModalSub">Log in or create an account to chat with Argonar players.</div>
+        <div class="cs-modal-sub" id="csModalSub">Log in or create an account to chat with Apex Cybernet players.</div>
         <div class="cs-modal-actions">
             <a href="<?= base_url('login.php') ?>" class="cs-modal-btn primary"><i class="bi bi-box-arrow-in-right"></i> Log In</a>
             <a href="<?= base_url('register.php') ?>" class="cs-modal-btn ghost"><i class="bi bi-person-plus-fill"></i> Create Account</a>
@@ -1052,8 +1052,8 @@ $cs_me       = (int)($_SESSION['account_id'] ?? 0);
                 if (body.length > 100) body = body.slice(0, 100) + '…';
                 var n = new Notification(p.name + (p.isGroup ? ' (group)' : ''), {
                     body: body,
-                    icon: p.avatar ? (BASE + '/' + p.avatar) : (BASE + '/images/argonar-logo.svg'),
-                    tag:  'argonar-chat-' + key,
+                    icon: p.avatar ? (BASE + '/' + p.avatar) : (BASE + '/images/apexcybernet-logo.svg'),
+                    tag:  'apexcybernet-chat-' + key,
                     silent: false
                 });
                 n.onclick = function() {
@@ -1119,7 +1119,7 @@ $cs_me       = (int)($_SESSION['account_id'] ?? 0);
             csUpdateNotifPrompt();
             if (p === 'granted') {
                 try {
-                    var n = new Notification('Notifications enabled', { body: 'You\'ll get message alerts here.', icon: BASE + '/images/argonar-logo.svg', silent: true });
+                    var n = new Notification('Notifications enabled', { body: 'You\'ll get message alerts here.', icon: BASE + '/images/apexcybernet-logo.svg', silent: true });
                     setTimeout(function(){ try { n.close(); } catch(e){} }, 2500);
                 } catch (e) {}
             }
@@ -1239,8 +1239,8 @@ $cs_me       = (int)($_SESSION['account_id'] ?? 0);
                 + '</div>';
         }
 
-        // Pin Argonar + HIDE OUT above groups
-        var pinnedNames = ['Argonar', 'HIDE OUT'];
+        // Pin Apex Cybernet + HIDE OUT above groups
+        var pinnedNames = ['Apex Cybernet', 'HIDE OUT'];
         var pinnedRows  = [];
         var regularRows = [];
         rows.forEach(function(u) {
@@ -2400,7 +2400,7 @@ $cs_me       = (int)($_SESSION['account_id'] ?? 0);
         var modal = document.getElementById('csModal');
         if (u && u.display_name) {
             document.getElementById('csModalTitle').textContent = 'Chat with ' + u.display_name;
-            document.getElementById('csModalSub').textContent   = 'Log in or create an account to start chatting with Argonar players.';
+            document.getElementById('csModalSub').textContent   = 'Log in or create an account to start chatting with Apex Cybernet players.';
         }
         modal.classList.add('on');
     };

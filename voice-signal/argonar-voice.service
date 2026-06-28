@@ -1,12 +1,12 @@
 [Unit]
-Description=Argonar Voice Signaling Server
+Description=Apex Cybernet Voice Signaling Server
 After=network.target
 
 [Service]
 Type=simple
 User=www-data
 Group=www-data
-WorkingDirectory=/var/www/argonar/voice-signal
+WorkingDirectory=/var/www/apexcybernet/voice-signal
 ExecStart=/usr/bin/node server.js
 Environment=NODE_ENV=production
 Environment=PORT=3000
@@ -14,14 +14,14 @@ Restart=on-failure
 RestartSec=3
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=argonar-voice
+SyslogIdentifier=apexcybernet-voice
 
 # Hardening
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/var/www/argonar/voice-signal
+ReadWritePaths=/var/www/apexcybernet/voice-signal
 
 [Install]
 WantedBy=multi-user.target

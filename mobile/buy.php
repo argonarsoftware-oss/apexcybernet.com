@@ -57,7 +57,7 @@ if ($ref) {
     $dbOrder = $stmt->fetch();
     if ($dbOrder) {
         $orderCoins = $dbOrder['coins'];
-        $res = listenerCreateOrder($ref, (float)$dbOrder['peso_amount'], "Argonar HCoins: {$dbOrder['coins']} HC");
+        $res = listenerCreateOrder($ref, (float)$dbOrder['peso_amount'], "Apex Cybernet HCoins: {$dbOrder['coins']} HC");
         if ($res) {
             if (!empty($res['success'])) {
                 $activeOrder = true;
@@ -110,10 +110,10 @@ m_head('Buy HC');
         Scan with any banking or e-wallet app
     </div>
     <div class="qr-box" style="display:inline-flex;">
-        <img src="https://argonar.co/payment/generate-qr.php?amount=<?= number_format($payAmount, 2, '.', '') ?>"
+        <img src="https://apexcybernet.com/payment/generate-qr.php?amount=<?= number_format($payAmount, 2, '.', '') ?>"
              alt="Payment QR" style="width:200px;height:200px;">
     </div>
-    <div style="font-size:0.7rem;color:var(--muted);margin-top:0.6rem;">QR Ph (InstaPay) — Argonar Software</div>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:0.6rem;">QR Ph (InstaPay) — Apex Cybernet</div>
 </div>
 
 <div id="status-box" style="margin:0 1rem 1rem;border:2px dashed var(--border);border-radius:14px;padding:1.25rem;text-align:center;">
@@ -255,7 +255,7 @@ m_head('Buy HC');
 
 <div style="margin:0 1rem;padding:0.75rem 1rem;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:0.72rem;color:var(--muted);line-height:1.6;">
     <i class="bi bi-info-circle" style="color:var(--accent-l);"></i>
-    HCoins are virtual reward currency for use on Argonar only. Not legal tender.
+    HCoins are virtual reward currency for use on Apex Cybernet only. Not legal tender.
 </div>
 <?php endif; ?>
 

@@ -8,7 +8,7 @@ if (current_user($pdo)) {
 }
 
 $pageTitle = 'Account';
-$pageDescription = 'Log in or create your Argonar Tournament account.';
+$pageDescription = 'Log in or create your Apex Cybernet Tournament account.';
 $tab = $_GET['tab'] ?? 'login';
 $errors = [];
 
@@ -401,7 +401,7 @@ require_once __DIR__ . '/includes/header.php';
             </a>
             <a href="<?= base_url() ?>" class="auth-logo">
                 <div class="auth-logo-icon"><i class="bi bi-controller"></i></div>
-                <span class="auth-logo-text">Argonar<span> Tournament</span></span>
+                <span class="auth-logo-text">Apex Cybernet<span> Tournament</span></span>
             </a>
         </div>
 

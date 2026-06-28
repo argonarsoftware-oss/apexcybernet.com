@@ -35,7 +35,7 @@ if ($has_font) {
     imagettftext($img, 56, 0, (int)$tx, 200, $accent, $font, $title);
 
     // Subtitle
-    $sub = 'Argonar Gaming Tournament  —  Dota 2';
+    $sub = 'Apex Cybernet Gaming Tournament  —  Dota 2';
     $bbox = imagettfbbox(22, 0, $font, $sub);
     $tx = ($w - ($bbox[2] - $bbox[0])) / 2;
     imagettftext($img, 22, 0, (int)$tx, 260, $muted, $font, $sub);
@@ -65,7 +65,7 @@ if ($has_font) {
     imagettftext($img, 18, 0, (int)$tx, 420, $gold, $font, $prize);
 
     // CTA button
-    $cta = 'Register Now  -  argonar.co';
+    $cta = 'Register Now  -  apexcybernet.com';
     $bbox = imagettfbbox(17, 0, $font, $cta);
     $cta_w = ($bbox[2] - $bbox[0]) + 60;
     $cta_x = ($w - $cta_w) / 2;
@@ -74,7 +74,7 @@ if ($has_font) {
     imagettftext($img, 17, 0, (int)$ttx, 485, $white, $font, $cta);
 
     // Brand
-    $brand = 'Argonar';
+    $brand = 'Apex Cybernet';
     $bbox = imagettfbbox(13, 0, $font, $brand);
     $tx = ($w - ($bbox[2] - $bbox[0])) / 2;
     imagettftext($img, 13, 0, (int)$tx, 590, $muted, $font, $brand);
@@ -84,7 +84,7 @@ if ($has_font) {
     $tx = ($w - strlen($title) * 13) / 2;
     imagestring($img, 5, (int)$tx, 250, $title, $accent);
 
-    $sub = 'Argonar Gaming Tournament - Dota 2 - argonar.co';
+    $sub = 'Apex Cybernet Gaming Tournament - Dota 2 - apexcybernet.com';
     $tx = ($w - strlen($sub) * 9) / 2;
     imagestring($img, 4, (int)$tx, 300, $sub, $muted);
 

@@ -26,12 +26,12 @@ $game_prefixes = [
 ];
 
 $game_name = $valid_games[$game_slug];
-$pageTitle = "Register Your Team — Argonar $game_name Tournament";
-$pageDescription = "Register your $game_name team for the Argonar Tournament. ₱250/team entry (50% OFF — was ₱500), 5-player team, cash prize TBD. Double elimination at PGL Ibabao, Mandaue, Cebu.";
+$pageTitle = "Register Your Team — Apex Cybernet $game_name Tournament";
+$pageDescription = "Register your $game_name team for the Apex Cybernet Tournament. ₱250/team entry (50% OFF — was ₱500), 5-player team, cash prize TBD. Double elimination at PGL Ibabao, Mandaue, Cebu.";
 $canonicalUrl = canonical_url('register.php?game=' . $game_slug);
 $extraHead = breadcrumb_jsonld([
-    ['name' => 'Home',          'url' => 'https://argonar.co/'],
-    ['name' => 'Register Team', 'url' => 'https://argonar.co/register.php?game=' . $game_slug],
+    ['name' => 'Home',          'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Register Team', 'url' => 'https://apexcybernet.com/register.php?game=' . $game_slug],
 ]);
 $errors = [];
 

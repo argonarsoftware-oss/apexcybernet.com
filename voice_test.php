@@ -9,7 +9,7 @@
 <html><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Argonar — Voice Diagnostic</title>
+<title>Apex Cybernet — Voice Diagnostic</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 body { background:#0a0a0f; color:#e5e7eb; font-family:'Inter',system-ui,sans-serif; padding:1.25rem; max-width:680px; margin:0 auto; line-height:1.5; }

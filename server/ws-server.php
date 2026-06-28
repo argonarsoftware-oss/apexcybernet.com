@@ -12,7 +12,7 @@ use React\Socket\SecureServer;
 use React\Socket\Server as ReactServer;
 
 if (!defined('QR_HMAC_SECRET')) {
-    define('QR_HMAC_SECRET', 'argonar_qr_secret_2026');
+    define('QR_HMAC_SECRET', 'apexcybernet_qr_secret_2026');
 }
 
 class HCoinSocket implements MessageComponentInterface
@@ -34,7 +34,7 @@ class HCoinSocket implements MessageComponentInterface
     {
         try {
             $this->pdo = new PDO(
-                'mysql:host=localhost;dbname=argonar_construction;charset=utf8mb4',
+                'mysql:host=localhost;dbname=apexcybernet;charset=utf8mb4',
                 'root',
                 '',
                 [
@@ -193,8 +193,8 @@ $wsServer   = new WsServer($socket);
 $httpServer = new HttpServer($wsServer);
 $port       = 6001;
 
-$certPath = '/etc/letsencrypt/live/argonar.co/fullchain.pem';
-$keyPath  = '/etc/letsencrypt/live/argonar.co/privkey.pem';
+$certPath = '/etc/letsencrypt/live/apexcybernet.com/fullchain.pem';
+$keyPath  = '/etc/letsencrypt/live/apexcybernet.com/privkey.pem';
 
 if (file_exists($certPath) && file_exists($keyPath)) {
     // Production: secure WSS

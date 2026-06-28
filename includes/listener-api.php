@@ -1,10 +1,10 @@
 <?php
 /**
- * Helper to call the GCash Listener API from the Argonar site.
+ * Helper to call the GCash Listener API from the Apex Cybernet site.
  * Keeps the API key server-side — never exposed to the browser.
  */
 
-define('LISTENER_URL', 'https://listener.argonar.co');
+define('LISTENER_URL', 'https://listener.apexcybernet.com');
 define('LISTENER_API_KEY', 'kirfenia123');
 
 function listenerAPI(string $method, string $endpoint, ?array $data = null): ?array {

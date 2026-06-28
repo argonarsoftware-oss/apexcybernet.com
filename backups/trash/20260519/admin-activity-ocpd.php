@@ -2,7 +2,7 @@
 $active_site = 'ocpd';
 $page_file   = 'activity-ocpd.php';
 require_once __DIR__ . '/../includes/db.php';
-$argonar_pdo = $pdo; // Preserve argonar_construction for Palantir + sidebar
+$apexcybernet_pdo = $pdo; // Preserve apexcybernet for Palantir + sidebar
 
 require_once __DIR__ . '/omni/auth.php'; // auth first — _load_env defined here
 
@@ -39,7 +39,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'session') {
     $sid = substr(preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['sid'] ?? ''), 0, 64);
     if (!$sid) { echo json_encode([]); exit; }
     try {
-        $st = $argonar_pdo->prepare("SELECT id, event_type, page_url, page_title, element_tag, element_text,
+        $st = $apexcybernet_pdo->prepare("SELECT id, event_type, page_url, page_title, element_tag, element_text,
             element_href, element_id, referrer, ip, screen_w, created_at
             FROM activity_logs WHERE session_id = ? AND site='ocpd' ORDER BY id ASC LIMIT 200");
         $st->execute([$sid]);
@@ -53,7 +53,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'live') {
     header('Content-Type: application/json');
     $after = max(0, (int)($_GET['after'] ?? 0));
     try {
-        $st = $argonar_pdo->prepare("SELECT id, session_id, account_id, display_name, event_type,
+        $st = $apexcybernet_pdo->prepare("SELECT id, session_id, account_id, display_name, event_type,
             page_url, page_title, element_tag, element_text, element_href, ip, created_at
             FROM activity_logs WHERE id > ? AND site='ocpd' ORDER BY id DESC LIMIT 30");
         $st->execute([$after]);
@@ -75,7 +75,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'retarget') {
     };
     if (!$url) { echo json_encode(['users'=>[],'guest_sessions'=>0]); exit; }
     try {
-        $st = $argonar_pdo->prepare("SELECT l.account_id, l.display_name, a.email,
+        $st = $apexcybernet_pdo->prepare("SELECT l.account_id, l.display_name, a.email,
             COUNT(*) AS visits, MAX(l.created_at) AS last_seen
             FROM activity_logs l
             LEFT JOIN accounts a ON a.id = l.account_id
@@ -87,7 +87,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'retarget') {
         $st->execute(['%' . $url . '%']);
         $users = $st->fetchAll(PDO::FETCH_ASSOC);
 
-        $gs = $argonar_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+        $gs = $apexcybernet_pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM activity_logs
             WHERE account_id IS NULL AND page_url LIKE ? AND site='ocpd' $date_c");
         $gs->execute(['%' . $url . '%']);
         $guest_sessions = (int)$gs->fetchColumn();
@@ -154,7 +154,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'fb_segment') {
     $rows = [];
     try {
         if ($seg === 'hot') {
-            $st = $argonar_pdo->query("SELECT DISTINCT l.session_id, l.ip, l.country, l.city, l.device_type, l.browser,
+            $st = $apexcybernet_pdo->query("SELECT DISTINCT l.session_id, l.ip, l.country, l.city, l.device_type, l.browser,
                 l.referrer, MAX(l.created_at) as last_seen, COUNT(*) as total_events
                 FROM activity_logs l
                 WHERE l.site = 'ocpd'
@@ -168,7 +168,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'fb_segment') {
                 ORDER BY last_seen DESC LIMIT 500");
             $rows = $st ? $st->fetchAll(PDO::FETCH_ASSOC) : [];
         } elseif ($seg === 'warm') {
-            $st = $argonar_pdo->query("SELECT session_id, ip, country, city, device_type, browser, referrer,
+            $st = $apexcybernet_pdo->query("SELECT session_id, ip, country, city, device_type, browser, referrer,
                 COUNT(*) as pricing_views, MAX(created_at) as last_seen
                 FROM activity_logs
                 WHERE site='ocpd' AND event_type='pageview'
@@ -179,7 +179,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'fb_segment') {
                 ORDER BY pricing_views DESC LIMIT 500");
             $rows = $st ? $st->fetchAll(PDO::FETCH_ASSOC) : [];
         } elseif ($seg === 'seed') {
-            $st = $argonar_pdo->query("SELECT session_id, ip, country, city, device_type, browser, referrer,
+            $st = $apexcybernet_pdo->query("SELECT session_id, ip, country, city, device_type, browser, referrer,
                 COUNT(*) as events, MAX(created_at) as last_seen
                 FROM activity_logs
                 WHERE site='ocpd' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
@@ -223,7 +223,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
         '30d'   => "AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)",
         default => "",
     };
-    $ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $argonar_pdo->quote($event_filter) : "";
+    $ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $apexcybernet_pdo->quote($event_filter) : "";
     $uf_cond = match($user_filter) {
         'loggedin' => "AND account_id IS NOT NULL",
         'guest'    => "AND account_id IS NULL",
@@ -240,7 +240,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     $out = fopen('php://output', 'w');
     fputcsv($out, ['ID','Time','Type','Session','User','Display Name','Page URL','Page Title','Element','Href','Referrer','IP','Screen W']);
     try {
-        $st = $argonar_pdo->prepare("SELECT id, created_at, event_type, session_id, account_id, display_name,
+        $st = $apexcybernet_pdo->prepare("SELECT id, created_at, event_type, session_id, account_id, display_name,
             page_url, page_title, element_text, element_href, referrer, ip, screen_w
             FROM activity_logs $where ORDER BY id DESC LIMIT 50000");
         $st->execute($params);
@@ -279,7 +279,7 @@ $prev_cond = match($date_range) {
     '30d'   => "AND created_at >= DATE_SUB(NOW(), INTERVAL 60 DAY) AND created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)",
     default => "AND 1=0",
 };
-$ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $argonar_pdo->quote($event_filter) : "";
+$ev_cond = ($event_filter !== 'all') ? "AND event_type = " . $apexcybernet_pdo->quote($event_filter) : "";
 $uf_cond = match($user_filter) {
     'loggedin' => "AND account_id IS NOT NULL",
     'guest'    => "AND account_id IS NULL",
@@ -294,12 +294,12 @@ if ($search !== '') {
 }
 
 // ── Sidebar quick-stats ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
@@ -316,14 +316,14 @@ try {
 // Sub-panel A: Booking Funnel
 $fb_funnel = ['awareness'=>0,'interest'=>0,'intent'=>0,'conversion'=>0];
 try {
-    $fb_funnel['awareness'] = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+    $fb_funnel['awareness'] = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
         WHERE site='ocpd' AND event_type='pageview'
         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-    $fb_funnel['interest'] = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+    $fb_funnel['interest'] = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
         WHERE site='ocpd' AND event_type='pageview'
         AND (page_url LIKE '%price%' OR page_url LIKE '%package%' OR page_url LIKE '%rate%' OR page_url LIKE '%about%')
         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
-    $fb_funnel['intent'] = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+    $fb_funnel['intent'] = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
         WHERE site='ocpd' AND event_type='pageview'
         AND (page_url LIKE '%book%' OR page_url LIKE '%reserv%' OR page_url LIKE '%contact%')
         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)")->fetchColumn();
@@ -342,7 +342,7 @@ $fb_conversion_pct = round($fb_funnel['conversion'] / $fb_awareness * 100, 1);
 // Sub-panel B: Retargeting segment counts
 $fb_seg_counts = ['hot'=>0,'warm'=>0,'seed'=>0];
 try {
-    $fb_seg_counts['hot'] = (int)$argonar_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
+    $fb_seg_counts['hot'] = (int)$apexcybernet_pdo->query("SELECT COUNT(DISTINCT session_id) FROM activity_logs
         WHERE site='ocpd' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
         AND session_id IN (
           SELECT DISTINCT session_id FROM activity_logs
@@ -351,7 +351,7 @@ try {
         )")->fetchColumn();
 } catch (Exception $e) {}
 try {
-    $fb_seg_counts['warm'] = (int)$argonar_pdo->query("SELECT COUNT(*) FROM (
+    $fb_seg_counts['warm'] = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM (
         SELECT session_id FROM activity_logs
         WHERE site='ocpd' AND event_type='pageview'
         AND (page_url LIKE '%price%' OR page_url LIKE '%package%' OR page_url LIKE '%rate%')
@@ -359,7 +359,7 @@ try {
         GROUP BY session_id HAVING COUNT(*) >= 2) t")->fetchColumn();
 } catch (Exception $e) {}
 try {
-    $fb_seg_counts['seed'] = (int)$argonar_pdo->query("SELECT COUNT(*) FROM (
+    $fb_seg_counts['seed'] = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM (
         SELECT session_id FROM activity_logs
         WHERE site='ocpd' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
         GROUP BY session_id HAVING COUNT(*) >= 3) t")->fetchColumn();
@@ -372,7 +372,7 @@ foreach (['hot','warm','seed'] as $seg) {
     try {
         $field = $seg === 'hot' ? 'total_events' : ($seg === 'warm' ? 'pricing_views' : 'ev');
         if ($seg === 'hot') {
-            $qr = $argonar_pdo->query("SELECT country, COUNT(*) as n FROM activity_logs
+            $qr = $apexcybernet_pdo->query("SELECT country, COUNT(*) as n FROM activity_logs
                 WHERE site='ocpd' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                 AND session_id IN (SELECT DISTINCT session_id FROM activity_logs WHERE site='ocpd'
                   AND (page_url LIKE '%book%' OR page_url LIKE '%reserv%' OR page_url LIKE '%contact%')
@@ -380,7 +380,7 @@ foreach (['hot','warm','seed'] as $seg) {
                 AND country IS NOT NULL GROUP BY country ORDER BY n DESC LIMIT 1");
             $r = $qr ? $qr->fetch() : null;
             if ($r) $profile['top_country'] = $r['country'];
-            $qr2 = $argonar_pdo->query("SELECT device_type, COUNT(*) as n FROM activity_logs
+            $qr2 = $apexcybernet_pdo->query("SELECT device_type, COUNT(*) as n FROM activity_logs
                 WHERE site='ocpd' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                 AND session_id IN (SELECT DISTINCT session_id FROM activity_logs WHERE site='ocpd'
                   AND (page_url LIKE '%book%' OR page_url LIKE '%reserv%' OR page_url LIKE '%contact%')
@@ -389,14 +389,14 @@ foreach (['hot','warm','seed'] as $seg) {
             $r2 = $qr2 ? $qr2->fetch() : null;
             if ($r2) $profile['top_device'] = $r2['device_type'];
         } elseif ($seg === 'warm') {
-            $qr = $argonar_pdo->query("SELECT country, COUNT(*) as n FROM activity_logs
+            $qr = $apexcybernet_pdo->query("SELECT country, COUNT(*) as n FROM activity_logs
                 WHERE site='ocpd' AND event_type='pageview'
                 AND (page_url LIKE '%price%' OR page_url LIKE '%package%' OR page_url LIKE '%rate%')
                 AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                 AND country IS NOT NULL GROUP BY country ORDER BY n DESC LIMIT 1");
             $r = $qr ? $qr->fetch() : null;
             if ($r) $profile['top_country'] = $r['country'];
-            $qr2 = $argonar_pdo->query("SELECT device_type, COUNT(*) as n FROM activity_logs
+            $qr2 = $apexcybernet_pdo->query("SELECT device_type, COUNT(*) as n FROM activity_logs
                 WHERE site='ocpd' AND event_type='pageview'
                 AND (page_url LIKE '%price%' OR page_url LIKE '%package%' OR page_url LIKE '%rate%')
                 AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
@@ -404,12 +404,12 @@ foreach (['hot','warm','seed'] as $seg) {
             $r2 = $qr2 ? $qr2->fetch() : null;
             if ($r2) $profile['top_device'] = $r2['device_type'];
         } else {
-            $qr = $argonar_pdo->query("SELECT country, COUNT(*) as n FROM activity_logs
+            $qr = $apexcybernet_pdo->query("SELECT country, COUNT(*) as n FROM activity_logs
                 WHERE site='ocpd' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                 AND country IS NOT NULL GROUP BY country ORDER BY n DESC LIMIT 1");
             $r = $qr ? $qr->fetch() : null;
             if ($r) $profile['top_country'] = $r['country'];
-            $qr2 = $argonar_pdo->query("SELECT device_type, COUNT(*) as n FROM activity_logs
+            $qr2 = $apexcybernet_pdo->query("SELECT device_type, COUNT(*) as n FROM activity_logs
                 WHERE site='ocpd' AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                 AND device_type IS NOT NULL GROUP BY device_type ORDER BY n DESC LIMIT 1");
             $r2 = $qr2 ? $qr2->fetch() : null;
@@ -422,7 +422,7 @@ foreach (['hot','warm','seed'] as $seg) {
 // Sub-panel C: Ad Timing Heatmap
 $fb_heatmap = [];
 try {
-    $st = $argonar_pdo->query("SELECT HOUR(created_at) as hr, DAYOFWEEK(created_at) as dow,
+    $st = $apexcybernet_pdo->query("SELECT HOUR(created_at) as hr, DAYOFWEEK(created_at) as dow,
         COUNT(DISTINCT session_id) as sessions
         FROM activity_logs
         WHERE site='ocpd' AND event_type='pageview'
@@ -452,7 +452,7 @@ $dow_names = [1=>'Sun',2=>'Mon',3=>'Tue',4=>'Wed',5=>'Thu',6=>'Fri',7=>'Sat'];
 // Sub-panel D: Ad Copy Suggestions
 $fb_top_clicks = [];
 try {
-    $st = $argonar_pdo->query("SELECT COALESCE(NULLIF(element_text,''), element_href, '?') as label, COUNT(*) as clicks
+    $st = $apexcybernet_pdo->query("SELECT COALESCE(NULLIF(element_text,''), element_href, '?') as label, COUNT(*) as clicks
         FROM activity_logs
         WHERE site='ocpd' AND event_type='click'
         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
@@ -463,7 +463,7 @@ try {
 
 $fb_top_pages = [];
 try {
-    $st = $argonar_pdo->query("SELECT page_url, ROUND(AVG(time_on_page)) as avg_sec, COUNT(*) as cnt
+    $st = $apexcybernet_pdo->query("SELECT page_url, ROUND(AVG(time_on_page)) as avg_sec, COUNT(*) as cnt
         FROM activity_logs
         WHERE site='ocpd' AND event_type='timeonpage'
         AND time_on_page > 0 AND time_on_page < 3600
@@ -474,7 +474,7 @@ try {
 
 $fb_top_refs = [];
 try {
-    $st = $argonar_pdo->query("SELECT REGEXP_REPLACE(referrer, '^https?://(www\\.)?([^/]+).*', '\\\\2') as src,
+    $st = $apexcybernet_pdo->query("SELECT REGEXP_REPLACE(referrer, '^https?://(www\\.)?([^/]+).*', '\\\\2') as src,
         COUNT(DISTINCT session_id) as sessions
         FROM activity_logs
         WHERE site='ocpd' AND referrer IS NOT NULL AND referrer != ''
@@ -602,7 +602,7 @@ $fv_colors = [
     'TikTok'        => '#f87171',
     'YouTube'       => '#fbbf24',
     'Direct / None' => '#9ca3af',
-    'Argonar'       => '#a78bfa',
+    'Apex Cybernet'       => '#a78bfa',
     'Twitter / X'   => '#38bdf8',
     'Friend'        => '#fb923c',
     'Word of Mouth' => '#fb923c',
@@ -1255,7 +1255,7 @@ Don't wait — your spot won't be there tomorrow.</div>
             stripos($fv['source'],'twitter')   !== false => 'bi-twitter-x',
             stripos($fv['source'],'friend')    !== false,
             stripos($fv['source'],'word')      !== false => 'bi-people-fill',
-            stripos($fv['source'],'argonar')   !== false => 'bi-controller',
+            stripos($fv['source'],'apexcybernet')   !== false => 'bi-controller',
             stripos($fv['source'],'not spec')  !== false => 'bi-question-circle',
             default => 'bi-globe',
         };

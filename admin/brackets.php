@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/pusher.php';
 define('HOUSE_ACCOUNT_ID', 1);
 
 // Token-based login
-if (isset($_GET['token']) && $_GET['token'] === 'argonar-admin-2026-token') {
+if (isset($_GET['token']) && $_GET['token'] === 'apexcybernet-admin-2026-token') {
     $_SESSION['admin_logged_in'] = true;
 }
 
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'admin_credit', ?)")
                     ->execute([$rp['account_id'], $rp['wager'], 'predict_refund:' . $rp['id']]);
                 $rpBal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = {$rp['account_id']}")->fetchColumn();
-                hc_push($pdo, (int)$rp['account_id'], (int)$rp['wager'], 'Argonar (predict refund)', $rpBal, 'predict_refund');
+                hc_push($pdo, (int)$rp['account_id'], (int)$rp['wager'], 'Apex Cybernet (predict refund)', $rpBal, 'predict_refund');
                 $pdo->prepare("DELETE FROM match_predictions WHERE id = ?")->execute([$rp['id']]);
                 try {
                     $pdo->prepare("INSERT INTO user_notifications (account_id, title, message, icon, link) VALUES (?, ?, ?, ?, ?)")
@@ -590,7 +590,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$payout, $pred['account_id']]);
                             $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'match_win', ?)")->execute([$pred['account_id'], $payout, (string)$match_id]);
                             $winBal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = {$pred['account_id']}")->fetchColumn();
-                            hc_push($pdo, (int)$pred['account_id'], $payout, 'Argonar (match win)', $winBal, 'match_win');
+                            hc_push($pdo, (int)$pred['account_id'], $payout, 'Apex Cybernet (match win)', $winBal, 'match_win');
                             $pdo->prepare("UPDATE match_predictions SET status = 'won' WHERE id = ?")->execute([$pred['id']]);
                         } else {
                             $pdo->prepare("UPDATE match_predictions SET status = 'lost' WHERE id = ?")->execute([$pred['id']]);
@@ -627,7 +627,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$payout, $pred['account_id']]);
                             $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'match_win', ?)")->execute([$pred['account_id'], $payout, 'futures:' . $match_id]);
                             $winBal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = {$pred['account_id']}")->fetchColumn();
-                            hc_push($pdo, (int)$pred['account_id'], $payout, 'Argonar (futures win)', $winBal, 'futures_win');
+                            hc_push($pdo, (int)$pred['account_id'], $payout, 'Apex Cybernet (futures win)', $winBal, 'futures_win');
                             $pdo->prepare("UPDATE match_predictions SET status = 'won' WHERE id = ?")->execute([$pred['id']]);
                         } else {
                             $pdo->prepare("UPDATE match_predictions SET status = 'lost' WHERE id = ?")->execute([$pred['id']]);
@@ -718,7 +718,7 @@ foreach ($valid_games as $slug => $name) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bracket Management — Argonar Tournament</title>
+    <title>Bracket Management — Apex Cybernet Tournament</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

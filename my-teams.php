@@ -14,7 +14,7 @@ ensure_team_recruiting_column($pdo);
 $captained = teams_captained_by($pdo, (int)$current['id']);
 $claimable = teams_claimable_by($pdo, (int)$current['id']);
 
-$pageTitle = 'My Teams — Argonar';
+$pageTitle = 'My Teams — Apex Cybernet';
 $pageDescription = 'Manage the teams you captain: recruit toggles, roster, and tournament registration autofill.';
 $canonicalUrl = canonical_url('my-teams.php');
 

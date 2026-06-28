@@ -82,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $current) {
     }
 }
 
-$pageTitle       = 'Timeline — Argonar';
-$pageDescription = 'The community feed for Argonar players.';
+$pageTitle       = 'Timeline — Apex Cybernet';
+$pageDescription = 'The community feed for Apex Cybernet players.';
 $canonicalUrl    = canonical_url('timeline.php');
 
 // ── Load posts ──
@@ -142,10 +142,10 @@ function tl_time_ago(string $dt): string {
 
 require_once __DIR__ . '/includes/header.php';
 
-// ── Fetch pinned shortcuts (Argonar + HIDE OUT + current user's team if they have one) ──
+// ── Fetch pinned shortcuts (Apex Cybernet + HIDE OUT + current user's team if they have one) ──
 $tl_shortcuts = [];
 try {
-    $sc = $pdo->prepare("SELECT id, display_name, profile_picture, ref_type, ref_code, is_verified FROM accounts WHERE display_name IN ('Argonar','HIDE OUT') AND claim_status='approved' ORDER BY CASE display_name WHEN 'Argonar' THEN 0 WHEN 'HIDE OUT' THEN 1 ELSE 2 END");
+    $sc = $pdo->prepare("SELECT id, display_name, profile_picture, ref_type, ref_code, is_verified FROM accounts WHERE display_name IN ('Apex Cybernet','HIDE OUT') AND claim_status='approved' ORDER BY CASE display_name WHEN 'Apex Cybernet' THEN 0 WHEN 'HIDE OUT' THEN 1 ELSE 2 END");
     $sc->execute();
     $tl_shortcuts = $sc->fetchAll();
 } catch (Exception $e) {}
@@ -373,7 +373,7 @@ $tl_hc_shown = true;
         <div class="tl-hero-ico"><i class="bi bi-activity"></i></div>
         <div class="tl-hero-txt">
             <div class="tl-hero-title">Timeline</div>
-            <div class="tl-hero-sub">Share updates, hype, and highlights with the Argonar community.</div>
+            <div class="tl-hero-sub">Share updates, hype, and highlights with the Apex Cybernet community.</div>
         </div>
     </div>
 
@@ -415,7 +415,7 @@ $tl_hc_shown = true;
     <div class="tl-empty">
         <i class="bi bi-chat-square-dots"></i>
         <h4>No posts yet</h4>
-        <p>Be the first to share something with the Argonar community!</p>
+        <p>Be the first to share something with the Apex Cybernet community!</p>
     </div>
     <?php endif; ?>
 

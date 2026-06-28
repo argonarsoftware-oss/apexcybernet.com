@@ -15,17 +15,17 @@ $game_icons = [
 ];
 
 $game = isset($_GET['game']) ? ($_GET['game'] ?: null) : 'dota2';
-$pageTitle = 'Tournament Brackets — Argonar';
-$pageDescription = 'Live double-elimination brackets for the Argonar Tournament — winners bracket, losers bracket, grand finals, real-time match updates and scores.';
+$pageTitle = 'Tournament Brackets — Apex Cybernet';
+$pageDescription = 'Live double-elimination brackets for the Apex Cybernet Tournament — winners bracket, losers bracket, grand finals, real-time match updates and scores.';
 $canonicalUrl = canonical_url('bracket.php');
 $extraHead = breadcrumb_jsonld([
-    ['name' => 'Home',             'url' => 'https://argonar.co/'],
-    ['name' => 'Tournament Bracket','url' => 'https://argonar.co/bracket.php'],
+    ['name' => 'Home',             'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Tournament Bracket','url' => 'https://apexcybernet.com/bracket.php'],
 ]);
 
 $autoRefresh = false;
 if ($game && isset($valid_games[$game])) {
-    $pageTitle = $valid_games[$game] . ' Bracket — Argonar Tournament';
+    $pageTitle = $valid_games[$game] . ' Bracket — Apex Cybernet Tournament';
     $stmt = $pdo->prepare("SELECT * FROM matches WHERE game = ? ORDER BY bracket_side ASC, round ASC, match_order ASC");
     $stmt->execute([$game]);
     $matches = $stmt->fetchAll();

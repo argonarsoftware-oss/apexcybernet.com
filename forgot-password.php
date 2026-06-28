@@ -25,7 +25,7 @@ try {
 } catch (Exception $e) {}
 
 $pageTitle = 'Reset Password';
-$pageDescription = 'Reset your Argonar account password.';
+$pageDescription = 'Reset your Apex Cybernet account password.';
 $sent = false;
 $errors = [];
 
@@ -55,24 +55,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $name      = htmlspecialchars($account['display_name'] ?: 'there');
 
                 $html = '<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;padding:1.5rem;color:#222;">'
-                      . '<h2 style="color:#7c3aed;margin:0 0 1rem;">Reset your Argonar password</h2>'
+                      . '<h2 style="color:#7c3aed;margin:0 0 1rem;">Reset your Apex Cybernet password</h2>'
                       . '<p>Hi ' . $name . ',</p>'
-                      . '<p>Someone (hopefully you) asked to reset the password on your Argonar account. Click the button below to set a new password. This link is good for <strong>1 hour</strong>.</p>'
+                      . '<p>Someone (hopefully you) asked to reset the password on your Apex Cybernet account. Click the button below to set a new password. This link is good for <strong>1 hour</strong>.</p>'
                       . '<p style="margin:1.5rem 0;text-align:center;">'
                       . '<a href="' . htmlspecialchars($reset_url) . '" style="background:#7c3aed;color:#fff;text-decoration:none;padding:0.75rem 1.5rem;border-radius:8px;font-weight:700;display:inline-block;">Reset password</a>'
                       . '</p>'
                       . '<p style="font-size:0.8rem;color:#666;">Or paste this link into your browser:<br><code style="word-break:break-all;background:#f3f4f6;padding:0.25rem 0.45rem;border-radius:4px;">' . htmlspecialchars($reset_url) . '</code></p>'
                       . '<hr style="border:none;border-top:1px solid #eee;margin:1.5rem 0;">'
                       . '<p style="font-size:0.75rem;color:#999;">If you didn\'t request this, you can ignore this email — your password won\'t change. For your security, do not share this link with anyone.</p>'
-                      . '<p style="font-size:0.75rem;color:#999;">— Argonar</p>'
+                      . '<p style="font-size:0.75rem;color:#999;">— Apex Cybernet</p>'
                       . '</div>';
 
                 $text = "Hi " . ($account['display_name'] ?: 'there') . ",\n\n"
-                      . "Someone asked to reset the password on your Argonar account. Use this link to set a new password (valid for 1 hour):\n\n"
+                      . "Someone asked to reset the password on your Apex Cybernet account. Use this link to set a new password (valid for 1 hour):\n\n"
                       . $reset_url . "\n\n"
-                      . "If you didn't request this, you can ignore this email.\n\n— Argonar";
+                      . "If you didn't request this, you can ignore this email.\n\n— Apex Cybernet";
 
-                send_email($account['email'], 'Reset your Argonar password', $html, $text);
+                send_email($account['email'], 'Reset your Apex Cybernet password', $html, $text);
             }
         }
         // Always show success (don't leak whether email exists).
@@ -90,14 +90,14 @@ require_once __DIR__ . '/includes/header.php';
 
     <div class="reg-card">
         <h2><i class="bi bi-key"></i> Forgot password</h2>
-        <p class="subtitle">Enter the email on your Argonar account — we'll send you a reset link.</p>
+        <p class="subtitle">Enter the email on your Apex Cybernet account — we'll send you a reset link.</p>
 
         <?php if ($sent): ?>
             <div style="background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:1.25rem; text-align:center; margin-top:1rem;">
                 <i class="bi bi-envelope-check-fill" style="color:var(--success); font-size:1.8rem;"></i>
                 <div style="font-weight:700; color:var(--success); margin-top:0.5rem;">Check your inbox</div>
                 <div style="font-size:0.85rem; color:var(--text-muted); margin-top:0.4rem; line-height:1.5;">
-                    If that email is on an Argonar account, a reset link is on the way. The link is good for 1 hour.<br>
+                    If that email is on an Apex Cybernet account, a reset link is on the way. The link is good for 1 hour.<br>
                     Didn't get it? Check spam, or try again in 2 minutes.
                 </div>
                 <a href="<?= base_url('login.php') ?>" class="btn-submit" style="margin-top:1rem; display:inline-flex;">

@@ -70,7 +70,7 @@ document.querySelectorAll('.ann-color-swatch').forEach(function(swatch) {
 
 // Chart.js plugin: vertical dashed annotation lines
 window._annotationPlugin = {
-    id: 'argonarAnnotations',
+    id: 'apexcybernetAnnotations',
     afterDraw: function(chart) {
         const ann = window._chartAnnotations || [];
         if (!ann.length) return;

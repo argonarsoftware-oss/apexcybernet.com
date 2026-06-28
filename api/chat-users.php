@@ -31,8 +31,8 @@ try {
             $params[] = '%' . $search . '%';
         }
         $sql .= " ORDER BY
-            CASE WHEN a.display_name IN ('Argonar','HIDE OUT') THEN 0 ELSE 1 END ASC,
-            CASE a.display_name WHEN 'Argonar' THEN 0 WHEN 'HIDE OUT' THEN 1 ELSE 2 END ASC,
+            CASE WHEN a.display_name IN ('Apex Cybernet','HIDE OUT') THEN 0 ELSE 1 END ASC,
+            CASE a.display_name WHEN 'Apex Cybernet' THEN 0 WHEN 'HIDE OUT' THEN 1 ELSE 2 END ASC,
             CASE WHEN (SELECT MAX(id) FROM chat_messages WHERE (sender_id = ? AND recipient_id = a.id) OR (sender_id = a.id AND recipient_id = ?)) IS NULL THEN 1 ELSE 0 END ASC,
             (SELECT MAX(id) FROM chat_messages WHERE (sender_id = ? AND recipient_id = a.id) OR (sender_id = a.id AND recipient_id = ?)) DESC,
             a.is_verified DESC,
@@ -64,8 +64,8 @@ try {
             $params[] = '%' . $search . '%';
         }
         $sql .= " ORDER BY
-            CASE WHEN a.display_name IN ('Argonar','HIDE OUT') THEN 0 ELSE 1 END ASC,
-            CASE a.display_name WHEN 'Argonar' THEN 0 WHEN 'HIDE OUT' THEN 1 ELSE 2 END ASC,
+            CASE WHEN a.display_name IN ('Apex Cybernet','HIDE OUT') THEN 0 ELSE 1 END ASC,
+            CASE a.display_name WHEN 'Apex Cybernet' THEN 0 WHEN 'HIDE OUT' THEN 1 ELSE 2 END ASC,
             a.is_verified DESC, a.display_name ASC LIMIT 100";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);

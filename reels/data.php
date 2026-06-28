@@ -64,7 +64,7 @@ echo json_encode([
     'slots_used'       => $total_slots_used,
     'slots_remaining'  => max(0, $MAX_SLOTS - $total_slots_used),
     'tournament' => [
-        'name'              => 'Argonar Dota 2 Tournament',
+        'name'              => 'Apex Cybernet Dota 2 Tournament',
         'date'              => '2026-04-19',
         'registration_end'  => '2026-04-19',
         'call_time'         => '12:00 PM',
@@ -75,6 +75,6 @@ echo json_encode([
         'format'            => '5v5 Double Elimination',
         'entry_fee_team'    => "\u{20B1}250/team (50% OFF)",
         'entry_fee_solo'    => "\u{20B1}50/solo (50% OFF)",
-        'url'               => 'https://argonar.co',
+        'url'               => 'https://apexcybernet.com',
     ],
 ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);

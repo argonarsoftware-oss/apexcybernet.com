@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin_username'])) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Omniscient Manual — Argonar</title>
+<title>Omniscient Manual — Apex Cybernet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -203,8 +203,8 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; 
         <h2>Overview</h2>
     </div>
     <div class="prose">
-        <p>Omniscient is a first-party analytics system built into Argonar. It tracks every visitor interaction — page views, clicks, scroll depth, time on page, JS errors, and load times — across all three businesses from a single dashboard without relying on Google Analytics or any third-party tool.</p>
-        <p>All data is stored in <code>activity_logs</code> on the Argonar server. The tracker runs as a tiny JavaScript snippet injected into each site's footer and batches events to <code>/api/track.php</code> via <code>navigator.sendBeacon</code> so it never blocks page loads.</p>
+        <p>Omniscient is a first-party analytics system built into Apex Cybernet. It tracks every visitor interaction — page views, clicks, scroll depth, time on page, JS errors, and load times — across all three businesses from a single dashboard without relying on Google Analytics or any third-party tool.</p>
+        <p>All data is stored in <code>activity_logs</code> on the Apex Cybernet server. The tracker runs as a tiny JavaScript snippet injected into each site's footer and batches events to <code>/api/track.php</code> via <code>navigator.sendBeacon</code> so it never blocks page loads.</p>
     </div>
     <div class="feature-grid">
         <div class="feature-card">
@@ -220,7 +220,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; 
         <div class="feature-card">
             <div class="fc-icon">🌐</div>
             <div class="fc-title">Cross-site</div>
-            <div class="fc-desc">Argonar, OCPD, and Loan Management all beam into one database.</div>
+            <div class="fc-desc">Apex Cybernet, OCPD, and Loan Management all beam into one database.</div>
         </div>
         <div class="feature-card">
             <div class="fc-icon">🧩</div>
@@ -239,7 +239,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; 
     <div class="prose">
         <p>The left sidebar lists the three tracked businesses. Click any of them to switch the entire dashboard — all metrics, charts, and Palantir panels — to that site's data.</p>
         <ul>
-            <li><strong style="color:#a78bfa;">A — Argonar</strong> · argonar.co — tournament platform</li>
+            <li><strong style="color:#a78bfa;">A — Apex Cybernet</strong> · apexcybernet.com — tournament platform</li>
             <li><strong style="color:#38bdf8;">O — OCPD</strong> · oslobcebuparagliding.com — paragliding club</li>
             <li><strong style="color:#c4b5fd;">L — Loan</strong> · argonarsoftware.com — loan management SaaS</li>
         </ul>
@@ -354,7 +354,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; 
         <p>Pre-configured funnels:</p>
         <ul>
             <li><strong>Loan conversion</strong> — Landing → Register → Dashboard (loan site)</li>
-            <li><strong>Argonar registration</strong> — Home → Register → Success (argonar)</li>
+            <li><strong>Apex Cybernet registration</strong> — Home → Register → Success (apexcybernet)</li>
             <li><strong>OCPD booking</strong> — Home → Book → Confirm (ocpd)</li>
         </ul>
         <p>Each step shows an absolute count and a % drop-off from the previous step. A 90% drop between step 1 and step 2 means almost nobody scrolls past the landing page — that page needs work.</p>

@@ -24,7 +24,7 @@ const MS_FRAME = 1000 / FPS;
 const args    = process.argv.slice(2);
 const getArg  = (flag) => { const i = args.indexOf(flag); return i !== -1 ? args[i + 1] : null; };
 
-const DATA_URL  = getArg('--data-url') || 'https://argonar.co/reels/data.php';
+const DATA_URL  = getArg('--data-url') || 'https://apexcybernet.com/reels/data.php';
 const HTML_FILE = getArg('--html')     || 'reel-urgency.html';
 const AUDIO     = getArg('--audio')    || 'C:\\Users\\kirfenia\\Downloads\\TheFatRat & Anjulie - Close To The Sun (1).mp3';
 
@@ -50,7 +50,7 @@ function fetchJson(url) {
 
 (async () => {
     console.log('╔══════════════════════════════════════╗');
-    console.log('║      Argonar Reel Recorder v3        ║');
+    console.log('║      Apex Cybernet Reel Recorder v3        ║');
     console.log('╚══════════════════════════════════════╝');
     console.log(`   HTML  : ${HTML_FILE}`);
     console.log(`   Data  : ${DATA_URL}\n`);

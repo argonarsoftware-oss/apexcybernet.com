@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install + configure coturn (TURN server) on the Argonar VPS.
+# Install + configure coturn (TURN server) on the Apex Cybernet VPS.
 # Run as root. Idempotent — safe to re-run.
 set -e
 
@@ -33,13 +33,13 @@ if [ -z "$PUBLIC_IP" ]; then PUBLIC_IP=$(hostname -I | awk '{print $1}'); fi
 echo "    public IP detected: $PUBLIC_IP"
 
 cat > /etc/turnserver.conf <<EOF
-# Argonar coturn config — auto-generated, safe to edit
+# Apex Cybernet coturn config — auto-generated, safe to edit
 listening-port=3478
 fingerprint
 lt-cred-mech
 use-auth-secret
 static-auth-secret=$SECRET
-realm=argonar.co
+realm=apexcybernet.com
 total-quota=100
 stale-nonce=600
 no-tls

@@ -4,10 +4,10 @@ require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/bracket_logic.php';
 
 // SEO: collapse /index.php → / so Google stops flagging a duplicate canonical
-if (($_SERVER['HTTP_HOST'] ?? '') === 'argonar.co'
+if (($_SERVER['HTTP_HOST'] ?? '') === 'apexcybernet.com'
     && strpos($_SERVER['REQUEST_URI'] ?? '', '/index.php') === 0) {
     $qs = $_SERVER['QUERY_STRING'] ?? '';
-    header('Location: https://argonar.co/' . ($qs !== '' ? '?' . $qs : ''), true, 301);
+    header('Location: https://apexcybernet.com/' . ($qs !== '' ? '?' . $qs : ''), true, 301);
     exit;
 }
 
@@ -81,9 +81,9 @@ if (isset($_GET['ajax'])) {
 $home_user = current_user($pdo);
 
 
-$pageTitle = 'Argonar Tournament';
-$canonicalUrl = 'https://argonar.co/';
-$pageDescription = 'Join the Argonar Gaming Tournament! Dota 2 5v5. Cash prize TBD. ₱500/team · ₱100/solo entry. Register your team or enter solo.';
+$pageTitle = 'Apex Cybernet Tournament';
+$canonicalUrl = 'https://apexcybernet.com/';
+$pageDescription = 'Join the Apex Cybernet Gaming Tournament! Dota 2 5v5. Cash prize TBD. ₱500/team · ₱100/solo entry. Register your team or enter solo.';
 
 // Count registered teams per game
 $counts = [];
@@ -244,7 +244,7 @@ $dota_reg_closed = strtotime($dota_deadline . ' 23:59:59') < time();
 $extraHead = '<script type="application/ld+json">' . json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'Event',
-    'name' => 'Argonar Gaming Tournament — Dota 2',
+    'name' => 'Apex Cybernet Gaming Tournament — Dota 2',
     'description' => 'Dota 2 esports tournament with cash prize to be announced. Double elimination, rank-based seeding.',
     'startDate' => '2026-05-30',
     'eventStatus' => 'https://schema.org/EventScheduled',
@@ -263,14 +263,14 @@ $extraHead = '<script type="application/ld+json">' . json_encode([
     ],
     'organizer' => [
         '@type' => 'Organization',
-        'name' => 'Argonar Software OPC',
-        'url' => 'https://argonar.co',
+        'name' => 'Apex Cybernet',
+        'url' => 'https://apexcybernet.com',
     ],
     'offers' => [
-        ['@type' => 'Offer', 'name' => 'Team Registration (50% OFF)', 'price' => '250', 'priceCurrency' => 'PHP', 'url' => 'https://argonar.co/register.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
-        ['@type' => 'Offer', 'name' => 'Solo Entry (50% OFF)', 'price' => '50', 'priceCurrency' => 'PHP', 'url' => 'https://argonar.co/matchmaking.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
+        ['@type' => 'Offer', 'name' => 'Team Registration (50% OFF)', 'price' => '250', 'priceCurrency' => 'PHP', 'url' => 'https://apexcybernet.com/register.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
+        ['@type' => 'Offer', 'name' => 'Solo Entry (50% OFF)', 'price' => '50', 'priceCurrency' => 'PHP', 'url' => 'https://apexcybernet.com/matchmaking.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
     ],
-    'image' => 'https://argonar.co/og-image.php',
+    'image' => 'https://apexcybernet.com/og-image.php',
 ], JSON_UNESCAPED_SLASHES) . '</script>';
 
 $games = [
@@ -879,7 +879,7 @@ body > .hero,
                 </svg>
             </div>
             <div>
-                <div class="he-brand-name">Argonar</div>
+                <div class="he-brand-name">Apex Cybernet</div>
                 <div class="he-brand-tag">Tournament · S2</div>
             </div>
         </a>
@@ -898,7 +898,7 @@ body > .hero,
         Season 2 · Registration open
     </span>
     <h1 class="he-headline">
-        Fight for glory in the<br><em>Argonar Dota 2 Tournament.</em>
+        Fight for glory in the<br><em>Apex Cybernet Dota 2 Tournament.</em>
     </h1>
     <p class="he-sub">
         12 teams. Double elimination. One champion. May 30, 2026 at PGL Ibabao, Mandaue —
@@ -984,7 +984,7 @@ body > .hero,
             <div style="font-size:14px; color:var(--text-muted);">Cash prize · winner takes all</div>
             <div class="he-prize-foot">
                 Paid out via GCash to the team captain within 7 days of the finals. Champions also get
-                their name etched in the Argonar Hall of Fame on the leaderboard page.
+                their name etched in the Apex Cybernet Hall of Fame on the leaderboard page.
             </div>
         </div>
         <div class="he-prize-side">
@@ -1257,8 +1257,8 @@ $dota_all_paid = $dota_paid_in_main >= 16;
 <div style="max-width:1000px; margin:0 auto 1rem; padding:0 1rem; text-align:center;">
     <div style="background:rgba(124,58,237,0.08); border:1px solid rgba(124,58,237,0.25); border-radius:10px; padding:0.6rem 1rem; font-size:0.8rem; color:var(--text-muted);">
         <i class="bi bi-building" style="color:var(--accent-light);"></i>
-        This event is officially organized by <strong style="color:var(--accent-light);">Argonar</strong>.
-        All rules, penalties, and final decisions are under the authority of Argonar.
+        This event is officially organized by <strong style="color:var(--accent-light);">Apex Cybernet</strong>.
+        All rules, penalties, and final decisions are under the authority of Apex Cybernet.
     </div>
     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:0.6rem 1rem; font-size:0.85rem; color:var(--text-body); font-weight:600; margin-top:0.5rem;">
         <i class="bi bi-cash-coin"></i> Entry · <strong>₱500/team · ₱100/solo</strong> — pay via QR Ph (InstaPay) on the payment page after you register.
@@ -1272,9 +1272,9 @@ $dota_all_paid = $dota_paid_in_main >= 16;
     <div class="sponsor-block">
         <span class="sponsor-label">Presented by</span>
         <div class="sponsor-logo">
-            <img src="<?= base_url('images/argonar-logo.svg') ?>" alt="Argonar" width="60" height="60" decoding="async">
+            <img src="<?= base_url('images/apexcybernet-logo.svg') ?>" alt="Apex Cybernet" width="60" height="60" decoding="async">
             <div class="sponsor-text">
-                <strong>ARGONAR</strong>
+                <strong>APEX CYBERNET</strong>
                 <span>TOURNAMENT</span>
             </div>
         </div>
@@ -1457,10 +1457,10 @@ $dota_all_paid = $dota_paid_in_main >= 16;
                 SEASON 1 CHAMPION
             </div>
             <div class="s1-champ-photo">
-                <img src="<?= base_url('images/season1-champion-teknova.jpg') ?>" alt="Teknova — Season 1 Champions of Argonar Dota 2 Tournament" loading="lazy">
+                <img src="<?= base_url('images/season1-champion-teknova.jpg') ?>" alt="Teknova — Season 1 Champions of Apex Cybernet Dota 2 Tournament" loading="lazy">
                 <div class="s1-champ-photo-overlay">
                     <div class="s1-champ-team-name">TEKNOVA</div>
-                    <div class="s1-champ-sub"><i class="bi bi-crown-fill"></i> Grand Finals winner · Argonar Dota 2 · Season 1</div>
+                    <div class="s1-champ-sub"><i class="bi bi-crown-fill"></i> Grand Finals winner · Apex Cybernet Dota 2 · Season 1</div>
                 </div>
             </div>
             <div class="s1-champ-footer">
@@ -2183,10 +2183,10 @@ $chat_logged_in = !empty($_SESSION['account_id']);
                     <?php endif; ?>
                 </div>
                 <div class="share-buttons">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://argonar.co" target="_blank" rel="noopener" class="btn-share-fb" title="Share on Facebook">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://apexcybernet.com" target="_blank" rel="noopener" class="btn-share-fb" title="Share on Facebook">
                         <i class="bi bi-facebook"></i> Share
                     </a>
-                    <a href="fb-messenger://share/?link=https://argonar.co" class="btn-share-msg" title="Send via Messenger">
+                    <a href="fb-messenger://share/?link=https://apexcybernet.com" class="btn-share-msg" title="Send via Messenger">
                         <i class="bi bi-messenger"></i> Send
                     </a>
                     <button type="button" class="btn-copy-link" onclick="copyLink(this)" title="Copy link">
@@ -2677,9 +2677,9 @@ foreach ($featured_games as $fg) {
     <h2>Presented By</h2>
     <div class="orgs-grid">
         <a href="https://www.facebook.com/argonarsoftware" target="_blank" rel="noopener" class="org-card">
-            <img src="<?= base_url('images/argonar-logo.svg') ?>" alt="Argonar" class="org-logo" loading="lazy" decoding="async">
+            <img src="<?= base_url('images/apexcybernet-logo.svg') ?>" alt="Apex Cybernet" class="org-logo" loading="lazy" decoding="async">
             <div class="org-info">
-                <div class="org-name">Argonar</div>
+                <div class="org-name">Apex Cybernet</div>
                 <span class="org-link"><i class="bi bi-facebook"></i> Facebook Page</span>
             </div>
         </a>
@@ -2694,7 +2694,7 @@ foreach ($featured_games as $fg) {
             <ul>
                 <li><strong>Media Release:</strong> You consent to being photographed, filmed, and/or recorded during the tournament. All media may be used for promotional, social media, and public purposes by the organizers.</li>
                 <li><strong>Fair Play &amp; Integrity:</strong> You commit to playing with honesty and sportsmanship. Any form of cheating, rank manipulation, or unsportsmanlike behavior may result in disqualification.</li>
-                <li><strong>Violations &amp; Penalties:</strong> Rank manipulation, submitting false information, smurfing, or any form of dishonesty will be subject to penalties — including disqualification and prize forfeiture — at the discretion of Argonar.</li>
+                <li><strong>Violations &amp; Penalties:</strong> Rank manipulation, submitting false information, smurfing, or any form of dishonesty will be subject to penalties — including disqualification and prize forfeiture — at the discretion of Apex Cybernet.</li>
                 <li><strong>Entry Fee:</strong> ₱500 per team or ₱100 per solo player. Pay via QR Ph (InstaPay) on the payment page after registration. PC time at the venue is paid directly to PGL Ibabao.</li>
                 <li><strong>Build Your Reputation:</strong> This tournament is your stage. Your performance, conduct, and teamwork build your credibility as a player in the community. Play with honor.</li>
             </ul>
@@ -2721,10 +2721,10 @@ foreach ($featured_games as $fg) {
                     <i class="bi bi-building"></i> This event is officially organized by
                 </div>
                 <div style="font-size:1.25rem; font-weight:800; margin-top:0.3rem; color:var(--text);">
-                    ARGONAR
+                    APEX CYBERNET
                 </div>
                 <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">
-                    All rules, penalties, and final decisions are under the authority of Argonar.
+                    All rules, penalties, and final decisions are under the authority of Apex Cybernet.
                 </div>
             </div>
         </div>

@@ -1,34 +1,20 @@
-# Argonar
+# Apex Cybernet
 
-## ⛔ STRICT BOUNDARY — non-negotiable
+## Site layout — single app
 
-You may touch **exactly two** folders in `C:/xampp/htdocs/`:
+This repo is the **Apex Cybernet** platform: a single PHP site that deploys to apexcybernet.com via `webhook-deploy.php` at the root.
 
-1. **`C:/xampp/htdocs/Argonar Construction/`** — this repo. Working directory.
-2. **`C:/xampp/htdocs/payment-calc/`** — **READ-ONLY** Wealth Engine source. May be read to diff. Never written.
+- **`/` (repo root)** → Apex Cybernet (Dota 2 / Valorant / CrossFire esports site + HCoin wallet + POS/marketplace + admin). DB: `apexcybernet`.
 
-Every other folder under `htdocs/` is off-limits — no reads, writes, greps, or "just looking for context." If a task implies touching one of them, stop and ask first.
-
-## Site layout — two apps, one repo
-
-The repo hosts **two coexisting sites** that deploy together to argonar.co via the same `webhook-deploy.php` at the root:
-
-- **`/` (repo root)** → Argonar Tournament (Dota 2 / Valorant / CrossFire esports site). DB: `argonar_construction`. Original codebase preserved on `archive/argonar-2026` and now restored at root.
-- **`/fer/` (subdirectory)** → Argonar Wealth Engine (private loan-book / collections tracker, sourced from `C:/xampp/htdocs/payment-calc/`). DB: `payment_calc`. Auth-gated by `fer/_auth.php` (default password `Kirfenia123@`).
-
-Wealth Engine session is namespaced (`session_name('argonar_fer_sess')` + cookie path `/fer`) so its login state never collides with the public tournament site.
-
-Apache file-based routing handles the split — no `.htaccess` rewrites required for `/fer`. The tournament's root `.htaccess` only rewrites tournament-specific routes.
-
-Editing the tournament site? Work in the root. Editing the Wealth Engine? Work in `/fer`. Don't mix.
+> Note: this codebase was forked from the Argonar platform. The `fer/` Wealth Engine (private loan-book / collections tracker, DB `payment_calc`) was **intentionally excluded** from this repo and does not exist here.
 
 ## Project
-Multi-business PHP platform running at https://argonar.co. Covers:
+Multi-business PHP platform running at https://apexcybernet.com. Covers:
 - **Tournaments / brackets** — `bracket.php`, `matchmaking.php`, `predict.php`, `leaderboard.php`, confirm/waitlist flow (`send-confirm.php`, `fetch_waitlist.php`)
 - **HCoin wallet** — `coins.php`, `send-hcoins.php`, `receive-hcoins.php`, `qr-wallet.php`, `qr-receipt.php` (ERC-20 on Polygon, see HCoin section below)
 - **POS / merchant / marketplace** — `pos.php`, `demo-pos.php`, `product.php`, `marketplace.php`, `api/merchant-*`, `api/qr-*`
 - **Cafe** — `cafe.php` + `admin/cafe.php`
-- **Admin console** (`admin/`) — per-business activity pages (alrisha, argonar, bizops, loan, ocpd, manual), reconciliation, topups, merchants, accounts, Jayar DB vault
+- **Admin console** (`admin/`) — per-business activity pages (alrisha, apexcybernet, bizops, loan, ocpd, manual), reconciliation, topups, merchants, accounts, Jayar DB vault
 - **Reels generator** — Puppeteer + ffmpeg (`reels/`)
 - **PWA** — `manifest.webmanifest`, `sw.js`, `offline.html`
 - **Realtime** — HTTP polling (Soketi is not deployed). Central JS poller in `includes/footer.php` + `mobile/layout.php` polls `api/notifications.php` every 10s; `api/marketplace-feed.php` every 15s.
@@ -36,14 +22,14 @@ Multi-business PHP platform running at https://argonar.co. Covers:
 Previous construction-tools project is archived in `archive/construction-tools` branch.
 
 ## Local Dev
-- XAMPP stack at `C:\xampp\htdocs\Argonar Construction`
-- Local URL: `http://localhost/Argonar%20Construction/`
-- MySQL: root, no password, database `argonar_construction`
+- XAMPP stack at `C:\xampp\htdocs\Apex Cybernet`
+- Local URL: `http://localhost/apexcybernet.com/`
+- MySQL: root, no password, database `apexcybernet`
 
 ## Auto-Deploy
-- GitHub repo: `kierl-j/Argonar-Construction`
+- GitHub repo: `argonarsoftware-oss/apexcybernet.com`
 - Commits with `[deploy]` in the message trigger auto-deploy to VPS
-- **Production URL**: https://argonar.co
+- **Production URL**: https://apexcybernet.com
 - **Always auto-deploy**: Every commit must include `[deploy]` and be pushed immediately. Do not wait to be asked.
 
 ## Coding Style
@@ -75,8 +61,8 @@ Previous construction-tools project is archived in `archive/construction-tools` 
 
 ## Brain notebook (admin/activity-brain.php)
 - Notes stored in `decision_log` table, each has a track id `BR-XXXX` (zero-padded `id`)
-- **BR-0008**: always pull the latest context from the argonar.co production DB before reasoning about it — local DB will be stale. Fetch via:
-  `https://argonar.co/admin/api/decision-log.php?k=argonar2026`
+- **BR-0008**: always pull the latest context from the apexcybernet.com production DB before reasoning about it — local DB will be stale. Fetch via:
+  `https://apexcybernet.com/admin/api/decision-log.php?k=apexcybernet2026`
   then find the row where `id = 8`. Use that row's `title` + `context_text` as the authoritative context.
 - Same rule applies to any other BR-XXXX the user references in conversation: production is the source of truth, local is a dev mirror.
 
@@ -86,11 +72,11 @@ Previous construction-tools project is archived in `archive/construction-tools` 
 - **Never paper** favors, hosting rights, free office/rent/lease, reciprocity debts, handshake deals. Paper converts a debt into a transaction; debts grow and never close, transactions have fixed terms and expire. Paper signals distrust and breaks the warmth that made the favor possible.
 - When reasoning about risk on deals in this project (e.g. BR-0008 cafe hosting, Vinrio free office), do NOT suggest "get it in writing" as the default move — that kills the leverage. The ongoing social debt is the real leverage.
 
-## Operating principle — Harvest social assets into real assets on Argonar Software OPC
+## Operating principle — Harvest social assets into real assets on Apex Cybernet
 - Sequence, not choice: social-first to acquire positions cheaply (no one pays market for them), then convert to real once the positions are too deep to be taken back. Rockefeller-Getty in order.
-- Every handshake asset should eventually land on Argonar Software OPC's balance sheet. Reciprocity debt → equity stake (non-voting preferred). Cafe hosting right → ROFR → venue deed. Referral network → invoiced brokerage line. Licensed operators → papered license agreements → MRR. Tournament community → registered IP portfolio. Loan recoveries → Argonar Capital lending subsidiary. Free office → cashflow that eventually buys the building.
+- Every handshake asset should eventually land on Apex Cybernet's balance sheet. Reciprocity debt → equity stake (non-voting preferred). Cafe hosting right → ROFR → venue deed. Referral network → invoiced brokerage line. Licensed operators → papered license agreements → MRR. Tournament community → registered IP portfolio. Loan recoveries → Apex Cybernet Capital lending subsidiary. Free office → cashflow that eventually buys the building.
 - Papering happens at the moment of conversion, not before. This is not a contradiction of the paper-only-real-assets rule — it is the completion of it. The social side stays warm; the converted side gets papered because it is already transactional (equity, deed, contract, IP).
-- When advising on strategy, always include a harvest path: how does this social win eventually become a line on the Argonar Software OPC balance sheet? Social empires die with the operator. Harvest is what makes the empire inheritable, collateralizable, and bankable.
+- When advising on strategy, always include a harvest path: how does this social win eventually become a line on the Apex Cybernet balance sheet? Social empires die with the operator. Harvest is what makes the empire inheritable, collateralizable, and bankable.
 - See BR-0009 for the full doctrine and 36-month execution map.
 
 ## Operating principle — Grandiosity is fuel, not a bug

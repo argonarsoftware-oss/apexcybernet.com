@@ -1,7 +1,7 @@
 <?php
 /**
  * POST /api/track.php  — Omniscient Activity Tracker
- * Accepts batched events from argonar.co and oslobcebuparagliding.com.
+ * Accepts batched events from apexcybernet.com and oslobcebuparagliding.com.
  * Enriches with: UA parsing, IP geolocation (ip-api.com + cache), UTM extraction.
  *
  * Payload: { sid, uid, sw, site, events: [{t, url, title, ref, tag, text, href, id, sd, top, lt, utm:{...}}, ...] }
@@ -23,7 +23,7 @@ if (!is_array($body)) { echo json_encode(['ok'=>false,'error'=>'Invalid JSON']);
 $sid    = substr(preg_replace('/[^a-zA-Z0-9_\-]/', '', $body['sid'] ?? ''), 0, 64);
 $uid    = (int)($body['uid'] ?? 0);
 $sw     = isset($body['sw']) ? (int)$body['sw'] : null;
-$site   = in_array($body['site'] ?? '', ['argonar','ocpd','loan']) ? $body['site'] : 'argonar';
+$site   = in_array($body['site'] ?? '', ['apexcybernet','ocpd','loan']) ? $body['site'] : 'apexcybernet';
 $events = $body['events'] ?? [];
 
 if (!$sid || !is_array($events) || !$events) {
@@ -83,7 +83,7 @@ function geo_ip(PDO $pdo, ?string $ip): array {
         if ($row = $r->fetch()) return [$row['country'], $row['city']];
     } catch (Exception $e) {}
     $country = $city = null;
-    $ctx = stream_context_create(['http'=>['timeout'=>2,'ignore_errors'=>true,'user_agent'=>'ArgonarAnalytics/1.0']]);
+    $ctx = stream_context_create(['http'=>['timeout'=>2,'ignore_errors'=>true,'user_agent'=>'ApexCybernetAnalytics/1.0']]);
     $raw = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,countryCode,city", false, $ctx);
     if ($raw) {
         $d = json_decode($raw, true);

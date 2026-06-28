@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
-$pageTitle = 'Facebook Post Guide — Argonar Tournament';
-$pageDescription = 'Ready-to-copy Facebook post captions for promoting the Argonar Tournament.';
+$pageTitle = 'Facebook Post Guide — Apex Cybernet Tournament';
+$pageDescription = 'Ready-to-copy Facebook post captions for promoting the Apex Cybernet Tournament.';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -17,7 +17,7 @@ require_once __DIR__ . '/includes/header.php';
         <!-- GENERAL POST -->
         <div class="section-label">General Tournament Announcement</div>
         <div class="guide-template" style="position:relative;"><button onclick="copyCaption(this)" class="btn-copy-link" style="position:absolute; top:0.5rem; right:0.5rem; font-size:0.7rem;"><i class="bi bi-clipboard"></i> Copy</button>
-🎮🏆 ARGONAR GAMING TOURNAMENT IS HERE! 🏆🎮
+🎮🏆 APEX CYBERNET GAMING TOURNAMENT IS HERE! 🏆🎮
 
 Are you ready to prove you're the best? 🔥
 
@@ -36,22 +36,22 @@ Are you ready to prove you're the best? 🔥
 📍 Venue: PGL Ibabao
 📌 S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu
 
-🔗 REGISTER NOW: https://argonar.co
+🔗 REGISTER NOW: https://apexcybernet.com
 
 ⚡ Double Elimination Format — you have to lose TWICE to be out!
 🏆 12 teams max per game — slots are filling up FAST!
 
 Don't have a team? No problem! Join solo and we'll build one for you 💪
 
-Presented by Argonar
+Presented by Apex Cybernet
 Venue hosted by PGL Ibabao
 
-#ArgonarTournament #GamingCebu #Esports #Valorant #Dota2 #CrossFire #CebuGaming #WinnerTakesAll #PGLIbabao #GameOn</div>
+#ApexCybernetTournament #GamingCebu #Esports #Valorant #Dota2 #CrossFire #CebuGaming #WinnerTakesAll #PGLIbabao #GameOn</div>
 
         <!-- VALORANT POST -->
         <div class="section-label"><i class="bi bi-crosshair"></i> Valorant Post</div>
         <div class="guide-template" style="position:relative;"><button onclick="copyCaption(this)" class="btn-copy-link" style="position:absolute; top:0.5rem; right:0.5rem; font-size:0.7rem;"><i class="bi bi-clipboard"></i> Copy</button>
-🔫 VALORANT TOURNAMENT — ARGONAR GAMING 🔫
+🔫 VALORANT TOURNAMENT — APEX CYBERNET GAMING 🔫
 
 Calling all Agents! 🎯
 
@@ -72,17 +72,17 @@ Iron to Radiant, everyone's welcome.
 📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
 🎟️ ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) entry. Pay via QR Ph (InstaPay) right after you register.
 
-🔗 REGISTER: https://argonar.co/register.php?game=valorant
-🔗 SOLO: https://argonar.co/matchmaking.php?game=valorant
+🔗 REGISTER: https://apexcybernet.com/register.php?game=valorant
+🔗 SOLO: https://apexcybernet.com/matchmaking.php?game=valorant
 
 Lock in. Clutch up. Win everything. 🏆
 
-#Valorant #ValorantPH #ValorantCebu #ArgonarTournament #Esports #TacticalShooter #ClutchOrKick #GamingCebu #WinnerTakesAll</div>
+#Valorant #ValorantPH #ValorantCebu #ApexCybernetTournament #Esports #TacticalShooter #ClutchOrKick #GamingCebu #WinnerTakesAll</div>
 
         <!-- DOTA 2 POST -->
         <div class="section-label"><i class="bi bi-shield-shaded"></i> Dota 2 Post</div>
         <div class="guide-template" style="position:relative;"><button onclick="copyCaption(this)" class="btn-copy-link" style="position:absolute; top:0.5rem; right:0.5rem; font-size:0.7rem;"><i class="bi bi-clipboard"></i> Copy</button>
-⚔️ DOTA 2 TOURNAMENT — ARGONAR GAMING ⚔️
+⚔️ DOTA 2 TOURNAMENT — APEX CYBERNET GAMING ⚔️
 
 Mga lodi ng Dota, tara na! 🔥
 
@@ -104,17 +104,17 @@ Herald to Immortal — Carry, Mid, Offlane, Support — pick your role.
 📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
 🎟️ ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) entry. Pay via QR Ph (InstaPay) right after you register.
 
-🔗 REGISTER: https://argonar.co/register.php?game=dota2
-🔗 SOLO: https://argonar.co/matchmaking.php?game=dota2
+🔗 REGISTER: https://apexcybernet.com/register.php?game=dota2
+🔗 SOLO: https://apexcybernet.com/matchmaking.php?game=dota2
 
 Outplay. Outfarm. Outdraft. Take the throne. 👑
 
-#Dota2 #Dota2PH #Dota2Cebu #ArgonarTournament #MOBA #GGWellPlayed #CebuGaming #WinnerTakesAll #Esports</div>
+#Dota2 #Dota2PH #Dota2Cebu #ApexCybernetTournament #MOBA #GGWellPlayed #CebuGaming #WinnerTakesAll #Esports</div>
 
         <!-- CROSSFIRE POST -->
         <div class="section-label"><i class="bi bi-bullseye"></i> CrossFire Post</div>
         <div class="guide-template" style="position:relative;"><button onclick="copyCaption(this)" class="btn-copy-link" style="position:absolute; top:0.5rem; right:0.5rem; font-size:0.7rem;"><i class="bi bi-clipboard"></i> Copy</button>
-💥 CROSSFIRE TOURNAMENT — ARGONAR GAMING 💥
+💥 CROSSFIRE TOURNAMENT — APEX CYBERNET GAMING 💥
 
 OG gamers, this one's for you! 🎯
 
@@ -135,22 +135,22 @@ CrossFire on GameClub — the classic FPS is back and better than ever. 5v5 Sear
 📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
 🎟️ ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) entry. Pay via QR Ph (InstaPay) right after you register.
 
-🔗 REGISTER: https://argonar.co/register.php?game=crossfire
-🔗 SOLO: https://argonar.co/matchmaking.php?game=crossfire
+🔗 REGISTER: https://apexcybernet.com/register.php?game=crossfire
+🔗 SOLO: https://apexcybernet.com/matchmaking.php?game=crossfire
 
 Lock and load. The battlefield awaits. 💀
 
-#CrossFire #CrossFirePH #CFFPS #ArgonarTournament #GameClub #FPS #SearchAndDestroy #CebuGaming #WinnerTakesAll #OGGamers</div>
+#CrossFire #CrossFirePH #CFFPS #ApexCybernetTournament #GameClub #FPS #SearchAndDestroy #CebuGaming #WinnerTakesAll #OGGamers</div>
 
         <!-- SOLO MATCHMAKING POST -->
         <div class="section-label"><i class="bi bi-person-plus-fill"></i> Solo Entry Promo Post</div>
         <div class="guide-template" style="position:relative;"><button onclick="copyCaption(this)" class="btn-copy-link" style="position:absolute; top:0.5rem; right:0.5rem; font-size:0.7rem;"><i class="bi bi-clipboard"></i> Copy</button>
 🎮 WALANG TEAM? NO PROBLEM! 🙌
 
-Join the Argonar Tournament as a SOLO PLAYER — only ₱50 entry (50% OFF — was ₱100)!
+Join the Apex Cybernet Tournament as a SOLO PLAYER — only ₱50 entry (50% OFF — was ₱100)!
 
 Here's how it works:
-1️⃣ Register at https://argonar.co
+1️⃣ Register at https://apexcybernet.com
 2️⃣ Pick your game (Valorant, Dota 2, or CrossFire)
 3️⃣ Select your rank and preferred role
 4️⃣ Pay ₱50 via QR Ph (50% OFF promo) and we'll match you with players of similar skill level
@@ -163,9 +163,9 @@ Here's how it works:
 Don't sit this one out. Your next squad is waiting! 💪
 
 📍 PGL Ibabao — Mandaue, Cebu
-🔗 https://argonar.co
+🔗 https://apexcybernet.com
 
-#ArgonarTournament #SoloQueue #FindYourTeam #GamingCebu #Valorant #Dota2 #CrossFire #Esports #NoTeamNoProblem</div>
+#ApexCybernetTournament #SoloQueue #FindYourTeam #GamingCebu #Valorant #Dota2 #CrossFire #Esports #NoTeamNoProblem</div>
 
         <div style="margin-top:2rem; text-align:center;">
             <a href="<?= base_url('meta-guide.php') ?>" class="btn-register" style="display:inline-flex; width:auto; padding:0.75rem 2rem;">

@@ -1,6 +1,6 @@
 <?php
 /**
- * Argonar Tournament Payment Webhook
+ * Apex Cybernet Tournament Payment Webhook
  *
  * The GCash listener API POSTs here when a payment is matched to an order.
  * This is the push counterpart to the polling in ticket.php — instant updates

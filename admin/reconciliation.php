@@ -2,7 +2,7 @@
 /**
  * Payment Reconciliation Report
  *
- * Cross-references the local Argonar database against the listener API to surface:
+ * Cross-references the local Apex Cybernet database against the listener API to surface:
  *  - Pending registrations whose listener order is paid (should be approved)
  *  - Pending registrations with no order (never opened the payment page)
  *  - Pending registrations with cancelled/expired listener orders (need force-match)
@@ -15,7 +15,7 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/listener-api.php';
 
 // Token bypass for cron/CLI
-if (isset($_GET['token']) && $_GET['token'] === 'argonar-admin-2026-token') {
+if (isset($_GET['token']) && $_GET['token'] === 'apexcybernet-admin-2026-token') {
     $_SESSION['admin_logged_in'] = true;
     $_SESSION['admin_username'] = 'admin';
     $_SESSION['admin_role'] = 'admin';
@@ -105,7 +105,7 @@ $health_score = $total_pending > 0
     ? round((count($issues['healthy_pending']) / $total_pending) * 100)
     : 100;
 
-$pageTitle = 'Reconciliation Report — Argonar Admin';
+$pageTitle = 'Reconciliation Report — Apex Cybernet Admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">

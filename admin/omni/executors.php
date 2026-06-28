@@ -19,8 +19,8 @@ require_once __DIR__ . '/pipelines/taxonomy.php';
 require_once __DIR__ . '/../../includes/pusher.php';
 
 function _omni_proj_credit_hc(PDO $pdo, array $obj, array $p): array {
-    if ($obj['type'] !== 'Person' || $obj['business'] !== 'argonar') {
-        return ['ok'=>false,'message'=>'credit_hc only applies to argonar Persons'];
+    if ($obj['type'] !== 'Person' || $obj['business'] !== 'apexcybernet') {
+        return ['ok'=>false,'message'=>'credit_hc only applies to apexcybernet Persons'];
     }
     $amount = (int)($p['amount'] ?? 0);
     if ($amount <= 0) return ['ok'=>false,'message'=>'amount must be > 0'];
@@ -65,8 +65,8 @@ function _omni_exec_credit_hc(PDO $pdo, array $obj, array $p): array {
 }
 
 function _omni_proj_debit_hc(PDO $pdo, array $obj, array $p): array {
-    if ($obj['type'] !== 'Person' || $obj['business'] !== 'argonar') {
-        return ['ok'=>false,'message'=>'debit_hc only applies to argonar Persons'];
+    if ($obj['type'] !== 'Person' || $obj['business'] !== 'apexcybernet') {
+        return ['ok'=>false,'message'=>'debit_hc only applies to apexcybernet Persons'];
     }
     $amount = (int)($p['amount'] ?? 0);
     if ($amount <= 0) return ['ok'=>false,'message'=>'amount must be > 0'];

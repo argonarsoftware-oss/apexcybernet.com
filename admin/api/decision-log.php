@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/db.php';
-if (($_GET['k'] ?? '') !== 'argonar2026') { http_response_code(403); exit; }
+if (($_GET['k'] ?? '') !== 'apexcybernet2026') { http_response_code(403); exit; }
 header('Content-Type: application/json');
 
 // POST:

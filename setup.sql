@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS argonar_construction;
-USE argonar_construction;
+CREATE DATABASE IF NOT EXISTS apexcybernet;
+USE apexcybernet;
 
 CREATE TABLE IF NOT EXISTS teams (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -10,10 +10,10 @@ require_once __DIR__ . '/../includes/listener-api.php';
 $admin_users = [
     'kirfenia' => ['password' => 'Kirfenia123@', 'role' => 'admin'],
     'admin'    => ['password' => 'Kirfenia123@', 'role' => 'admin'],
-    'raffy'    => ['password' => 'argonar2026',  'role' => 'staff'],
+    'raffy'    => ['password' => 'apexcybernet2026',  'role' => 'staff'],
 ];
 
-$admin_token = 'argonar-admin-2026-token';
+$admin_token = 'apexcybernet-admin-2026-token';
 
 // Token-based login (for CLI/API access) — defaults to admin role
 if (isset($_GET['token']) && $_GET['token'] === $admin_token) {
@@ -197,7 +197,7 @@ if (empty($_SESSION['admin_logged_in'])) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin Login — Argonar Tournament</title>
+        <title>Admin Login — Apex Cybernet Tournament</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -473,7 +473,7 @@ $recent = $pdo->query("
     ORDER BY created_at DESC LIMIT 8
 ")->fetchAll();
 
-$pageTitle = 'Admin Dashboard — Argonar Tournament';
+$pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -648,7 +648,7 @@ $pageTitle = 'Admin Dashboard — Argonar Tournament';
                         <?php endif; ?>
                     </span>
                 <?php endif; ?>
-                <span style="font-size:0.7rem; color:var(--text-muted);">listener.argonar.co</span>
+                <span style="font-size:0.7rem; color:var(--text-muted);">listener.apexcybernet.com</span>
                 <button onclick="rematchPayments()" style="background:#fbbf24; color:#000; border:none; padding:0.4rem 0.85rem; border-radius:8px; font-size:0.75rem; font-weight:700; cursor:pointer;">
                     <i class="bi bi-arrow-repeat"></i> Rematch Now
                 </button>
@@ -1539,7 +1539,7 @@ function rematchPayments() {
     const btn = event.target.closest('button');
     btn.disabled = true;
     btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Rematching...';
-    fetch('https://listener.argonar.co/api/payments/rematch', {
+    fetch('https://listener.apexcybernet.com/api/payments/rematch', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1562,7 +1562,7 @@ function rematchPayments() {
 function forceMatchPrompt(paymentId, amount, sender) {
     const orderId = prompt('Force match payment ₱' + amount + ' from ' + sender + '\n\nEnter the order ref code (e.g. DOTA-T-XXXX):');
     if (!orderId || orderId.trim() === '') return;
-    fetch('https://listener.argonar.co/api/payments/force-match', {
+    fetch('https://listener.apexcybernet.com/api/payments/force-match', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

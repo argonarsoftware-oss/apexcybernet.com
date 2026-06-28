@@ -1,12 +1,12 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 
-$pageTitle = 'File a Complaint or Dispute — Argonar Dota 2 Tournament';
-$pageDescription = 'Report unfair play, rank manipulation, smurfing, or other violations during the Argonar Dota 2 Tournament. All complaints reviewed by the organizers.';
+$pageTitle = 'File a Complaint or Dispute — Apex Cybernet Dota 2 Tournament';
+$pageDescription = 'Report unfair play, rank manipulation, smurfing, or other violations during the Apex Cybernet Dota 2 Tournament. All complaints reviewed by the organizers.';
 $canonicalUrl = canonical_url('dispute.php');
 $extraHead = breadcrumb_jsonld([
-    ['name' => 'Home',     'url' => 'https://argonar.co/'],
-    ['name' => 'Disputes', 'url' => 'https://argonar.co/dispute.php'],
+    ['name' => 'Home',     'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Disputes', 'url' => 'https://apexcybernet.com/dispute.php'],
 ]);
 $errors = [];
 $success = false;
@@ -90,7 +90,7 @@ require_once __DIR__ . '/includes/header.php';
 
                 <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:10px; padding:0.75rem 1rem; margin-bottom:1.25rem; font-size:0.8rem; color:var(--text-muted);">
                     <i class="bi bi-info-circle" style="color:var(--warning);"></i>
-                    All complaints are reviewed by <strong>Argonar</strong>. False or malicious reports may result in penalties.
+                    All complaints are reviewed by <strong>Apex Cybernet</strong>. False or malicious reports may result in penalties.
                 </div>
 
                 <button type="submit" class="btn-submit">

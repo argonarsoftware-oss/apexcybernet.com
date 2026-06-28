@@ -18,7 +18,7 @@ require_once __DIR__ . '/includes/listener-api.php';
 header('Content-Type: text/plain; charset=utf-8');
 
 // Token gate — change this to a long random string
-define('BACKFILL_TOKEN', 'argonar-backfill-2026-secret-token');
+define('BACKFILL_TOKEN', 'apexcybernet-backfill-2026-secret-token');
 
 if (($_GET['token'] ?? '') !== BACKFILL_TOKEN) {
     http_response_code(403);
@@ -28,7 +28,7 @@ if (($_GET['token'] ?? '') !== BACKFILL_TOKEN) {
 
 $dry_run = !empty($_GET['dry']);
 
-echo "=== Argonar Payment Backfill ===\n";
+echo "=== Apex Cybernet Payment Backfill ===\n";
 echo "Started: " . date('Y-m-d H:i:s') . "\n";
 echo $dry_run ? "MODE: DRY RUN (no DB changes)\n\n" : "MODE: LIVE\n\n";
 

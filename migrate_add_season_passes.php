@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/db.php';
 header('Content-Type: text/plain; charset=utf-8');
 
-if (($_GET['token'] ?? '') !== 'argonar-migrate-2026') {
+if (($_GET['token'] ?? '') !== 'apexcybernet-migrate-2026') {
     http_response_code(403);
     echo "Forbidden\n";
     exit;

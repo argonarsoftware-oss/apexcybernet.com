@@ -9,7 +9,7 @@
 $active_site = 'health';
 $page_file   = 'activity-health.php';
 require_once __DIR__ . '/../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/omni/auth.php';
 
 // ── AJAX: live refresh endpoint (returns JSON) ──
@@ -150,7 +150,7 @@ $db       = hp_db_ping($pdo);
 
 $services = [
     ['name' => 'MySQL',              'host' => '127.0.0.1', 'port' => 3306, 'note' => 'Database'],
-    ['name' => 'Argonar voice (SSE)','host' => '127.0.0.1', 'port' => 3001, 'note' => 'WebRTC signaling'],
+    ['name' => 'Apex Cybernet voice (SSE)','host' => '127.0.0.1', 'port' => 3001, 'note' => 'WebRTC signaling'],
     ['name' => 'coturn (TURN)',      'host' => '127.0.0.1', 'port' => 3478, 'note' => 'Voice relay'],
 ];
 foreach ($services as &$s) {
@@ -165,11 +165,11 @@ if ($is_ajax) {
 }
 
 // ── Sidebar stats (required by omni/sidebar.php) ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rs = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END s, COUNT(DISTINCT session_id) n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
+    $rs = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END s, COUNT(DISTINCT session_id) n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rs as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rs = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END s, COUNT(DISTINCT session_id) n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
+    $rs = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END s, COUNT(DISTINCT session_id) n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rs as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
 $date_range = 'today';

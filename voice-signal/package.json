@@ -1,7 +1,7 @@
 {
-    "name": "argonar-voice-signal",
+    "name": "apexcybernet-voice-signal",
     "version": "1.0.0",
-    "description": "Argonar real-time voice signaling server (WebRTC mesh, SSE-based).",
+    "description": "Apex Cybernet real-time voice signaling server (WebRTC mesh, SSE-based).",
     "main": "server.js",
     "scripts": {
         "start": "node server.js"

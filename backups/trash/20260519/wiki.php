@@ -94,7 +94,7 @@ function wiki_build_prompt(PDO $pdo, int $account_id, array $a): string {
     $game = $r['game'] ?? 'dota2';
 
     $lines = [];
-    $lines[] = "You are writing a Liquipedia-style player profile for the Argonar Dota 2 tournament platform.";
+    $lines[] = "You are writing a Liquipedia-style player profile for the Apex Cybernet Dota 2 tournament platform.";
     $lines[] = "Tone: like a beat reporter, not a fanboy. Present tense. Do not use disclaimers or \"as an AI.\" Do not exaggerate — write with quiet confidence, not hype.";
     $lines[] = "Output: HTML only. Use <h3>, <p>, <blockquote>. NO <html>, <head>, <body>, <div>, or <style> tags. Aim for 220–360 words.";
     $lines[] = "";
@@ -126,7 +126,7 @@ function wiki_build_prompt(PDO $pdo, int $account_id, array $a): string {
     }
     if (!empty($a['rival']) || !empty($a['goal'])) {
         $lines[] = "<h3>Rivalries &amp; Ambitions</h3>";
-        $lines[] = "  One paragraph covering the rival, their goal in Argonar, and what stands in the way.";
+        $lines[] = "  One paragraph covering the rival, their goal in Apex Cybernet, and what stands in the way.";
     }
     if (!empty($a['catchphrase'])) {
         $lines[] = "<blockquote>";
@@ -161,21 +161,21 @@ if ($view_id > 0 && $action === '') {
         $rs->execute([$view['ref_code']]);
         $view += ($rs->fetch() ?: []);
     }
-    $pageTitle       = ($view['display_name'] ?: 'Player') . ' — Wiki — Argonar';
-    $pageDescription = 'Player wiki for ' . ($view['display_name'] ?: 'an Argonar player') . ' — role, playstyle, signature hero, and more from Argonar Dota 2 Tournament.';
+    $pageTitle       = ($view['display_name'] ?: 'Player') . ' — Wiki — Apex Cybernet';
+    $pageDescription = 'Player wiki for ' . ($view['display_name'] ?: 'an Apex Cybernet player') . ' — role, playstyle, signature hero, and more from Apex Cybernet Dota 2 Tournament.';
     $canonicalUrl    = canonical_url('wiki.php?id=' . $view_id);
     $titles          = !empty($view['titles']) ? json_decode($view['titles'], true) : [];
 
     // Structured data — Person schema for indexable player pages
     if (!empty($view['wiki_html']) && (int)$view['is_published'] === 1) {
         $person_img = !empty($view['profile_picture']) ? base_url($view['profile_picture']) : (!empty($view['team_logo']) ? base_url($view['team_logo']) : '');
-        $person_name = $view['display_name'] ?: 'Argonar Player';
+        $person_name = $view['display_name'] ?: 'Apex Cybernet Player';
         $person_ld = [
             '@context'    => 'https://schema.org',
             '@type'       => 'Person',
             'name'        => $person_name,
             'url'         => $canonicalUrl,
-            'description' => 'Dota 2 player on the Argonar Tournament platform.',
+            'description' => 'Dota 2 player on the Apex Cybernet Tournament platform.',
         ];
         if ($person_img) $person_ld['image'] = $person_img;
         if (!empty($view['team_name']) && $view['ref_type'] === 'team') {
@@ -185,8 +185,8 @@ if ($view_id > 0 && $action === '') {
             '@context' => 'https://schema.org',
             '@type'    => 'BreadcrumbList',
             'itemListElement' => [
-                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home',        'item' => 'https://argonar.co/'],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Player Wiki', 'item' => 'https://argonar.co/wiki.php'],
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home',        'item' => 'https://apexcybernet.com/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Player Wiki', 'item' => 'https://apexcybernet.com/wiki.php'],
                 ['@type' => 'ListItem', 'position' => 3, 'name' => $person_name,  'item' => $canonicalUrl],
             ],
         ];
@@ -260,7 +260,7 @@ if ($view_id > 0 && $action === '') {
         <?php elseif ($me_id === (int)$view['id'] && $view_has_answers): ?>
             <div class="wk-empty-wiki" style="border-color:rgba(251,191,36,0.35);background:rgba(251,191,36,0.04);">
                 <i class="bi bi-hourglass-split" style="color:#fbbf24;"></i>
-                <p style="color:#fde68a;"><strong>Your wiki is queued for review.</strong><br>The Argonar team will publish it shortly — usually within a day.</p>
+                <p style="color:#fde68a;"><strong>Your wiki is queued for review.</strong><br>The Apex Cybernet team will publish it shortly — usually within a day.</p>
                 <a href="<?= base_url('wiki.php?action=interview') ?>" class="wk-edit-link" style="color:#fbbf24;"><i class="bi bi-arrow-repeat"></i> Redo my answers</a>
             </div>
         <?php else: ?>
@@ -289,7 +289,7 @@ if ($action === 'interview') {
     $prev = $pre_row && !empty($pre_row['answers_json']) ? (json_decode($pre_row['answers_json'], true) ?: []) : [];
     $regen_used = $pre_row ? (int)$pre_row['regen_count'] : 0;
 
-    $pageTitle = 'Create my wiki — Argonar';
+    $pageTitle = 'Create my wiki — Apex Cybernet';
     require_once __DIR__ . '/includes/header.php';
     ?>
     <style>
@@ -352,7 +352,7 @@ if ($action === 'interview') {
                 ['id'=>'rival',           'q'=>'Your biggest rival.',                    'hint'=>'Team or player. Optional.',              'type'=>'text',  'placeholder'=>'e.g. Team Hide Out, player XYZ', 'prev'=>$prev['rival']           ?? ''],
                 ['id'=>'hated_hero',      'q'=>'The hero you HATE facing.',             'hint'=>'Optional.',                              'type'=>'text',  'placeholder'=>'e.g. Broodmother', 'prev'=>$prev['hated_hero']      ?? ''],
                 ['id'=>'catchphrase',    'q'=>'A line your team would quote you saying.','hint'=>'Optional. Short.',                        'type'=>'text',  'placeholder'=>'e.g. farm btw', 'prev'=>$prev['catchphrase']     ?? ''],
-                ['id'=>'goal',            'q'=>'Your goal in Argonar.',                  'hint'=>'Pick one.',                              'type'=>'choice','opts'=>$goals,       'prev'=>$prev['goal']            ?? ''],
+                ['id'=>'goal',            'q'=>'Your goal in Apex Cybernet.',                  'hint'=>'Pick one.',                              'type'=>'choice','opts'=>$goals,       'prev'=>$prev['goal']            ?? ''],
                 ['id'=>'dangerous_line',  'q'=>'One line: why you\'re dangerous.',      'hint'=>'Brag. Optional.',                        'type'=>'text',  'placeholder'=>'e.g. I always win lane.', 'prev'=>$prev['dangerous_line']  ?? ''],
                 ['id'=>'extra',           'q'=>'Anything else?',                         'hint'=>'Optional. Under 300 chars.',             'type'=>'textarea','placeholder'=>'Any other color for the wiki.', 'prev'=>$prev['extra']            ?? ''],
             ];
@@ -423,7 +423,7 @@ if ($action === 'interview') {
 // ── State: SUBMITTED (confirmation — no prompt shown to user) ──
 if ($action === 'submitted') {
     if (!$me_id) { header('Location: ' . base_url('login.php')); exit; }
-    $pageTitle = 'Wiki submitted — Argonar';
+    $pageTitle = 'Wiki submitted — Apex Cybernet';
     require_once __DIR__ . '/includes/header.php';
     ?>
     <style>
@@ -444,7 +444,7 @@ if ($action === 'submitted') {
     <div class="sb-wrap">
         <div class="sb-icon"><i class="bi bi-hourglass-split"></i></div>
         <div class="sb-t">Your wiki is on the way</div>
-        <div class="sb-s">Your answers are in. The Argonar editors will write and publish your wiki shortly — usually within a day. You'll see it live on your wiki page once it's up.</div>
+        <div class="sb-s">Your answers are in. The Apex Cybernet editors will write and publish your wiki shortly — usually within a day. You'll see it live on your wiki page once it's up.</div>
 
         <div class="sb-card">
             <div class="sb-card-t">What happens next</div>
@@ -462,8 +462,8 @@ if ($action === 'submitted') {
 }
 
 // ── State: DIRECTORY (default — existing grid) ──
-$pageTitle       = 'Player Wiki — Argonar';
-$pageDescription = 'Browse all registered players and teams competing in the Argonar tournament.';
+$pageTitle       = 'Player Wiki — Apex Cybernet';
+$pageDescription = 'Browse all registered players and teams competing in the Apex Cybernet tournament.';
 $canonicalUrl    = canonical_url('wiki.php');
 
 $valid_games = ['dota2' => 'Dota 2'];
@@ -624,7 +624,7 @@ require_once __DIR__ . '/includes/header.php';
 
     <div class="wk-head">
         <div class="wk-title"><i class="bi bi-book-fill" style="color:var(--accent-light);font-size:1.4rem;vertical-align:-2px;margin-right:0.4rem;"></i>Player Wiki</div>
-        <div class="wk-sub">All registered Dota 2 players and teams competing in Argonar Season 1.</div>
+        <div class="wk-sub">All registered Dota 2 players and teams competing in Apex Cybernet Season 1.</div>
 
         <?php
         $my_state = 'none';
@@ -642,7 +642,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="wk-self-s">Our editors turned your 12 answers into your wiki page. Redo anytime.</div>
                 <?php elseif ($my_state === 'queued'): ?>
                     <div class="wk-self-t" style="color:#fde68a;">Your wiki is queued for review</div>
-                    <div class="wk-self-s">The Argonar editors are writing it from your answers. Usually up within a day.</div>
+                    <div class="wk-self-s">The Apex Cybernet editors are writing it from your answers. Usually up within a day.</div>
                 <?php else: ?>
                     <div class="wk-self-t">Write your own wiki — 2 minutes</div>
                     <div class="wk-self-s">Answer 12 cards. Our editors handle the writing and publishing for you.</div>

@@ -80,11 +80,11 @@ m_head('Notifications');
 
 <?php m_nav('home'); m_toast(); m_foot(); ?>
 <script>
-// New notifications arrive via the 'argonar:notification' CustomEvent
+// New notifications arrive via the 'apexcybernet:notification' CustomEvent
 // fired by the central poller in mobile/layout.php.
 (function(){
     function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(m){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];});}
-    window.addEventListener('argonar:notification', function(e) {
+    window.addEventListener('apexcybernet:notification', function(e) {
         var n = e.detail;
         var list = document.getElementById('mNotifList');
         if (!list) return;

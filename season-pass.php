@@ -36,8 +36,8 @@ try {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 } catch (Exception $e) { /* ignore */ }
 
-$pageTitle       = 'Argonar Season 1 Pass — Reserve Yours';
-$pageDescription = 'Argonar Season 1 Pass — ₱999 for 4 tournament entries, 2,000 H-Coins, Founder avatar, and early registration access. Limited pre-sale before the season begins.';
+$pageTitle       = 'Apex Cybernet Season 1 Pass — Reserve Yours';
+$pageDescription = 'Apex Cybernet Season 1 Pass — ₱999 for 4 tournament entries, 2,000 H-Coins, Founder avatar, and early registration access. Limited pre-sale before the season begins.';
 $canonicalUrl    = canonical_url('season-pass.php');
 
 require_once __DIR__ . '/includes/header.php';
@@ -228,7 +228,7 @@ h2.sp-h2 { font-size: 1.1rem; font-weight: 800; color: var(--text); margin: 1.75
     <!-- Hero -->
     <div class="sp-hero">
         <div class="sp-tag">⚡ Pre-Sale · Limited Spots</div>
-        <h1>Argonar Season 1 Pass</h1>
+        <h1>Apex Cybernet Season 1 Pass</h1>
         <p class="sp-sub">Lock in the season before the first match. 4 tournament entries, 2,000 H-Coins, Founder avatar, and early registration access.</p>
         <div class="sp-price">
             <span class="peso">₱999</span>
@@ -333,11 +333,11 @@ h2.sp-h2 { font-size: 1.1rem; font-weight: 800; color: var(--text); margin: 1.75
     <div class="sp-faq">
         <div class="sp-faq-item">
             <div class="sp-faq-q">Why pre-sale?</div>
-            <div class="sp-faq-a">Argonar needs prize pool + production funding before Season 1 can go big. The pre-sale lets founding players fund the season and lock in a discounted bundle — everyone wins.</div>
+            <div class="sp-faq-a">Apex Cybernet needs prize pool + production funding before Season 1 can go big. The pre-sale lets founding players fund the season and lock in a discounted bundle — everyone wins.</div>
         </div>
         <div class="sp-faq-item">
             <div class="sp-faq-q">What counts as one of the 4 tournaments?</div>
-            <div class="sp-faq-a">Any Argonar-organized Dota 2 tournament during Season 1, solo or team entry. One entry = one tournament. Entries don't expire within the season.</div>
+            <div class="sp-faq-a">Any Apex Cybernet-organized Dota 2 tournament during Season 1, solo or team entry. One entry = one tournament. Entries don't expire within the season.</div>
         </div>
         <div class="sp-faq-item">
             <div class="sp-faq-q">Is this refundable?</div>

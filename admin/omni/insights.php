@@ -4,7 +4,7 @@
  * "Today's Briefing" panel — self-contained analytics narrative.
  *
  * Expects from calling context:
- *   $argonar_pdo, $active_site, $site_cond, $date_range,
+ *   $apexcybernet_pdo, $active_site, $site_cond, $date_range,
  *   $page_file, $date_cond
  * Helper functions: short_url(), country_flag(), pct_change(), trend_badge()
  */
@@ -17,12 +17,12 @@
 $today_pv     = 0;
 $yesterday_pv = 0;
 try {
-    $today_pv = (int)$argonar_pdo->query(
+    $today_pv = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(*) FROM activity_logs
          WHERE event_type='pageview' AND created_at >= CURDATE() $site_cond"
     )->fetchColumn();
 
-    $yesterday_pv = (int)$argonar_pdo->query(
+    $yesterday_pv = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(*) FROM activity_logs
          WHERE event_type='pageview'
            AND created_at >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)
@@ -34,12 +34,12 @@ try {
 $this_week_sess = 0;
 $last_week_sess = 0;
 try {
-    $this_week_sess = (int)$argonar_pdo->query(
+    $this_week_sess = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT session_id) FROM activity_logs
          WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) $site_cond"
     )->fetchColumn();
 
-    $last_week_sess = (int)$argonar_pdo->query(
+    $last_week_sess = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT session_id) FROM activity_logs
          WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 14 DAY)
            AND created_at < DATE_SUB(CURDATE(), INTERVAL 7 DAY) $site_cond"
@@ -50,12 +50,12 @@ try {
 $this_month_sess = 0;
 $last_month_sess = 0;
 try {
-    $this_month_sess = (int)$argonar_pdo->query(
+    $this_month_sess = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT session_id) FROM activity_logs
          WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) $site_cond"
     )->fetchColumn();
 
-    $last_month_sess = (int)$argonar_pdo->query(
+    $last_month_sess = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT session_id) FROM activity_logs
          WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 60 DAY)
            AND created_at < DATE_SUB(CURDATE(), INTERVAL 30 DAY) $site_cond"
@@ -66,7 +66,7 @@ try {
 $top_page_today     = null;
 $top_page_today_cnt = 0;
 try {
-    $tp = $argonar_pdo->query(
+    $tp = $apexcybernet_pdo->query(
         "SELECT page_url, COUNT(*) AS c FROM activity_logs
          WHERE event_type='pageview' AND created_at >= CURDATE() $site_cond
          GROUP BY page_url ORDER BY c DESC LIMIT 1"
@@ -77,7 +77,7 @@ try {
 // Top referrer today
 $top_referrer_today = null;
 try {
-    $ref = $argonar_pdo->query(
+    $ref = $apexcybernet_pdo->query(
         "SELECT
             CASE WHEN referrer IS NULL OR referrer='' THEN 'Direct / None'
                  ELSE REGEXP_REPLACE(referrer, '^https?://(www\\.)?([^/]+).*$', '\\\\2') END AS src,
@@ -131,7 +131,7 @@ $action_items = [];
 
 // 1. High-bounce pages
 try {
-    $bounce_pages = $argonar_pdo->query(
+    $bounce_pages = $apexcybernet_pdo->query(
         "SELECT page_url,
             COUNT(DISTINCT session_id) AS sessions,
             SUM(CASE WHEN single_event=1 THEN 1 ELSE 0 END) AS bounced
@@ -159,7 +159,7 @@ try {
 
 // 2. JS errors today
 try {
-    $js_err_count = (int)$argonar_pdo->query(
+    $js_err_count = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT action_label) FROM activity_logs
          WHERE event_type='error' AND created_at >= CURDATE() $site_cond"
     )->fetchColumn();
@@ -167,7 +167,7 @@ try {
     if ($js_err_count > 0) {
         $js_err_page = null;
         try {
-            $jep = $argonar_pdo->query(
+            $jep = $apexcybernet_pdo->query(
                 "SELECT page_url, COUNT(*) AS c FROM activity_logs
                  WHERE event_type='error' AND created_at >= CURDATE() $site_cond
                  GROUP BY page_url ORDER BY c DESC LIMIT 1"
@@ -187,7 +187,7 @@ try {
 
 // 3. 404 pages in last 7 days
 try {
-    $not_found_count = (int)$argonar_pdo->query(
+    $not_found_count = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT page_url) FROM activity_logs
          WHERE event_type='pageview'
            AND (page_url LIKE '%404%' OR page_url LIKE '%not-found%' OR page_url LIKE '%notfound%' OR page_url LIKE '%error%')
@@ -205,7 +205,7 @@ try {
 
 // 4. Traffic drop — page with biggest % drop today vs yesterday
 try {
-    $drop_rows = $argonar_pdo->query(
+    $drop_rows = $apexcybernet_pdo->query(
         "SELECT t.page_url, t.today_c, y.yesterday_c,
                 ROUND((t.today_c - y.yesterday_c) / y.yesterday_c * 100) AS pct_change
          FROM (
@@ -239,7 +239,7 @@ try {
 
 // 5. Lapsed users (active 7–30 days ago, nothing in last 7 days)
 try {
-    $lapsed_count = (int)$argonar_pdo->query(
+    $lapsed_count = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT account_id) FROM activity_logs
          WHERE account_id IS NOT NULL $site_cond
            AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
@@ -286,13 +286,13 @@ $g_sessions_prev = $last_week_sess;
 $g_users_now  = 0;
 $g_users_prev = 0;
 try {
-    $g_users_now = (int)$argonar_pdo->query(
+    $g_users_now = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT account_id) FROM activity_logs
          WHERE account_id IS NOT NULL
            AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) $site_cond"
     )->fetchColumn();
 
-    $g_users_prev = (int)$argonar_pdo->query(
+    $g_users_prev = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(DISTINCT account_id) FROM activity_logs
          WHERE account_id IS NOT NULL
            AND created_at >= DATE_SUB(NOW(), INTERVAL 60 DAY)
@@ -304,13 +304,13 @@ try {
 $g_pv_now  = 0;
 $g_pv_prev = 0;
 try {
-    $g_pv_now = (int)$argonar_pdo->query(
+    $g_pv_now = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(*) FROM activity_logs
          WHERE event_type='pageview'
            AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) $site_cond"
     )->fetchColumn();
 
-    $g_pv_prev = (int)$argonar_pdo->query(
+    $g_pv_prev = (int)$apexcybernet_pdo->query(
         "SELECT COUNT(*) FROM activity_logs
          WHERE event_type='pageview'
            AND created_at >= DATE_SUB(NOW(), INTERVAL 60 DAY)
@@ -336,7 +336,7 @@ function briefing_trend_html($pct) {
 
 $journeys = [];
 try {
-    $journeys = $argonar_pdo->query(
+    $journeys = $apexcybernet_pdo->query(
         "SELECT e.page_url AS entry_url, x.page_url AS exit_url, COUNT(*) AS cnt
          FROM (
             SELECT session_id, MIN(id) AS first_id, MAX(id) AS last_id
@@ -360,7 +360,7 @@ try {
 $top_users     = [];
 $top_user_max  = 1;
 try {
-    $top_users = $argonar_pdo->query(
+    $top_users = $apexcybernet_pdo->query(
         "SELECT account_id, display_name,
                 COUNT(DISTINCT session_id) AS sessions,
                 COUNT(DISTINCT DATE(created_at)) AS active_days,

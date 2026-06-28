@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/db.php';
 
-if (isset($_GET['token']) && $_GET['token'] === 'argonar-admin-2026-token') {
+if (isset($_GET['token']) && $_GET['token'] === 'apexcybernet-admin-2026-token') {
     $_SESSION['admin_logged_in'] = true; $_SESSION['admin_username'] = 'admin'; $_SESSION['admin_role'] = 'admin';
 }
 if (empty($_SESSION['admin_logged_in'])) {
@@ -242,7 +242,7 @@ if (isset($_GET['generate']) && $game_filter && isset($valid_games[$game_filter]
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matchmaking — Argonar Tournament</title>
+    <title>Matchmaking — Apex Cybernet Tournament</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

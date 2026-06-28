@@ -7,25 +7,25 @@
  */
 
 require_once __DIR__ . '/taxonomy.php';
-if (!isset($argonar_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $argonar_pdo = $pdo; }
+if (!isset($apexcybernet_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $apexcybernet_pdo = $pdo; }
 
-$run_id = omni_start_run($argonar_pdo, 'sync-decisions');
+$run_id = omni_start_run($apexcybernet_pdo, 'sync-decisions');
 $objs = 0; $links = 0; $err = null;
 
 try {
     try {
-        $rows = $argonar_pdo->query("SELECT * FROM decision_log ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $apexcybernet_pdo->query("SELECT * FROM decision_log ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) { $rows = []; }
 
     foreach ($rows as $r) {
         $br  = 'BR-' . str_pad((string)$r['id'], 4, '0', STR_PAD_LEFT);
         $biz = $r['business'] ?? 'general';
-        $biz_norm = in_array($biz, ['argonar','ocpd','loan','alrisha'], true) ? $biz : 'argonar';
+        $biz_norm = in_array($biz, ['apexcybernet','ocpd','loan','alrisha'], true) ? $biz : 'apexcybernet';
 
         // Ensure the business object exists
-        $biz_id = omni_id_for_ref($argonar_pdo, 'global:business:' . $biz_norm);
+        $biz_id = omni_id_for_ref($apexcybernet_pdo, 'global:business:' . $biz_norm);
         if (!$biz_id) {
-            $biz_id = omni_upsert_object($argonar_pdo, [
+            $biz_id = omni_upsert_object($apexcybernet_pdo, [
                 'ref'=>'global:business:' . $biz_norm,'type'=>'Business',
                 'business'=>$biz_norm,'label'=>ucfirst($biz_norm),
                 'props'=>['kind'=>'inferred'],
@@ -33,7 +33,7 @@ try {
             $objs++;
         }
 
-        $ref = omni_ref('argonar','decision',$r['id']);
+        $ref = omni_ref('apexcybernet','decision',$r['id']);
         $props = [
             'br'           => $br,
             'title'        => $r['title'] ?? '',
@@ -47,7 +47,7 @@ try {
             'decided_at'   => $r['decided_at'] ?? null,
             'updated_at'   => $r['updated_at'] ?? null,
         ];
-        $did = omni_upsert_object($argonar_pdo, [
+        $did = omni_upsert_object($apexcybernet_pdo, [
             'ref'=>$ref,'type'=>'Decision','business'=>$biz_norm,
             'label'=>$br . ' · ' . ($r['title'] ?? ''),
             'props'=>$props,
@@ -55,15 +55,15 @@ try {
         ]);
         $objs++;
 
-        if (omni_link($argonar_pdo, $did, $biz_id, 'BELONGS_TO', [
+        if (omni_link($apexcybernet_pdo, $did, $biz_id, 'BELONGS_TO', [
             'occurred_at' => $r['decided_at'] ?? ($r['created_at'] ?? null),
         ])) $links++;
     }
 
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links);
 } catch (Exception $e) {
     $err = $e->getMessage();
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links, $err);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links, $err);
 }
 
 if (php_sapi_name() === 'cli' || (isset($_GET['verbose']) && $_GET['verbose'])) {

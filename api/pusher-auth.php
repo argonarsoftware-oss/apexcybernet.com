@@ -1,7 +1,7 @@
 <?php
 /**
  * POST /api/pusher-auth.php
- * Authenticates private Pusher/Soketi channels for desktop (argonar.co) sessions.
+ * Authenticates private Pusher/Soketi channels for desktop (apexcybernet.com) sessions.
  * Users may only subscribe to their own private-user.{uid} channel.
  */
 require_once __DIR__ . '/../includes/db.php';

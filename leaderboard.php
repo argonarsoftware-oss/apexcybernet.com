@@ -7,12 +7,12 @@ $valid_games = [
     'dota2'     => 'Dota 2',
 ];
 
-$pageTitle = 'Hall of Fame — Argonar Dota 2 Tournament Champions';
-$pageDescription = 'Champions, all-time records, and award-winning players of the Argonar Dota 2 Tournament. Every match on record. Every win in history.';
+$pageTitle = 'Hall of Fame — Apex Cybernet Dota 2 Tournament Champions';
+$pageDescription = 'Champions, all-time records, and award-winning players of the Apex Cybernet Dota 2 Tournament. Every match on record. Every win in history.';
 $canonicalUrl = canonical_url('leaderboard.php');
 $extraHead = breadcrumb_jsonld([
-    ['name' => 'Home',         'url' => 'https://argonar.co/'],
-    ['name' => 'Hall of Fame', 'url' => 'https://argonar.co/leaderboard.php'],
+    ['name' => 'Home',         'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Hall of Fame', 'url' => 'https://apexcybernet.com/leaderboard.php'],
 ]);
 
 // Champions — tournament results

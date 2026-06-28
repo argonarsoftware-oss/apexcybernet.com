@@ -12,18 +12,18 @@ $active_site = 'omni';
 $page_file   = 'omni/simulate.php';
 
 require_once __DIR__ . '/../../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/pipelines/taxonomy.php';
 require_once __DIR__ . '/executors.php';
 
 // ── Sidebar stats (same shape as other omni pages) ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}
@@ -76,12 +76,12 @@ if (!empty($where)) {
             LIMIT $limit";
     $sql_count = "SELECT COUNT(*) FROM omni_objects o WHERE " . implode(' AND ', $where);
     try {
-        $st = $argonar_pdo->prepare($sql);
+        $st = $apexcybernet_pdo->prepare($sql);
         foreach ($binds as $k=>$v) $st->bindValue($k,$v);
         $st->execute();
         $cohort = $st->fetchAll(PDO::FETCH_ASSOC);
 
-        $stc = $argonar_pdo->prepare($sql_count);
+        $stc = $apexcybernet_pdo->prepare($sql_count);
         foreach ($binds as $k=>$v) $stc->bindValue($k,$v);
         $stc->execute();
         $cohort_count = (int)$stc->fetchColumn();
@@ -100,15 +100,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['action_type']) && !e
     $ids = array_filter(array_map('intval', explode(',', (string)$_POST['cohort_ids'])));
     if (!empty($ids)) {
         $ph = implode(',', array_fill(0, count($ids), '?'));
-        $st = $argonar_pdo->prepare("SELECT * FROM omni_objects WHERE id IN ($ph)");
+        $st = $apexcybernet_pdo->prepare("SELECT * FROM omni_objects WHERE id IN ($ph)");
         $st->execute($ids);
         $targets = $st->fetchAll(PDO::FETCH_ASSOC);
 
         $ok_count = 0; $err_count = 0; $per_row = [];
         foreach ($targets as $obj) {
             $res = ($mode === 'execute')
-                ? omni_execute($argonar_pdo, $obj, $action_type, $payload)
-                : omni_simulate($argonar_pdo, $obj, $action_type, $payload);
+                ? omni_execute($apexcybernet_pdo, $obj, $action_type, $payload)
+                : omni_simulate($apexcybernet_pdo, $obj, $action_type, $payload);
             if (!empty($res['ok'])) $ok_count++; else $err_count++;
             $per_row[] = [
                 'object_id'=>$obj['id'],
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['action_type']) && !e
 // ── Recent run history ──
 $recent = [];
 try {
-    $recent = $argonar_pdo->query(
+    $recent = $apexcybernet_pdo->query(
         "SELECT a.id, a.action_type, a.status, a.performed_by, a.performed_at, a.payload, o.label AS target_label
          FROM omni_actions a LEFT JOIN omni_objects o ON o.id = a.object_id
          ORDER BY a.performed_at DESC LIMIT 30"
@@ -137,7 +137,7 @@ try {
 } catch (Exception $e) {}
 
 function bizc2(string $biz): string {
-    $c = ['argonar'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#fbbf24','alrisha'=>'#34d399','global'=>'#94a3b8'];
+    $c = ['apexcybernet'=>'#a78bfa','ocpd'=>'#38bdf8','loan'=>'#fbbf24','alrisha'=>'#34d399','global'=>'#94a3b8'];
     return $c[$biz] ?? '#94a3b8';
 }
 ?>
@@ -202,7 +202,7 @@ function bizc2(string $biz): string {
           <label>Business</label>
           <select name="biz">
             <option value="">— any —</option>
-            <?php foreach (['argonar','ocpd','loan','alrisha','global'] as $b): ?>
+            <?php foreach (['apexcybernet','ocpd','loan','alrisha','global'] as $b): ?>
               <option value="<?= $b ?>" <?= $biz===$b?'selected':'' ?>><?= ucfirst($b) ?></option>
             <?php endforeach; ?>
           </select>

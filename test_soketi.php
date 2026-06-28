@@ -1,5 +1,5 @@
 <?php
-if (($_GET['token'] ?? '') !== 'argonar-ws-test-2026') die('Forbidden');
+if (($_GET['token'] ?? '') !== 'apexcybernet-ws-test-2026') die('Forbidden');
 header('Content-Type: application/json');
 
 // Test 1: Can we reach Soketi on port 6001?

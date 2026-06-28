@@ -14,11 +14,11 @@ m_head('Tournament');
 </div>
 
 <div style="padding:0 1rem 0.75rem;font-size:0.78rem;color:var(--muted);">
-    Argonar Dota 2 Tournament — opens in desktop view for this session only.
+    Apex Cybernet Dota 2 Tournament — opens in desktop view for this session only.
 </div>
 
 <div class="m-tour-menu">
-    <a class="m-tour-item" href="https://argonar.co/bracket.php?full_once=1">
+    <a class="m-tour-item" href="https://apexcybernet.com/bracket.php?full_once=1">
         <div class="m-tour-ico" style="background:rgba(251,191,36,0.12);color:#fbbf24;">
             <i class="bi bi-trophy-fill"></i>
         </div>
@@ -29,7 +29,7 @@ m_head('Tournament');
         <i class="bi bi-chevron-right m-tour-chev"></i>
     </a>
 
-    <a class="m-tour-item" href="https://argonar.co/register.php?game=dota2&full_once=1">
+    <a class="m-tour-item" href="https://apexcybernet.com/register.php?game=dota2&full_once=1">
         <div class="m-tour-ico" style="background:rgba(34,197,94,0.12);color:#22c55e;">
             <i class="bi bi-people-fill"></i>
         </div>
@@ -40,7 +40,7 @@ m_head('Tournament');
         <i class="bi bi-chevron-right m-tour-chev"></i>
     </a>
 
-    <a class="m-tour-item" href="https://argonar.co/matchmaking.php?game=dota2&full_once=1">
+    <a class="m-tour-item" href="https://apexcybernet.com/matchmaking.php?game=dota2&full_once=1">
         <div class="m-tour-ico" style="background:rgba(124,58,237,0.15);color:#a78bfa;">
             <i class="bi bi-person-plus-fill"></i>
         </div>
@@ -51,7 +51,7 @@ m_head('Tournament');
         <i class="bi bi-chevron-right m-tour-chev"></i>
     </a>
 
-    <a class="m-tour-item" href="https://argonar.co/predict.php?full_once=1">
+    <a class="m-tour-item" href="https://apexcybernet.com/predict.php?full_once=1">
         <div class="m-tour-ico" style="background:rgba(34,197,94,0.12);color:#22c55e;">
             <i class="bi bi-graph-up-arrow"></i>
         </div>
@@ -62,7 +62,7 @@ m_head('Tournament');
         <i class="bi bi-chevron-right m-tour-chev"></i>
     </a>
 
-    <a class="m-tour-item" href="https://argonar.co/leaderboard.php?full_once=1">
+    <a class="m-tour-item" href="https://apexcybernet.com/leaderboard.php?full_once=1">
         <div class="m-tour-ico" style="background:rgba(239,68,68,0.12);color:#f87171;">
             <i class="bi bi-bar-chart-fill"></i>
         </div>

@@ -40,9 +40,9 @@ if ($_ws_uid):
 <script>
 // ── Central notification poller (replaces the WebSocket path) ──
 // Polls api/notifications.php?action=list every 10s. For each new item since
-// the last poll: prepends to bell, bumps badge, fires window 'argonar:notification'
+// the last poll: prepends to bell, bumps badge, fires window 'apexcybernet:notification'
 // so per-page listeners (marketplace, buy.php, etc.) can react.
-window.argonarUid = <?= $_ws_uid ?>;
+window.apexcybernetUid = <?= $_ws_uid ?>;
 (function() {
     var lastSeenId  = 0;
     var initialized = false;
@@ -63,7 +63,7 @@ window.argonarUid = <?= $_ws_uid ?>;
                     // Skip firing events on the first poll — just catch up to current state
                     if (initialized) {
                         // Fire custom event for page-level listeners
-                        window.dispatchEvent(new CustomEvent('argonar:notification', { detail: n }));
+                        window.dispatchEvent(new CustomEvent('apexcybernet:notification', { detail: n }));
 
                         // Prepend to bell dropdown if present
                         var list = document.getElementById('notifList');
@@ -175,7 +175,7 @@ window.argonarUid = <?= $_ws_uid ?>;
 
 // Copy link
 function copyLink(btn) {
-    navigator.clipboard.writeText('https://argonar.co').then(function() {
+    navigator.clipboard.writeText('https://apexcybernet.com').then(function() {
         var orig = btn.innerHTML;
         btn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
         setTimeout(function() { btn.innerHTML = orig; }, 2000);
@@ -308,7 +308,7 @@ function toggleVideoSound(btn) {
 
     // Realtime: prepend new notifications as they arrive
     // New notifications arrive via the central poller (below) which dispatches
-    // 'argonar:notification' — it handles prepending into #notifList and the
+    // 'apexcybernet:notification' — it handles prepending into #notifList and the
     // badge, so no per-subscription wiring is needed here.
 })();
 
@@ -341,7 +341,7 @@ function toggleVideoSound(btn) {
     <div id="gjb-inner">
         <button id="gjb-close" onclick="gjbDismiss()" aria-label="Dismiss">&times;</button>
         <div id="gjb-icon">🏆</div>
-        <div id="gjb-heading">Join Argonar Tournament</div>
+        <div id="gjb-heading">Join Apex Cybernet Tournament</div>
         <div id="gjb-sub">Register to lock in your tournament slot. ₱500/team · ₱100/solo entry.</div>
         <div id="gjb-perks">
             <span>🎮 Tournament access</span>

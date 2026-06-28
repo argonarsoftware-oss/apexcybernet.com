@@ -8,7 +8,7 @@ if (current_user($pdo)) {
 }
 
 $pageTitle       = 'Set new password';
-$pageDescription = 'Choose a new password for your Argonar account.';
+$pageDescription = 'Choose a new password for your Apex Cybernet account.';
 
 $token   = trim($_GET['token'] ?? ($_POST['token'] ?? ''));
 $errors  = [];

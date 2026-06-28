@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/pusher.php';
 
 // Safety — local only or with secret token
 $token = $_GET['token'] ?? '';
-if ($token !== 'argonar-ws-test-2026') {
+if ($token !== 'apexcybernet-ws-test-2026') {
     die(json_encode(['error' => 'Forbidden']));
 }
 

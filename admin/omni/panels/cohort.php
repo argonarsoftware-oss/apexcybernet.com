@@ -2,14 +2,14 @@
 /**
  * panels/cohort.php
  * Cohort Retention (Weekly) panel.
- * Expects: $argonar_pdo, $active_site
+ * Expects: $apexcybernet_pdo, $active_site
  */
 
 $cohort_data = [];
 $cohort_error = null;
 try {
     // Self-join approach — no window functions, works on MySQL 5.7+
-    $st = $argonar_pdo->prepare("
+    $st = $apexcybernet_pdo->prepare("
         SELECT
             YEARWEEK(base.first_seen, 1) AS cohort_week,
             COUNT(DISTINCT base.uid) AS cohort_size,

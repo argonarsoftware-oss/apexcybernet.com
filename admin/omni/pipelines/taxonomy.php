@@ -8,17 +8,17 @@
  *   omni_object_by_ref(), omni_object_by_id(), omni_neighbors(),
  *   omni_start_run(), omni_finish_run(), omni_log().
  *
- * Depends on a $pdo or $argonar_pdo already in scope when helpers are called.
+ * Depends on a $pdo or $apexcybernet_pdo already in scope when helpers are called.
  * Never outputs anything on include.
  */
 
 // ── Canonical object types ──
 const OMNI_TYPES = [
     'Person',         // accounts
-    'Business',       // argonar, ocpd, loan, alrisha
+    'Business',       // apexcybernet, ocpd, loan, alrisha
     'Transaction',    // h_coin_transactions, loan repayments, alrisha sales
     'Loan',           // loan_management_ph.loans
-    'Team',           // argonar teams
+    'Team',           // apexcybernet teams
     'Player',         // solo players
     'Match',          // bracket matches
     'Event',          // activity_logs pageviews / clicks (coarse per session)
@@ -44,7 +44,7 @@ const OMNI_RELATIONS = [
     'REFERRED',       // Person → Person (referrer)
     'APPROVED',       // Person (admin) → any object
     'IMPACTS',        // Decision → any object it affects
-    'HOSTED',         // Business → Business (e.g. Alrisha hosting Argonar cafe)
+    'HOSTED',         // Business → Business (e.g. Alrisha hosting Apex Cybernet cafe)
     'SOLD',           // Person → Listing
     'BOUGHT',         // Person → Listing
     'MENTIONS',       // Decision → tag/object
@@ -73,13 +73,13 @@ const OMNI_ACTIONS = [
 // ══════════════════════════════════════════════════════════════
 
 /**
- * Upsert an object by its canonical ref (e.g. "argonar:person:42").
+ * Upsert an object by its canonical ref (e.g. "apexcybernet:person:42").
  * Returns the omni_objects.id.
  */
 function omni_upsert_object(PDO $db, array $row): int {
     $ref      = $row['ref']      ?? '';
     $type     = $row['type']     ?? '';
-    $business = $row['business'] ?? 'argonar';
+    $business = $row['business'] ?? 'apexcybernet';
     $label    = $row['label']    ?? '';
     $props    = $row['props']    ?? [];
     $src_tbl  = $row['source_table'] ?? '';

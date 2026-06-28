@@ -1,7 +1,7 @@
 <?php
 /**
  * GitHub Webhook Auto-Deploy
- * Argonar Construction
+ * Apex Cybernet
  * Version: 1.0
  *
  * Only deploys when a commit message contains [deploy].
@@ -10,15 +10,15 @@
  * Setup:
  * 1. Upload this file to your web root on the cloud server
  * 2. Go to GitHub repo → Settings → Webhooks → Add webhook
- *    - Payload URL: https://argonar.co/webhook-deploy.php
+ *    - Payload URL: https://apexcybernet.com/webhook-deploy.php
  *    - Content type: application/json
  *    - Secret: (set the same secret below)
  *    - Events: Just the push event
  * 3. Set the WEBHOOK_SECRET below to match the GitHub secret
  * 4. Make sure the web server user (www-data) can run git pull
  *    Run once on server:
- *    sudo chown -R www-data:www-data /var/www/argonar/.git
- *    git config --global --add safe.directory /var/www/argonar
+ *    sudo chown -R www-data:www-data /var/www/apexcybernet/.git
+ *    git config --global --add safe.directory /var/www/apexcybernet
  */
 
 // ============================================================
@@ -26,7 +26,7 @@
 // ============================================================
 define('WEBHOOK_SECRET', 'kirfenia123');
 define('DEPLOY_KEYWORD', '[deploy]');
-define('WEB_ROOT', '/var/www/argonar');
+define('WEB_ROOT', '/var/www/apexcybernet');
 define('LOG_DIR', __DIR__ . '/logs');
 define('LOG_FILE', LOG_DIR . '/deploy.log');
 define('ALLOWED_BRANCH', 'refs/heads/main');

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 
-if (($_GET['token'] ?? '') !== 'argonar-ws-test-2026') die('Forbidden');
+if (($_GET['token'] ?? '') !== 'apexcybernet-ws-test-2026') die('Forbidden');
 
 header('Content-Type: application/json');
 
@@ -26,7 +26,7 @@ function api_post($url, $payload) {
     return json_decode(@file_get_contents($url, false, $ctx), true);
 }
 
-$base = 'https://argonar.co/api/merchant-sell.php';
+$base = 'https://apexcybernet.com/api/merchant-sell.php';
 
 // Step 1: lookup
 $lookup = api_post($base, ['action' => 'lookup', 'token' => $buy_token, 'merchant_id' => $mid]);

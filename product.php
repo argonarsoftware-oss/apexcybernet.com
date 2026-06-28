@@ -111,8 +111,8 @@ $is_active = $item['status'] === 'active';
 $can_buy   = $logged_in && !$is_own && $is_active;
 $short_tab = $_GET['tab'] ?? 'desc';
 
-$pageTitle       = htmlspecialchars($item['title']) . ' — Argonar Marketplace';
-$pageDescription = mb_strimwidth(strip_tags($item['description'] ?? ''), 0, 160, '…') ?: 'Buy with HCoins on Argonar Marketplace.';
+$pageTitle       = htmlspecialchars($item['title']) . ' — Apex Cybernet Marketplace';
+$pageDescription = mb_strimwidth(strip_tags($item['description'] ?? ''), 0, 160, '…') ?: 'Buy with HCoins on Apex Cybernet Marketplace.';
 if (!empty($images[0])) $ogImage = base_url($images[0]);
 
 require_once __DIR__ . '/includes/header.php';

@@ -1,19 +1,19 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
-$pageTitle       = 'Privacy Policy — Argonar Tournament';
-$pageDescription = 'Privacy Policy for Argonar Tournament. Learn how we collect, use, and protect your personal information under RA 10173 (Data Privacy Act of the Philippines).';
+$pageTitle       = 'Privacy Policy — Apex Cybernet Tournament';
+$pageDescription = 'Privacy Policy for Apex Cybernet Tournament. Learn how we collect, use, and protect your personal information under RA 10173 (Data Privacy Act of the Philippines).';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <div class="reg-container" style="max-width:720px;">
     <a href="<?= base_url() ?>" class="back-link"><i class="bi bi-arrow-left"></i> Back to home</a>
     <div class="reg-card">
         <h1 style="font-size:1.5rem; font-weight:800; margin-bottom:0.25rem;"><i class="bi bi-shield-lock"></i> Privacy Policy</h1>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem;">Last updated: April 13, 2026 · Argonar Software OPC</p>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem;">Last updated: April 13, 2026 · Apex Cybernet</p>
 
         <?php
         $sections = [
             ['title' => '1. Introduction and Scope', 'body' => '
-                Argonar Software OPC ("Argonar," "we," "us," "our") operates the Argonar Tournament Platform at argonar.co
+                Apex Cybernet ("Apex Cybernet," "we," "us," "our") operates the Apex Cybernet Tournament Platform at apexcybernet.com
                 (the "Platform"). We are a one-person corporation registered and operating under the laws of the Republic
                 of the Philippines, with principal place of business in Cebu City, Philippines.
                 <br><br>
@@ -35,7 +35,7 @@ require_once __DIR__ . '/includes/header.php';
                 Capitalized terms not defined herein have the meanings given to them in the Terms of Service.
             '],
             ['title' => '2. Data Protection Officer', 'body' => '
-                In compliance with the DPA and NPC requirements, Argonar has designated a Data Protection Officer ("DPO")
+                In compliance with the DPA and NPC requirements, Apex Cybernet has designated a Data Protection Officer ("DPO")
                 who is responsible for the oversight of the company\'s data protection strategy and implementation to ensure
                 compliance with the DPA and its IRR.
                 <br><br>
@@ -43,7 +43,7 @@ require_once __DIR__ . '/includes/header.php';
                 or our data processing practices, you may contact our DPO through the following:
                 <br><br>
                 <strong style="color:var(--text-main);">Data Protection Officer</strong><br>
-                Argonar Software OPC<br>
+                Apex Cybernet<br>
                 Cebu City, Philippines<br>
                 <br><br>
                 We will acknowledge receipt of your inquiry within five (5) business days and respond substantively within
@@ -192,7 +192,7 @@ require_once __DIR__ . '/includes/header.php';
             '],
             ['title' => '6. Sharing and Disclosure of Information', 'body' => '
                 <strong style="color:var(--text-main);">6.1 We Do Not Sell Your Data</strong><br>
-                Argonar does not sell, rent, trade, or otherwise commercially transfer your personal information to third
+                Apex Cybernet does not sell, rent, trade, or otherwise commercially transfer your personal information to third
                 parties for their own marketing or business purposes. We have never sold personal data and have no plans
                 to do so.
                 <br><br>
@@ -523,14 +523,14 @@ require_once __DIR__ . '/includes/header.php';
             '],
             ['title' => '18. Accountability and Governance', 'body' => '
                 <strong style="color:var(--text-main);">18.1 Accountability Principle</strong><br>
-                Argonar Software OPC, as the personal information controller, is accountable for personal data under its
+                Apex Cybernet, as the personal information controller, is accountable for personal data under its
                 control or custody, including data that has been transferred to a third party for processing, whether
                 domestically or internationally. We implement appropriate organizational, physical, and technical measures
                 to ensure compliance with the DPA and to demonstrate such compliance upon request.
                 <br><br>
                 <strong style="color:var(--text-main);">18.2 Privacy Impact Assessments</strong><br>
                 For new features, services, or data processing activities that are likely to result in a high risk to the
-                rights and freedoms of data subjects, Argonar conducts privacy impact assessments to identify and mitigate
+                rights and freedoms of data subjects, Apex Cybernet conducts privacy impact assessments to identify and mitigate
                 risks before implementation. This includes assessments for new prediction features, marketplace functionalities,
                 payment integrations, and any changes that significantly affect how personal data is processed.
                 <br><br>
@@ -547,7 +547,7 @@ require_once __DIR__ . '/includes/header.php';
                 <strong style="color:var(--text-main);">18.5 Subcontractor Oversight</strong><br>
                 Where we engage third-party service providers to process personal data on our behalf, we ensure that
                 appropriate contractual safeguards are in place requiring the service provider to: (a) process personal data
-                only as instructed by Argonar; (b) implement appropriate security measures; (c) notify Argonar of any data
+                only as instructed by Apex Cybernet; (b) implement appropriate security measures; (c) notify Apex Cybernet of any data
                 breach without undue delay; (d) delete or return personal data upon termination of the service agreement;
                 (e) submit to audits and inspections to verify compliance.
             '],
@@ -609,7 +609,7 @@ require_once __DIR__ . '/includes/header.php';
                 <strong style="color:var(--text-main);">21.1 Anonymization</strong><br>
                 Where possible and appropriate, we anonymize personal data so that it can no longer be attributed to a
                 specific data subject. Anonymized data is not considered personal information under the DPA and may be
-                used by Argonar for any purpose, including but not limited to research, analytics, statistical analysis,
+                used by Apex Cybernet for any purpose, including but not limited to research, analytics, statistical analysis,
                 service improvement, and business development, without restriction.
                 <br><br>
                 <strong style="color:var(--text-main);">21.2 Pseudonymization</strong><br>
@@ -640,7 +640,7 @@ require_once __DIR__ . '/includes/header.php';
                 <br><br>
                 <strong style="color:var(--text-main);">22.3 Consent for Minors</strong><br>
                 For Users under the age of 18, consent must be provided or authorized by the User\'s parent or legal guardian.
-                Argonar reserves the right to request proof of parental or guardian consent before allowing minors to use
+                Apex Cybernet reserves the right to request proof of parental or guardian consent before allowing minors to use
                 the Platform.
                 <br><br>
                 <strong style="color:var(--text-main);">22.4 Records of Consent</strong><br>
@@ -660,12 +660,12 @@ require_once __DIR__ . '/includes/header.php';
                 been violated.
                 <br><br>
                 <strong style="color:var(--text-main);">23.3 Cooperation with Authorities</strong><br>
-                Argonar will cooperate fully with the National Privacy Commission, the Department of Justice, and any other
+                Apex Cybernet will cooperate fully with the National Privacy Commission, the Department of Justice, and any other
                 relevant government authority in connection with any investigation, audit, inquiry, or complaint relating to
                 our data processing activities. We will provide all requested information and access in a timely manner.
                 <br><br>
                 <strong style="color:var(--text-main);">23.4 No Retaliation</strong><br>
-                Argonar will not retaliate against any User who, in good faith, files a complaint, exercises their data
+                Apex Cybernet will not retaliate against any User who, in good faith, files a complaint, exercises their data
                 subject rights, or cooperates with a regulatory investigation. Any form of retaliation, including Account
                 termination, service degradation, or harassment, is strictly prohibited.
             '],
@@ -681,7 +681,7 @@ require_once __DIR__ . '/includes/header.php';
                 For any questions, concerns, complaints, or requests related to this Privacy Policy or our data processing
                 practices, please contact us:
                 <br><br>
-                <strong style="color:var(--text-main);">Argonar Software OPC</strong><br>
+                <strong style="color:var(--text-main);">Apex Cybernet</strong><br>
                 Cebu City, Philippines<br>
                 <br><br>
                 We take all privacy concerns seriously and will respond to your inquiry within fifteen (15) business days.

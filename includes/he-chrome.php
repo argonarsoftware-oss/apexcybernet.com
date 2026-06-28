@@ -32,7 +32,7 @@ body > .terms-landing, body > .prize-pick, body > .hero,
                 </svg>
             </div>
             <div>
-                <div class="he-brand-name">Argonar</div>
+                <div class="he-brand-name">Apex Cybernet</div>
                 <div class="he-brand-tag">Tournament · S2</div>
             </div>
         </a>

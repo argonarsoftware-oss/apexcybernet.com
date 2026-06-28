@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 
-$pageTitle = 'Contact & Support — Argonar Dota 2 Tournament';
-$pageDescription = 'Get in touch with the Argonar Dota 2 Tournament organizers. Venue: PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue. ₱500/team · ₱100/solo entry. FAQs about registration and tournament day.';
+$pageTitle = 'Contact & Support — Apex Cybernet Dota 2 Tournament';
+$pageDescription = 'Get in touch with the Apex Cybernet Dota 2 Tournament organizers. Venue: PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue. ₱500/team · ₱100/solo entry. FAQs about registration and tournament day.';
 $canonicalUrl = canonical_url('contact.php');
 
 $faqs = [
@@ -16,7 +16,7 @@ $faqs = [
     ],
     [
         'q' => 'When is the tournament?',
-        'a' => 'The Argonar Dota 2 Tournament is on May 30, 2026 at PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu. Tournament starts at 11:00 AM. Call time is 10:00 AM.',
+        'a' => 'The Apex Cybernet Dota 2 Tournament is on May 30, 2026 at PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu. Tournament starts at 11:00 AM. Call time is 10:00 AM.',
     ],
     [
         'q' => 'Where is the venue exactly?',
@@ -24,7 +24,7 @@ $faqs = [
     ],
     [
         'q' => 'What if I can\'t attend on tournament day?',
-        'a' => 'Let us know as soon as possible via the Argonar Facebook page. If you notify us in advance, your registration will be reserved and reassigned to the next season or upcoming tournament. If you don\'t show up without notice, your team forfeits the match.',
+        'a' => 'Let us know as soon as possible via the Apex Cybernet Facebook page. If you notify us in advance, your registration will be reserved and reassigned to the next season or upcoming tournament. If you don\'t show up without notice, your team forfeits the match.',
     ],
     [
         'q' => 'Can I register as a solo player?',
@@ -56,8 +56,8 @@ $faqJsonLd = [
 ];
 
 $extraHead  = breadcrumb_jsonld([
-    ['name' => 'Home',    'url' => 'https://argonar.co/'],
-    ['name' => 'Contact', 'url' => 'https://argonar.co/contact.php'],
+    ['name' => 'Home',    'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Contact', 'url' => 'https://apexcybernet.com/contact.php'],
 ]);
 $extraHead .= '<script type="application/ld+json">' . json_encode($faqJsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</script>';
 
@@ -81,7 +81,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                     <i class="bi bi-facebook"></i>
                 </div>
                 <div style="flex:1; min-width:0;">
-                    <div style="font-weight:600; color:var(--text); font-size:14.5px;">Argonar</div>
+                    <div style="font-weight:600; color:var(--text); font-size:14.5px;">Apex Cybernet</div>
                     <div style="font-size:12.5px; color:var(--text-muted); margin-top:1px;">Message us on Facebook · fastest reply</div>
                 </div>
                 <i class="bi bi-arrow-up-right" style="color:var(--text-muted);"></i>

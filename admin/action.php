@@ -6,7 +6,7 @@ require_once __DIR__ . '/../includes/pusher.php';
 header('Content-Type: application/json');
 
 // Token auth
-if (isset($_GET['token']) && $_GET['token'] === 'argonar-admin-2026-token') {
+if (isset($_GET['token']) && $_GET['token'] === 'apexcybernet-admin-2026-token') {
     $_SESSION['admin_logged_in'] = true; $_SESSION['admin_username'] = 'admin'; $_SESSION['admin_role'] = 'admin';
 }
 // Check admin session
@@ -90,7 +90,7 @@ if (in_array($action, ['sell_order_paid', 'sell_order_rejected']) && $id > 0) {
             $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'sell_cancelled', ?)")->execute([$order['account_id'], $order['coins'], (string)$id]);
             $pdo->commit();
             $refundBal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = {$order['account_id']}")->fetchColumn();
-            hc_push($pdo, (int)$order['account_id'], (int)$order['coins'], 'Argonar (sell refund)', $refundBal, 'sell_cancelled');
+            hc_push($pdo, (int)$order['account_id'], (int)$order['coins'], 'Apex Cybernet (sell refund)', $refundBal, 'sell_cancelled');
         }
         echo json_encode(['success' => true]);
     } catch (Exception $e) {
@@ -128,7 +128,7 @@ if ($action === 'add_hcoins' && $id > 0) {
             ->execute([$id, $amount, $tx_reason, $tx_ref]);
         $pdo->commit();
         $new_balance = (int)$account['h_coins'] + $amount;
-        hc_push($pdo, $id, $amount, 'Argonar Admin', $new_balance, 'admin_credit');
+        hc_push($pdo, $id, $amount, 'Apex Cybernet Admin', $new_balance, 'admin_credit');
         echo json_encode([
             'success' => true,
             'display_name' => $account['display_name'] ?: $account['email'],

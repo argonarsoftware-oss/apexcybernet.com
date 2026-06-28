@@ -7,12 +7,12 @@ $valid_games = [
     'dota2'     => 'Dota 2',
 ];
 
-$pageTitle = 'Check Registration Status — Argonar Tournament';
-$pageDescription = 'Check your Argonar Dota 2 Tournament registration status. Enter your reference code or team name to see payment status, slot, and pay if still unpaid.';
+$pageTitle = 'Check Registration Status — Apex Cybernet Tournament';
+$pageDescription = 'Check your Apex Cybernet Dota 2 Tournament registration status. Enter your reference code or team name to see payment status, slot, and pay if still unpaid.';
 $canonicalUrl = canonical_url('status.php');
 $extraHead = breadcrumb_jsonld([
-    ['name' => 'Home',                'url' => 'https://argonar.co/'],
-    ['name' => 'Registration Status', 'url' => 'https://argonar.co/status.php'],
+    ['name' => 'Home',                'url' => 'https://apexcybernet.com/'],
+    ['name' => 'Registration Status', 'url' => 'https://apexcybernet.com/status.php'],
 ]);
 $query = trim($_GET['q'] ?? '');
 $pay_mode = !empty($_GET['pay']);

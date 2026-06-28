@@ -58,7 +58,7 @@ m_head('Create Account');
     <div style="text-align:center;margin-bottom:2rem;">
         <img src="<?= m_base('../images/hcoin-icon.png') ?>" style="width:64px;height:64px;border-radius:18px;margin-bottom:1rem;" onerror="this.style.display='none'">
         <div style="font-size:1.5rem;font-weight:900;color:#fff;">HCoin Wallet</div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Create your Argonar account</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Create your Apex Cybernet account</div>
     </div>
 
     <!-- Errors -->
@@ -125,9 +125,9 @@ m_head('Create Account');
                 <input type="checkbox" name="agree_terms" required
                        style="margin-top:3px;width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;">
                 <span>I agree to the
-                    <a href="https://argonar.co/terms.php" target="_blank" style="color:var(--accent-l);">Terms of Service</a>
+                    <a href="https://apexcybernet.com/terms.php" target="_blank" style="color:var(--accent-l);">Terms of Service</a>
                     and
-                    <a href="https://argonar.co/privacy.php" target="_blank" style="color:var(--accent-l);">Privacy Policy</a>.
+                    <a href="https://apexcybernet.com/privacy.php" target="_blank" style="color:var(--accent-l);">Privacy Policy</a>.
                 </span>
             </label>
         </div>
@@ -142,7 +142,7 @@ m_head('Create Account');
         Already have an account?
         <a href="./login.php" style="color:var(--accent-l);font-weight:700;">Sign In</a>
     </div>
-    <a href="https://argonar.co/?prefer_full=1" style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding:0.9rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);text-decoration:none;">
+    <a href="https://apexcybernet.com/?prefer_full=1" style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding:0.9rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);text-decoration:none;">
         <div style="display:flex;align-items:center;gap:0.75rem;">
             <div style="width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,0.12);color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:1rem;">
                 <i class="bi bi-trophy-fill"></i>

@@ -2,7 +2,7 @@
 $active_site = 'alrisha';
 $page_file   = 'activity-alrisha.php';
 require_once __DIR__ . '/../includes/db.php';
-$argonar_pdo = $pdo;
+$apexcybernet_pdo = $pdo;
 require_once __DIR__ . '/omni/auth.php';
 
 // ── AJAX: Alrisha ERP data ──
@@ -10,19 +10,19 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'alrisha_data') {
     header('Content-Type: application/json');
     $company_id = isset($_GET['company_id']) ? (int)$_GET['company_id'] : 0;
     try {
-        $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS alrisha_snapshots (
+        $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS alrisha_snapshots (
             id INT AUTO_INCREMENT PRIMARY KEY,
             company_id INT DEFAULT 0,
             snapshot LONGTEXT NOT NULL,
             pushed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             INDEX (company_id), INDEX (pushed_at)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-        $st = $argonar_pdo->prepare("SELECT snapshot, pushed_at FROM alrisha_snapshots
+        $st = $apexcybernet_pdo->prepare("SELECT snapshot, pushed_at FROM alrisha_snapshots
             WHERE company_id = ? ORDER BY pushed_at DESC LIMIT 1");
         $st->execute([$company_id]);
         $row = $st->fetch();
         if (!$row) {
-            echo json_encode(['ok' => false, 'error' => 'No snapshot yet. Run sync-to-argonar.php from your local Alrisha.']);
+            echo json_encode(['ok' => false, 'error' => 'No snapshot yet. Run sync-to-apexcybernet.php from your local Alrisha.']);
         } else {
             $snap = json_decode($row['snapshot'], true);
             $snap['ok'] = true;
@@ -38,24 +38,24 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'alrisha_data') {
 // ── Multi-company switcher ──
 $alrisha_companies = [];
 try {
-    $argonar_pdo->exec("CREATE TABLE IF NOT EXISTS alrisha_snapshots (
+    $apexcybernet_pdo->exec("CREATE TABLE IF NOT EXISTS alrisha_snapshots (
         id INT AUTO_INCREMENT PRIMARY KEY,
         company_id INT DEFAULT 0,
         snapshot LONGTEXT NOT NULL,
         pushed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         INDEX (company_id), INDEX (pushed_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-    $alrisha_companies = $argonar_pdo->query("SELECT DISTINCT company_id FROM alrisha_snapshots ORDER BY company_id")->fetchAll(PDO::FETCH_COLUMN);
+    $alrisha_companies = $apexcybernet_pdo->query("SELECT DISTINCT company_id FROM alrisha_snapshots ORDER BY company_id")->fetchAll(PDO::FETCH_COLUMN);
 } catch (Exception $e) {}
 $selected_company = isset($_GET['company_id']) ? (int)$_GET['company_id'] : 0;
 
 // ── Sidebar quick-stats ──
-$sidebar_stats = ['argonar'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
+$sidebar_stats = ['apexcybernet'=>['sessions'=>0,'live'=>0],'ocpd'=>['sessions'=>0,'live'=>0],'loan'=>['sessions'=>0,'live'=>0],'alrisha'=>['sessions'=>0,'live'=>0]];
 try {
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= CURDATE() GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['sessions'] = (int)$r['n'];
-    $rows_sb = $argonar_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'argonar' ELSE site END as s,
+    $rows_sb = $apexcybernet_pdo->query("SELECT CASE WHEN site IS NULL OR site='' THEN 'apexcybernet' ELSE site END as s,
         COUNT(DISTINCT session_id) as n FROM activity_logs WHERE created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) GROUP BY s")->fetchAll();
     foreach ($rows_sb as $r) if (isset($sidebar_stats[$r['s']])) $sidebar_stats[$r['s']]['live'] = (int)$r['n'];
 } catch (Exception $e) {}

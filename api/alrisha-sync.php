@@ -12,7 +12,7 @@ header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-Sync-Token');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
-define('ALRISHA_SYNC_TOKEN', 'alrisha-push-argonar-2026');
+define('ALRISHA_SYNC_TOKEN', 'alrisha-push-apexcybernet-2026');
 
 // ── Auth ──
 $token = $_SERVER['HTTP_X_SYNC_TOKEN'] ?? $_GET['token'] ?? '';

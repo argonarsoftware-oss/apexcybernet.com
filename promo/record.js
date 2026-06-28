@@ -5,7 +5,7 @@
  *   cd promo/
  *   node record.js
  *
- * Output: promo/argonar-reel.mp4 (1080x1920, 30fps, ~18 seconds)
+ * Output: promo/apexcybernet-reel.mp4 (1080x1920, 30fps, ~18 seconds)
  *
  * Requires: npm install puppeteer puppeteer-screen-recorder
  */
@@ -15,7 +15,7 @@ const { PuppeteerScreenRecorder } = require('puppeteer-screen-recorder');
 const path = require('path');
 
 const REEL_URL = `file://${path.resolve(__dirname, 'reel.html')}`;
-const OUTPUT   = path.resolve(__dirname, 'argonar-reel.mp4');
+const OUTPUT   = path.resolve(__dirname, 'apexcybernet-reel.mp4');
 const DURATION = 18000; // 18 seconds
 
 (async () => {

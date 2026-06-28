@@ -55,16 +55,16 @@ Register as a solo player and we'll match you with a team based on your rank and
 📍 Venue: Hide Out Cybernet Cafe
 📌 Brgy. Inayawan, Inayawan Central, Cebu City, 6000
 
-🔗 REGISTER YOUR TEAM: https://argonar.co/register.php?game=dota2
-🔗 SOLO ENTRY: https://argonar.co/matchmaking.php?game=dota2
+🔗 REGISTER YOUR TEAM: https://apexcybernet.com/register.php?game=dota2
+🔗 SOLO ENTRY: https://apexcybernet.com/matchmaking.php?game=dota2
 
 Outplay. Outfarm. Outdraft. Take the throne. 👑
 
-Presented by Argonar Software OPC
+Presented by Apex Cybernet
 Venue hosted by Hide Out Cybernet Cafe
 Paragliding by OCPD — https://oslobcebuparagliding.com
 
-#Kopitana #Dota2 #Dota2PH #Dota2Cebu #ArgonarTournament #MOBA #CaptainsMode #GGWellPlayed #CebuGaming #WinnerTakesAll #Esports #Paragliding</div>
+#Kopitana #Dota2 #Dota2PH #Dota2Cebu #ApexCybernetTournament #MOBA #CaptainsMode #GGWellPlayed #CebuGaming #WinnerTakesAll #Esports #Paragliding</div>
 
     </div>
 </div>

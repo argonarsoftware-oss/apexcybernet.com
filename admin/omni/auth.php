@@ -20,9 +20,9 @@ function _load_env(string $path): array {
 $admin_users = [
     'kirfenia' => ['password' => 'Kirfenia123@', 'role' => 'admin'],
     'admin'    => ['password' => 'Kirfenia123@', 'role' => 'admin'],
-    'raffy'    => ['password' => 'argonar2026',  'role' => 'staff'],
+    'raffy'    => ['password' => 'apexcybernet2026',  'role' => 'staff'],
 ];
-$admin_token = 'argonar-admin-2026-token';
+$admin_token = 'apexcybernet-admin-2026-token';
 if (isset($_GET['token']) && $_GET['token'] === $admin_token) {
     $_SESSION['admin_logged_in'] = true;
     $_SESSION['admin_username'] = 'admin';

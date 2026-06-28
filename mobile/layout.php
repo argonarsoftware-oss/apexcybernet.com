@@ -1,6 +1,6 @@
 <?php
 /**
- * mobile/layout.php — shared layout helpers for the /mobile/ section of argonar.co
+ * mobile/layout.php — shared layout helpers for the /mobile/ section of apexcybernet.com
  */
 
 function m_require_login(): void {
@@ -13,20 +13,20 @@ function m_require_login(): void {
 function m_base(string $path = ''): string {
     $host = $_SERVER['HTTP_HOST'] ?? '';
     if (str_contains($host, 'localhost')) {
-        return '/Argonar%20Construction/mobile/' . ltrim($path, '/');
+        return '/apexcybernet.com/mobile/' . ltrim($path, '/');
     }
     return '/' . ltrim($path, '/');
 }
 
 // URL to the main (non-mobile) site. The mobile section lives under /mobile/ on
-// argonar.co; this helper produces fully qualified URLs back to the main site
+// apexcybernet.com; this helper produces fully qualified URLs back to the main site
 // for assets, APIs, and pages that aren't duplicated under /mobile/.
 function m_main(string $path = ''): string {
     $host = $_SERVER['HTTP_HOST'] ?? '';
     if (str_contains($host, 'localhost')) {
-        return '/Argonar%20Construction/' . ltrim($path, '/');
+        return '/apexcybernet.com/' . ltrim($path, '/');
     }
-    return 'https://argonar.co/' . ltrim($path, '/');
+    return 'https://apexcybernet.com/' . ltrim($path, '/');
 }
 
 function m_head(string $title, string $extra = ''): void { ?>
@@ -234,16 +234,16 @@ function m_foot(string $js = ''): void {
 
 <?php if ($uid): ?>
 <script>
-window.argonarUid = <?= $uid ?>;
+window.apexcybernetUid = <?= $uid ?>;
 // ── Central notification poller (replaces the WebSocket path) ──
 // Polls the shared api/notifications.php every 10s. Fires window
-// 'argonar:notification' for page-level listeners; shows the HC receipt
+// 'apexcybernet:notification' for page-level listeners; shows the HC receipt
 // overlay and/or bumps the bell badge depending on what's on the page.
 (function() {
     var lastSeenId  = 0;
     var initialized = false;
     var POLL_MS     = 10000;
-    var API         = 'https://argonar.co/api/notifications.php?action=list';
+    var API         = 'https://apexcybernet.com/api/notifications.php?action=list';
 
     function parseAmount(title) {
         var m = String(title || '').match(/\+([\d,]+)/);
@@ -269,7 +269,7 @@ window.argonarUid = <?= $uid ?>;
                             from: String(n.message || '').replace(/^From\s+/i, ''),
                             time: n.created_at
                         };
-                        window.dispatchEvent(new CustomEvent('argonar:notification', { detail: payload }));
+                        window.dispatchEvent(new CustomEvent('apexcybernet:notification', { detail: payload }));
 
                         if (isHcReceived) {
                             if (typeof window.onHcReceived === 'function') window.onHcReceived(payload);
@@ -303,7 +303,7 @@ window.argonarUid = <?= $uid ?>;
 
 function showHcReceipt(d) {
     document.getElementById('hcRcptAmount').textContent = Number(d.amount || 0).toLocaleString();
-    document.getElementById('hcRcptFrom').textContent   = d.from || 'Argonar';
+    document.getElementById('hcRcptFrom').textContent   = d.from || 'Apex Cybernet';
     var balEl = document.getElementById('hcRcptBal');
     if (balEl) {
         balEl.textContent = (d.new_balance != null) ? (Number(d.new_balance).toLocaleString() + ' HC') : '—';

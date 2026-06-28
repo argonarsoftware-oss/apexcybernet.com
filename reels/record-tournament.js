@@ -23,7 +23,7 @@ const DURATION = 55; // seconds — must match TOTAL_MS in the HTML
 const FRAMES   = FPS * DURATION;
 const MS_FRAME = 1000 / FPS;
 
-const DATA_URL = 'https://argonar.co/admin/api/reel-data.php?k=argonar2026';
+const DATA_URL = 'https://apexcybernet.com/admin/api/reel-data.php?k=apexcybernet2026';
 const HTML_FILE = path.join(__dirname, 'reel-tournament.html');
 
 const outDir = path.join(__dirname, 'output');
@@ -46,7 +46,7 @@ function fetchJson(url) {
 
 (async () => {
     console.log('╔══════════════════════════════════════╗');
-    console.log('║   Argonar Tournament Reel Recorder   ║');
+    console.log('║   Apex Cybernet Tournament Reel Recorder   ║');
     console.log('╚══════════════════════════════════════╝');
 
     // 1. Fetch live data

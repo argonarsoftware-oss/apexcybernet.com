@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
-$pageTitle = 'Meta Business Suite Guide — Argonar Tournament';
+$pageTitle = 'Meta Business Suite Guide — Apex Cybernet Tournament';
 $pageDescription = 'Meta Business Suite guide for automated Facebook posting.';
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -29,7 +29,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="guide-step">
             <div class="guide-number">2</div>
             <div class="guide-content">
-                <p>Select your Facebook Page (e.g., <strong>Argonar</strong>) from the left sidebar.</p>
+                <p>Select your Facebook Page (e.g., <strong>Apex Cybernet</strong>) from the left sidebar.</p>
                 <p class="guide-note">If you manage multiple pages, make sure you pick the correct one for the tournament.</p>
             </div>
         </div>
@@ -44,14 +44,14 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="guide-template">
                     <strong>Sample Post:</strong><br><br>
                     🎮 TOURNAMENT ALERT! 🏆<br><br>
-                    Join the Argonar Gaming Tournament!<br>
+                    Join the Apex Cybernet Gaming Tournament!<br>
                     🔫 Valorant | CrossFire | Dota 2<br><br>
-                    📋 Register now: <strong>https://argonar.co</strong><br><br>
+                    📋 Register now: <strong>https://apexcybernet.com</strong><br><br>
                     🎟️ Entry: ₱250/team · ₱50/solo (50% OFF)<br>
                     📅 May 30, 2026 · 11:00 AM<br>
                     📍 Venue: PGL Ibabao, Mandaue, Cebu<br><br>
-                    Presented by Argonar<br>
-                    #ArgonarTournament #Valorant #Dota2 #CrossFire #Gaming #Esports
+                    Presented by Apex Cybernet<br>
+                    #ApexCybernetTournament #Valorant #Dota2 #CrossFire #Gaming #Esports
                 </div>
             </div>
         </div>
@@ -138,9 +138,9 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <p class="auto-reply-desc">Automatically greet anyone who messages your page.</p>
                 <div class="guide-template">
-                    Hey there! 👋 Thanks for reaching out to Argonar Tournament!<br><br>
+                    Hey there! 👋 Thanks for reaching out to Apex Cybernet Tournament!<br><br>
                     🎮 We're hosting a gaming tournament for Valorant, CrossFire &amp; Dota 2.<br><br>
-                    📋 Register here: https://argonar.co<br>
+                    📋 Register here: https://apexcybernet.com<br>
                     🎟️ ₱250/team · ₱50/solo (50% OFF) entry. Pay via QR Ph.<br><br>
                     We'll reply to your message shortly! 🙌
                 </div>
@@ -155,7 +155,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="guide-template">
                     Hi! We're currently away but we'll get back to you ASAP. ⏳<br><br>
                     In the meantime, you can register for the tournament at:<br>
-                    👉 https://argonar.co<br><br>
+                    👉 https://apexcybernet.com<br><br>
                     See you on the battlefield! 🎯
                 </div>
                 <p class="guide-note">Enable via: Automations &rarr; Away Message &rarr; Set your schedule &rarr; Edit message</p>
@@ -169,7 +169,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="guide-schedule">
                     <div class="schedule-item">
                         <span class="schedule-day">Q: How to join?</span>
-                        <span>Go to https://argonar.co, pick your game, and register your team or enter solo!</span>
+                        <span>Go to https://apexcybernet.com, pick your game, and register your team or enter solo!</span>
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">Q: Entry fee?</span>
@@ -194,7 +194,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="auto-reply-desc">Automatically reply to comments on your tournament posts.</p>
                 <div class="guide-template">
                     Thanks for your interest! 🔥<br><br>
-                    Register now at https://argonar.co<br>
+                    Register now at https://apexcybernet.com<br>
                     ₱250/team · ₱50/solo (50% OFF) entry<br><br>
                     See you there! 💪
                 </div>
@@ -211,7 +211,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="guide-schedule">
                     <div class="schedule-item">
                         <span class="schedule-day">register</span>
-                        <span>"Register at https://argonar.co — ₱250/team · ₱50/solo (50% OFF) 🎮"</span>
+                        <span>"Register at https://apexcybernet.com — ₱250/team · ₱50/solo (50% OFF) 🎮"</span>
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">price / fee</span>
@@ -219,11 +219,11 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">free / entry</span>
-                        <span>"Tournament entry: ₱250/team · ₱50/solo (50% OFF). Register and pay via QR Ph at https://argonar.co 🎟️"</span>
+                        <span>"Tournament entry: ₱250/team · ₱50/solo (50% OFF). Register and pay via QR Ph at https://apexcybernet.com 🎟️"</span>
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">schedule / when</span>
-                        <span>"Check our Facebook page for the tournament schedule! Register now: https://argonar.co 📅"</span>
+                        <span>"Check our Facebook page for the tournament schedule! Register now: https://apexcybernet.com 📅"</span>
                     </div>
                 </div>
                 <p class="guide-note">Keyword triggers work when someone messages a word that matches. Add multiple keywords per rule.</p>
@@ -243,7 +243,7 @@ require_once __DIR__ . '/includes/header.php';
             <a href="https://www.facebook.com/argonarsoftware" target="_blank" rel="noopener" class="guide-link-card">
                 <i class="bi bi-facebook"></i>
                 <div>
-                    <strong>Argonar</strong>
+                    <strong>Apex Cybernet</strong>
                     <span>Facebook Page</span>
                 </div>
             </a>
@@ -251,7 +251,7 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="bi bi-controller"></i>
                 <div>
                     <strong>Tournament Registration</strong>
-                    <span>argonar.co</span>
+                    <span>apexcybernet.com</span>
                 </div>
             </a>
         </div>

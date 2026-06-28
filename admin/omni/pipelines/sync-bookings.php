@@ -4,9 +4,9 @@
  */
 
 require_once __DIR__ . '/taxonomy.php';
-if (!isset($argonar_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $argonar_pdo = $pdo; }
+if (!isset($apexcybernet_pdo)) { require_once __DIR__ . '/../../../includes/db.php'; $apexcybernet_pdo = $pdo; }
 
-$run_id = omni_start_run($argonar_pdo, 'sync-bookings');
+$run_id = omni_start_run($apexcybernet_pdo, 'sync-bookings');
 $objs = 0; $links = 0; $err = null;
 
 try {
@@ -24,11 +24,11 @@ try {
     } catch (Exception $e) { $ocpd_pdo = null; }
 
     if (!$ocpd_pdo) {
-        omni_finish_run($argonar_pdo, $run_id, 0, 0, 'OCPD DB unreachable');
+        omni_finish_run($apexcybernet_pdo, $run_id, 0, 0, 'OCPD DB unreachable');
         return ['pipeline'=>'sync-bookings','objs'=>0,'links'=>0,'err'=>'ocpd unreachable'];
     }
 
-    $biz_ocpd = omni_upsert_object($argonar_pdo, [
+    $biz_ocpd = omni_upsert_object($apexcybernet_pdo, [
         'ref'=>'global:business:ocpd','type'=>'Business','business'=>'ocpd',
         'label'=>'OCPD','props'=>['domain'=>'oslobcebuparagliding.com','kind'=>'paragliding'],
     ]);
@@ -38,7 +38,7 @@ try {
         $cols = $ocpd_pdo->query("SHOW COLUMNS FROM bookings")->fetchAll(PDO::FETCH_COLUMN);
     } catch (Exception $e) { $cols = []; }
     if (empty($cols)) {
-        omni_finish_run($argonar_pdo, $run_id, $objs, $links, 'bookings table missing');
+        omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links, 'bookings table missing');
         return ['pipeline'=>'sync-bookings','objs'=>$objs,'links'=>$links,'err'=>'bookings missing'];
     }
 
@@ -46,7 +46,7 @@ try {
     $id_col = in_array('booking_id', $cols, true) ? 'booking_id'
            : (in_array('id', $cols, true) ? 'id' : null);
     if (!$id_col) {
-        omni_finish_run($argonar_pdo, $run_id, $objs, $links, 'no id column on bookings');
+        omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links, 'no id column on bookings');
         return ['pipeline'=>'sync-bookings','objs'=>$objs,'links'=>$links,'err'=>'no id col'];
     }
 
@@ -60,35 +60,35 @@ try {
             $label .= ' · ' . ($b['booking_date'] ?? $b['date']);
         }
 
-        $bid = omni_upsert_object($argonar_pdo, [
+        $bid = omni_upsert_object($apexcybernet_pdo, [
             'ref'=>$ref,'type'=>'Booking','business'=>'ocpd','label'=>$label,
             'props'=>$b,
             'source_table'=>'bookings','source_id'=>(string)$bid_src,
         ]);
         $objs++;
 
-        if ($biz_ocpd) { if (omni_link($argonar_pdo, $bid, $biz_ocpd, 'BELONGS_TO', ['occurred_at'=>$b['created_at']??null])) $links++; }
+        if ($biz_ocpd) { if (omni_link($apexcybernet_pdo, $bid, $biz_ocpd, 'BELONGS_TO', ['occurred_at'=>$b['created_at']??null])) $links++; }
 
-        // Match email → argonar Person if possible (cross-business join!)
+        // Match email → apexcybernet Person if possible (cross-business join!)
         $email = strtolower(trim($b['email'] ?? ''));
         if ($email) {
-            $q = $argonar_pdo->prepare("SELECT id FROM accounts WHERE LOWER(email) = ? LIMIT 1");
+            $q = $apexcybernet_pdo->prepare("SELECT id FROM accounts WHERE LOWER(email) = ? LIMIT 1");
             $q->execute([$email]);
             $aid = $q->fetchColumn();
             if ($aid) {
-                $p_ref = omni_ref('argonar','person',$aid);
-                $p_id  = omni_id_for_ref($argonar_pdo, $p_ref);
-                if ($p_id && omni_link($argonar_pdo, $p_id, $bid, 'BOOKED', ['occurred_at'=>$b['created_at']??null])) {
+                $p_ref = omni_ref('apexcybernet','person',$aid);
+                $p_id  = omni_id_for_ref($apexcybernet_pdo, $p_ref);
+                if ($p_id && omni_link($apexcybernet_pdo, $p_id, $bid, 'BOOKED', ['occurred_at'=>$b['created_at']??null])) {
                     $links++;
                 }
             }
         }
     }
 
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links);
 } catch (Exception $e) {
     $err = $e->getMessage();
-    omni_finish_run($argonar_pdo, $run_id, $objs, $links, $err);
+    omni_finish_run($apexcybernet_pdo, $run_id, $objs, $links, $err);
 }
 
 if (php_sapi_name() === 'cli' || (isset($_GET['verbose']) && $_GET['verbose'])) {

@@ -544,10 +544,10 @@ body::after{
     <div class="s6-eyebrow">Payment Deadline — April 17</div>
     <div class="s6-main">SECURE<br>YOUR<br>SLOT</div>
     <div class="s6-sub">Register and pay at</div>
-    <div class="s6-url">argonar.co</div>
+    <div class="s6-url">apexcybernet.com</div>
     <div class="s6-fee">₱250 / team &nbsp;·&nbsp; ₱50 / solo &nbsp;·&nbsp; <strong>50% OFF · GCash / InstaPay</strong></div>
     <div class="s6-tags">
-        <span>#ArgonarTournament</span> &nbsp; <span>#Dota2Cebu</span><br>
+        <span>#ApexCybernetTournament</span> &nbsp; <span>#Dota2Cebu</span><br>
         <span>#CebuEsports</span> &nbsp; <span>#HideOutCafe</span>
     </div>
 </div>
