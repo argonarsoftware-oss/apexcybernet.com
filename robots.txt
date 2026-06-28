@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+
+# Admin and internal endpoints
+Disallow: /admin/
+Disallow: /uploads/
+Disallow: /payment-webhook.php
+Disallow: /backfill-payments.php
+Disallow: /og-image.php
+
+# Auth flow — no need to index session-ish pages
+Disallow: /login.php
+Disallow: /logout.php
+Disallow: /forgot-password.php
+Disallow: /dashboard.php
+Disallow: /claim.php
+
+# Per-user / per-payment pages — block from index
+Disallow: /ticket.php
+Disallow: /success.php
+Disallow: /profile.php
+
+# Block search query URLs (avoid duplicate-content thin pages)
+Disallow: /status.php?q=
+Disallow: /status.php?pay=
+
+# Allow Googlebot to crawl the assets it needs to render the page
+User-agent: Googlebot
+Allow: /css/
+Allow: /images/
+Allow: /js/
+
+Sitemap: https://argonar.co/sitemap.php

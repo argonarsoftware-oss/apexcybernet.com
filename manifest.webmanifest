@@ -1,0 +1,63 @@
+{
+    "name": "Argonar Tournament",
+    "short_name": "Argonar",
+    "description": "H-Coins wallet, esports predictions, and tournament bracket for Argonar.",
+    "start_url": "/dashboard.php",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#0f0f13",
+    "theme_color": "#7c3aed",
+    "lang": "en-PH",
+    "dir": "ltr",
+    "icons": [
+        {
+            "src": "/images/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon.php?size=192",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon.php?size=512",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon.php?size=512",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "H-Coin Wallet",
+            "short_name": "Wallet",
+            "description": "Check your H-Coin balance",
+            "url": "/dashboard.php",
+            "icons": [{ "src": "/icons/icon.php?size=192", "sizes": "192x192", "type": "image/png" }]
+        },
+        {
+            "name": "Bracket",
+            "short_name": "Bracket",
+            "description": "View tournament bracket",
+            "url": "/bracket.php",
+            "icons": [{ "src": "/icons/icon.php?size=192", "sizes": "192x192", "type": "image/png" }]
+        },
+        {
+            "name": "Predict",
+            "short_name": "Predict",
+            "description": "Make match predictions",
+            "url": "/predict.php",
+            "icons": [{ "src": "/icons/icon.php?size=192", "sizes": "192x192", "type": "image/png" }]
+        }
+    ],
+    "categories": ["games", "sports", "entertainment"]
+}

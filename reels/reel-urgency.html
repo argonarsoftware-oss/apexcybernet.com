@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=720">
+<title>Argonar Dota 2 — Registration Update</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    width: 720px;
+    height: 1280px;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #e4e4e7;
+    position: relative;
+    background: #0b0b14;
+}
+
+/* ── Ambient glow ── */
+.bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 500px 500px at 10% 15%, rgba(140, 30, 50, 0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 400px at 85% 80%, rgba(80, 40, 160, 0.10) 0%, transparent 70%);
+    z-index: 0;
+}
+
+/* ── Scene system ── */
+.scene {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 56px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scene.active {
+    opacity: 1;
+    pointer-events: auto;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.scene.exit {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* ── Scene 1: Registration Update header ── */
+.scene-header .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #f87171;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 32px;
+}
+
+.scene-header .big-text {
+    font-size: 82px;
+    font-weight: 900;
+    line-height: 1.0;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+}
+
+.scene-header .sub-line {
+    font-size: 22px;
+    font-weight: 500;
+    color: #9ca3af;
+    margin-top: 20px;
+}
+
+.scene-header .status-bar {
+    margin-top: 28px;
+    padding: 14px 24px;
+    background: rgba(249, 115, 22, 0.1);
+    border: 1px solid rgba(249, 115, 22, 0.35);
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fb923c;
+    text-align: center;
+}
+
+.scene-header .stat-row {
+    margin-top: 14px;
+    font-size: 16px;
+    color: #71717a;
+    text-align: center;
+}
+
+.scene-header .stat-row strong {
+    color: #f97316;
+}
+
+/* ── List scenes ── */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+}
+
+.section-header .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.list-item.show {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.list-item .num {
+    font-size: 15px;
+    font-weight: 500;
+    min-width: 20px;
+    opacity: 0.5;
+}
+
+.list-item .icon {
+    font-size: 18px;
+}
+
+.list-item .name {
+    flex: 1;
+}
+
+.list-item .tag {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Green confirmed style */
+.green .section-header { color: #4ade80; }
+.green .dot { background: #4ade80; }
+.green .list-item {
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.15);
+    color: #e4e4e7;
+}
+.green .list-item .icon { color: #4ade80; }
+.green .list-item .tag {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* Red pending style */
+.red .section-header { color: #f87171; }
+.red .dot { background: #f87171; }
+.red .list-item {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    color: #e4e4e7;
+}
+.red .list-item .icon { color: #f87171; }
+
+/* Amber waitlist style */
+.amber .section-header { color: #fbbf24; }
+.amber .dot { background: #fbbf24; }
+.amber .list-item {
+    background: rgba(251, 191, 36, 0.06);
+    border: 1px solid rgba(251, 191, 36, 0.15);
+    color: #e4e4e7;
+}
+.amber .list-item .icon { color: #fbbf24; }
+
+/* Blue/green solo style */
+.solo-green .section-header { color: #34d399; }
+.solo-green .dot { background: #34d399; }
+.solo-green .list-item {
+    background: rgba(52, 211, 153, 0.06);
+    border: 1px solid rgba(52, 211, 153, 0.15);
+    color: #e4e4e7;
+}
+.solo-green .list-item .icon { color: #a78bfa; }
+.solo-green .list-item .tag {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* Bottom context message */
+.context-msg {
+    margin-top: 24px;
+    font-size: 15px;
+    color: #71717a;
+    line-height: 1.5;
+    text-align: center;
+    opacity: 0;
+}
+
+.context-msg.show {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.context-msg strong {
+    color: #e4e4e7;
+}
+
+.context-msg .highlight {
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+.context-msg .highlight-red {
+    color: #f87171;
+    font-weight: 600;
+}
+
+.context-msg .highlight-green {
+    color: #4ade80;
+    font-weight: 600;
+}
+
+/* Bottom call-out bar */
+.callout-bar {
+    margin-top: 20px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+}
+
+.callout-bar.show {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.callout-bar.warning {
+    background: rgba(249, 115, 22, 0.1);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    color: #fb923c;
+}
+
+.callout-bar.info {
+    background: rgba(124, 58, 237, 0.1);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    color: #a78bfa;
+}
+
+.callout-bar.success {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #4ade80;
+}
+
+/* ── Scene CTA ── */
+.scene-cta {
+    text-align: center;
+    align-items: center;
+}
+
+.scene-cta .deadline-label {
+    font-size: 17px;
+    font-weight: 700;
+    color: #f87171;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 28px;
+}
+
+.scene-cta .cta-big {
+    font-size: 86px;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.0;
+    letter-spacing: -1px;
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.scene-cta .cta-big.show {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scene-cta .cta-sub {
+    font-size: 18px;
+    color: #9ca3af;
+    margin-top: 20px;
+    opacity: 0;
+}
+
+.scene-cta .cta-sub.show {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.scene-cta .cta-button {
+    display: inline-block;
+    margin-top: 32px;
+    padding: 16px 48px;
+    background: #7c3aed;
+    border-radius: 12px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1px;
+    opacity: 0;
+}
+
+.scene-cta .cta-button.show {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.scene-cta .price-line {
+    margin-top: 20px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #a78bfa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    opacity: 0;
+}
+
+.scene-cta .price-line.show {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.scene-cta .payment-info {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #71717a;
+    opacity: 0;
+}
+
+.scene-cta .payment-info.show {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.scene-cta .payment-info strong {
+    color: #a78bfa;
+}
+
+.scene-cta .hashtags {
+    margin-top: 24px;
+    font-size: 13px;
+    color: #4b5563;
+    letter-spacing: 0.5px;
+    opacity: 0;
+}
+
+.scene-cta .hashtags.show {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- Scene 1: Registration Update overview -->
+<div class="scene scene-header" id="scene1"></div>
+
+<!-- Scene 2: Confirmed teams (green) -->
+<div class="scene green" id="scene2"></div>
+
+<!-- Scene 3: Payment pending teams (red) -->
+<div class="scene red" id="scene3"></div>
+
+<!-- Scene 4: Waitlist teams (amber) -->
+<div class="scene amber" id="scene4"></div>
+
+<!-- Scene 5: Solo players -->
+<div class="scene solo-green" id="scene5"></div>
+
+<!-- Scene urgency: 1 slot left -->
+<div class="scene scene-cta" id="scene-urgency"></div>
+
+<!-- Scene 6: CTA -->
+<div class="scene scene-cta" id="scene6"></div>
+
+<script>
+let reelData = null;
+
+window.loadReelData = function(data) {
+    reelData = data;
+    buildAllScenes();
+    startSequence();
+};
+
+// Fallback: fetch from API
+(async function() {
+    if (reelData) return;
+    try {
+        const resp = await fetch('data.php');
+        if (resp.ok) { window.loadReelData(await resp.json()); return; }
+    } catch {}
+    // Demo data
+    window.loadReelData({
+        confirmed: [
+            { team_name: 'Padaoga mi please' }, { team_name: "It's not you, it's me" },
+            { team_name: 'CREAMSILK NI LAPAD' }, { team_name: 'Invicta gaming' },
+            { team_name: 'BOOTCAMP' }, { team_name: 'TACAD' },
+            { team_name: 'Teknova' }, { team_name: 'Kuya J and Friends' },
+            { team_name: 'Jox.wteph.com' }, { team_name: 'Toledotes' },
+            { team_name: 'Ace Skylark Esports' },
+        ],
+        pending: [
+            { team_name: 'Ubec Maniac' }, { team_name: 'team jakolerns' },
+            { team_name: 'RYANNA FAYE' }, { team_name: 'Alopez Finest' },
+            { team_name: 'CLINTBIOT' },
+        ],
+        waitlist: [
+            { team_name: 'Choygz' }, { team_name: 'MeteorGarden' },
+        ],
+        solos_paid: [
+            { player_name: 'Shed.', rank_tier: 'Ancient', preferred_role: 'Mid (Pos 2)' },
+            { player_name: 'Skadoosh', rank_tier: 'Divine', preferred_role: 'Offlane (Pos 3)' },
+        ],
+        solos_pending: [],
+        total_slots: 16,
+        slots_used: 16,
+        slots_remaining: 0,
+        tournament: {
+            name: 'Argonar Dota 2 Tournament',
+            date: '2026-04-19',
+            registration_end: '2026-04-17',
+            venue: 'Hide Out Cybernet Cafe',
+            location: 'Brgy. Inayawan, Cebu City',
+            prize: 'TBD Cash',
+            format: '5v5 Double Elimination',
+            entry_fee_team: '\u20B1250/team (50% OFF)',
+            entry_fee_solo: '\u20B150/solo (50% OFF)',
+            url: 'https://argonar.co',
+        }
+    });
+})();
+
+function buildAllScenes() {
+    const d = reelData;
+    const t = d.tournament;
+    const totalRegistered = d.confirmed.length + d.pending.length + d.waitlist.length;
+
+    // Scene 1: Overview
+    const s1 = document.getElementById('scene1');
+    const confirmedCount = d.confirmed.length;
+    s1.innerHTML = `
+        <div class="badge">\uD83D\uDCCB &nbsp;REGISTRATION UPDATE&nbsp; \uD83D\uDCCB</div>
+        <div class="big-text">${confirmedCount} OF ${d.total_slots} SLOTS LOCKED</div>
+        <div class="sub-line">Dota 2 \u2014 Cebu City</div>
+        <div class="status-bar">\u26A0\uFE0F ONLY 1 SLOT LEFT \u2014 FIRST COME FIRST SERVE</div>
+        <div class="stat-row"><strong>${confirmedCount} teams confirmed</strong> &nbsp;\u00B7&nbsp; April 19, 2026</div>
+    `;
+
+    // Scene 2: Confirmed (green) — split across pages if > 8
+    buildListScenePaged('scene2', '\u2705', 'CONFIRMED \u2014 LOCKED IN', d.confirmed.map(t => t.team_name), 'green', {
+        lastMsg: `\u26A0\uFE0F <span class="highlight-red">1 slot left</span> \u2014 first come, first serve`,
+    });
+
+    // Scene urgency: full-screen "1 SLOT LEFT"
+    const su = document.getElementById('scene-urgency');
+    su.innerHTML = `
+        <div class="deadline-label">\u26A0\uFE0F &nbsp;ALMOST FULL&nbsp; \u26A0\uFE0F</div>
+        <div class="cta-big" style="color:#f87171;">ONLY<br>1 SLOT<br>LEFT</div>
+        <div class="cta-sub">First come, first serve</div>
+        <div class="cta-button" style="background:#dc2626;">Register NOW</div>
+        <div class="price-line">argonar.co</div>
+        <div class="payment-info">Deadline: <strong>April 19</strong></div>
+    `;
+
+    // Scene 6: CTA
+    const s6 = document.getElementById('scene6');
+    s6.innerHTML = `
+        <div class="deadline-label">\uD83D\uDCC5 &nbsp;PAYMENT DEADLINE: APRIL 19&nbsp; \uD83D\uDCC5</div>
+        <div class="cta-big">SECURE<br>YOUR<br>SLOT</div>
+        <div class="cta-sub">Complete your payment before April 19</div>
+        <div class="cta-button">argonar.co</div>
+        <div class="price-line">\uD83D\uDCB3 ${t.entry_fee_team} &nbsp;\u00B7&nbsp; ${t.entry_fee_solo}</div>
+        <div class="payment-info">e-Wallet / InstaPay &nbsp;\u00B7&nbsp; or on-site at <strong>Hide Out Cafe</strong></div>
+        <div class="hashtags">#ArgonarTournament &nbsp;#Dota2Cebu<br>#CebuEsports &nbsp;#HideOutCafe</div>
+    `;
+}
+
+const PAGE_SIZE = 8;
+// Extra scene slots for paged lists (scene2/3/4 can each overflow into extra dynamic scenes)
+const _extraScenes = {};
+
+function buildListScenePaged(baseId, emoji, title, names, colorClass, opts = {}) {
+    const pages = Math.ceil(names.length / PAGE_SIZE) || 1;
+    const iconMap = { green: '\u2713', red: '\u2717', amber: '\u231B' };
+    const icon = iconMap[colorClass] || '\u2022';
+
+    for (let p = 0; p < pages; p++) {
+        const chunk = names.slice(p * PAGE_SIZE, (p + 1) * PAGE_SIZE);
+        const isLast = p === pages - 1;
+        const pageLabel = pages > 1 ? ` (${p + 1}/${pages})` : '';
+        const pageTitle = `${names.length} ${title}${pageLabel}`;
+        const startNum = p * PAGE_SIZE + 1;
+
+        // Get or create the scene element
+        let el = document.getElementById(baseId + (p === 0 ? '' : '-p' + p));
+        if (!el) {
+            el = document.createElement('div');
+            el.id = baseId + '-p' + p;
+            el.className = 'scene ' + colorClass;
+            document.body.appendChild(el);
+        } else {
+            el.className = 'scene ' + colorClass;
+        }
+
+        let html = `<div class="section-header"><div class="dot"></div>${emoji} <span>${pageTitle}</span></div>`;
+        chunk.forEach((name, i) => {
+            html += `<div class="list-item" data-delay="${i}">
+                <span class="num">${startNum + i}</span>
+                <span class="icon">${icon}</span>
+                <span class="name">${name}</span>
+            </div>`;
+        });
+        if (isLast) {
+            if (opts.lastMsg) html += `<div class="context-msg">${opts.lastMsg.replace(/\n/g, '<br>')}</div>`;
+            if (opts.lastCallout) html += `<div class="callout-bar ${opts.lastCallout.type}">${opts.lastCallout.text}</div>`;
+        }
+        el.innerHTML = html;
+
+        // Register extra pages for the sequence builder
+        if (p > 0) {
+            if (!_extraScenes[baseId]) _extraScenes[baseId] = [];
+            _extraScenes[baseId].push({ id: el.id, itemCount: chunk.length });
+        }
+    }
+}
+
+// ── Scene sequence ──
+function sceneEntry(id, itemCount, extra = 0) {
+    return { id, duration: 400 + Math.min(itemCount, PAGE_SIZE) * 2000 + 1200 + extra, itemCount };
+}
+
+function getSceneSequence() {
+    const scenes = [];
+    const d = reelData;
+
+    // Scene 1: overview
+    scenes.push({ id: 'scene1', duration: 3000, itemCount: 0 });
+
+    // Scene 2: confirmed — page 1 + any extra pages
+    scenes.push(sceneEntry('scene2', Math.min(d.confirmed.length, PAGE_SIZE)));
+    (_extraScenes['scene2'] || []).forEach(e => scenes.push(sceneEntry(e.id, e.itemCount)));
+
+    // Scene urgency: "1 slot left" full screen
+    scenes.push({ id: 'scene-urgency', duration: 5000, itemCount: 0 });
+
+    // Scene 6: CTA
+    scenes.push({ id: 'scene6', duration: 5000, itemCount: 0 });
+
+    return scenes;
+}
+
+let currentSceneIdx = -1;
+let sceneSequence = [];
+
+function startSequence() {
+    window.__reelStarted = true;
+    sceneSequence = getSceneSequence();
+    showNextScene();
+}
+
+function showNextScene() {
+    // Exit current
+    if (currentSceneIdx >= 0) {
+        const prev = document.getElementById(sceneSequence[currentSceneIdx].id);
+        prev.classList.remove('active');
+        prev.classList.add('exit');
+    }
+
+    currentSceneIdx++;
+    if (currentSceneIdx >= sceneSequence.length) {
+        window.__reelDone = true;
+        return;
+    }
+
+    const scene = sceneSequence[currentSceneIdx];
+
+    setTimeout(() => {
+        const el = document.getElementById(scene.id);
+        el.classList.remove('exit');
+        el.classList.add('active');
+
+        // Animate list items one by one
+        const items = el.querySelectorAll('.list-item');
+        items.forEach((item, i) => {
+            setTimeout(() => item.classList.add('show'), 300 + i * 2000);
+        });
+
+        // Show context msg and callout after items
+        const afterItemsDelay = 300 + items.length * 2000 + 600;
+        const ctx = el.querySelector('.context-msg');
+        if (ctx) setTimeout(() => ctx.classList.add('show'), afterItemsDelay);
+        const callout = el.querySelector('.callout-bar');
+        if (callout) setTimeout(() => callout.classList.add('show'), afterItemsDelay + 400);
+
+        // CTA scene animations
+        if (scene.id === 'scene6' || scene.id === 'scene-urgency') {
+            const ctaBig = el.querySelector('.cta-big');
+            const ctaSub = el.querySelector('.cta-sub');
+            const ctaBtn = el.querySelector('.cta-button');
+            const priceLine = el.querySelector('.price-line');
+            const payInfo = el.querySelector('.payment-info');
+            const hashtags = el.querySelector('.hashtags');
+            if (ctaBig) setTimeout(() => ctaBig.classList.add('show'), 600);
+            if (ctaSub) setTimeout(() => ctaSub.classList.add('show'), 1200);
+            if (ctaBtn) setTimeout(() => ctaBtn.classList.add('show'), 1800);
+            if (priceLine) setTimeout(() => priceLine.classList.add('show'), 2400);
+            if (payInfo) setTimeout(() => payInfo.classList.add('show'), 3000);
+            if (hashtags) setTimeout(() => hashtags.classList.add('show'), 3600);
+        }
+
+        setTimeout(showNextScene, scene.duration);
+    }, currentSceneIdx === 0 ? 300 : 600);
+}
+</script>
+</body>
+</html>

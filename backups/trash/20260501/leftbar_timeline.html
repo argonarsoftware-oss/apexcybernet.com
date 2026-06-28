@@ -1,0 +1,73 @@
+<!--
+  ARCHIVED 2026-05-01 — Left navigation rail removed from timeline.php
+  Original location: timeline.php lines 369-433
+  Original layout:   .tl-layout was `grid-template-columns: 260px 1fr` and is now `1fr`
+  CSS for .tl-left, .tl-left-item, .tl-left-ico, .tl-left-sub, .tl-left-sec, .tl-left-footer, .tl-left-verified
+  is preserved in git history of timeline.php at commit aa5df96 and earlier.
+  Restoration: paste this <aside> back at the original location, restore the CSS rules from git,
+  and flip .tl-layout grid-template-columns back to `260px 1fr`.
+-->
+    <aside class="tl-left">
+        <?php if ($current): ?>
+        <a href="<?= base_url('profile.php?id=' . (int)$current['id']) ?>" class="tl-left-item profile">
+            <div class="tl-left-ico">
+                <?php if (!empty($current['profile_picture'])): ?>
+                    <img src="<?= base_url($current['profile_picture']) ?>" alt="">
+                <?php else: ?>
+                    <?= htmlspecialchars(strtoupper(mb_substr($current['display_name'] ?? '?', 0, 1))) ?>
+                <?php endif; ?>
+            </div>
+            <div style="flex:1; min-width:0; overflow:hidden;">
+                <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><?= htmlspecialchars($current['display_name']) ?></div>
+                <?php if ($tl_my_team): ?>
+                <div class="tl-left-sub">Team · <?= htmlspecialchars($tl_my_team) ?></div>
+                <?php else: ?>
+                <div class="tl-left-sub">View profile</div>
+                <?php endif; ?>
+            </div>
+        </a>
+        <?php else: ?>
+        <a href="<?= base_url('login.php') ?>" class="tl-left-item profile">
+            <div class="tl-left-ico"><i class="bi bi-person-fill"></i></div>
+            <div style="flex:1;">
+                <div>Log in</div>
+                <div class="tl-left-sub">Or create an account</div>
+            </div>
+        </a>
+        <?php endif; ?>
+
+        <a href="<?= base_url('timeline.php') ?>" class="tl-left-item active"><span class="tl-left-ico" style="background:rgba(236,72,153,0.15);color:#ec4899;"><i class="bi bi-activity"></i></span> Timeline</a>
+        <a href="<?= base_url('bracket.php') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(251,191,36,0.15);color:#fbbf24;"><i class="bi bi-trophy-fill"></i></span> Bracket</a>
+        <a href="<?= base_url('wiki.php') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(167,139,250,0.15);color:#a78bfa;"><i class="bi bi-book-fill"></i></span> Wiki</a>
+        <a href="<?= base_url('leaderboard.php') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(52,211,153,0.15);color:#34d399;"><i class="bi bi-bar-chart-fill"></i></span> Leaderboard</a>
+        <a href="<?= base_url('matchmaking.php?game=dota2') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(96,165,250,0.15);color:#60a5fa;"><i class="bi bi-people-fill"></i></span> Matchmaking</a>
+        <?php if ($tl_hc_shown): ?>
+        <a href="<?= base_url('predict.php') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(56,189,248,0.15);color:#38bdf8;"><i class="bi bi-graph-up-arrow"></i></span> Predict</a>
+        <a href="<?= base_url('coins.php') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(251,191,36,0.15);color:#fbbf24;"><i class="bi bi-coin"></i></span> H-Coins</a>
+        <?php endif; ?>
+        <a href="<?= base_url('marketplace.php') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(245,158,11,0.15);color:#f59e0b;"><i class="bi bi-shop"></i></span> Marketplace</a>
+        <a href="<?= base_url('rules.php') ?>" class="tl-left-item"><span class="tl-left-ico" style="background:rgba(248,113,113,0.15);color:#f87171;"><i class="bi bi-shield-check"></i></span> Rules</a>
+
+        <?php if (!empty($tl_shortcuts)): ?>
+        <div class="tl-left-sec">Your shortcuts</div>
+        <?php foreach ($tl_shortcuts as $s): ?>
+        <a href="<?= base_url('profile.php?id=' . (int)$s['id']) ?>" class="tl-left-item">
+            <span class="tl-left-ico" style="overflow:hidden; background:linear-gradient(135deg,#7c3aed,#4c1d95);">
+                <?php if (!empty($s['profile_picture'])): ?>
+                    <img src="<?= base_url($s['profile_picture']) ?>" alt="" style="width:100%;height:100%;object-fit:cover;">
+                <?php else: ?>
+                    <?= htmlspecialchars(strtoupper(mb_substr($s['display_name'], 0, 1))) ?>
+                <?php endif; ?>
+            </span>
+            <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><?= htmlspecialchars($s['display_name']) ?><?php if ((int)$s['is_verified'] === 1): ?><i class="bi bi-patch-check-fill tl-left-verified"></i><?php endif; ?></span>
+        </a>
+        <?php endforeach; ?>
+        <?php endif; ?>
+
+        <div class="tl-left-footer">
+            <a href="<?= base_url('privacy.php') ?>">Privacy</a><span class="dot">·</span>
+            <a href="<?= base_url('terms.php') ?>">Terms</a><span class="dot">·</span>
+            <a href="<?= base_url('rules.php') ?>">Rules</a><span class="dot">·</span>
+            <a href="<?= base_url('contact.php') ?>">Contact</a>
+        </div>
+    </aside>

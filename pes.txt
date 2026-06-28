@@ -1,0 +1,4 @@
+curl -s https://argonar.co/rtc/health
+echo
+cat /etc/turnserver-secret | head -c 20 && echo "…"
+ls -la /etc/turnserver-secret

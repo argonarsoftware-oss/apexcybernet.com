@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <defs>
+    <linearGradient id="aGrad" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <!-- Left half of A -->
+  <path d="M38 6 L8 72 h13 L38 24z" fill="url(#aGrad)"/>
+  <!-- Right half of A (lighter for depth) -->
+  <path d="M42 6 L72 72 h-13 L42 24z" fill="url(#aGrad)" opacity="0.8"/>
+  <!-- Swoosh arc -->
+  <path d="M12 60 Q42 34 70 52" stroke="url(#arcGrad)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</svg>

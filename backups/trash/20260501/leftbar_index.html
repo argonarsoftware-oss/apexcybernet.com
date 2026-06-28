@@ -1,0 +1,68 @@
+<!--
+  ARCHIVED 2026-05-01 — Left navigation rail removed from index.php
+  Original location: index.php lines 380-438
+  Original layout:   .idx-layout was `grid-template-columns: 260px minmax(0, 1fr)` and is now `1fr`
+  CSS for .idx-left, .idx-left-item, .idx-left-ico, .idx-left-sub, .idx-left-sec, .idx-left-footer, .idx-left-verified
+  is preserved in git history of index.php at commit aa5df96 and earlier.
+  Restoration: paste this <aside> back at the original location, restore the CSS rules from git,
+  and flip .idx-layout grid-template-columns back to `260px minmax(0, 1fr)`.
+-->
+<aside class="idx-left">
+    <?php if ($home_user): ?>
+    <a href="<?= base_url('profile.php?id=' . (int)$home_user['id']) ?>" class="idx-left-item profile">
+        <span class="idx-left-ico">
+            <?php if (!empty($home_user['profile_picture'])): ?>
+                <img src="<?= base_url($home_user['profile_picture']) ?>" alt="">
+            <?php else: ?>
+                <?= htmlspecialchars(strtoupper(mb_substr($home_user['display_name'] ?? '?', 0, 1))) ?>
+            <?php endif; ?>
+        </span>
+        <span style="flex:1; min-width:0; overflow:hidden;">
+            <span style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><?= htmlspecialchars($home_user['display_name']) ?></span>
+            <span class="idx-left-sub">View profile</span>
+        </span>
+    </a>
+    <?php else: ?>
+    <a href="<?= base_url('login.php') ?>" class="idx-left-item profile">
+        <span class="idx-left-ico"><i class="bi bi-person-fill"></i></span>
+        <span style="flex:1;"><span style="display:block;">Log in</span><span class="idx-left-sub">Or create an account</span></span>
+    </a>
+    <?php endif; ?>
+
+    <a href="<?= base_url('index.php') ?>" class="idx-left-item active"><span class="idx-left-ico" style="background:rgba(251,146,60,0.15);color:#fb923c;"><i class="bi bi-house-fill"></i></span> Home</a>
+    <a href="<?= base_url('timeline.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(236,72,153,0.15);color:#ec4899;"><i class="bi bi-activity"></i></span> Timeline</a>
+    <a href="<?= base_url('bracket.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(251,191,36,0.15);color:#fbbf24;"><i class="bi bi-trophy-fill"></i></span> Bracket</a>
+    <a href="<?= base_url('wiki.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(167,139,250,0.15);color:#a78bfa;"><i class="bi bi-book-fill"></i></span> Wiki</a>
+    <a href="<?= base_url('leaderboard.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(52,211,153,0.15);color:#34d399;"><i class="bi bi-bar-chart-fill"></i></span> Leaderboard</a>
+    <a href="<?= base_url('matchmaking.php?game=dota2') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(96,165,250,0.15);color:#60a5fa;"><i class="bi bi-people-fill"></i></span> Matchmaking</a>
+    <?php if ($idx_hc_shown): ?>
+    <a href="<?= base_url('predict.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(56,189,248,0.15);color:#38bdf8;"><i class="bi bi-graph-up-arrow"></i></span> Predict</a>
+    <a href="<?= base_url('coins.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(251,191,36,0.15);color:#fbbf24;"><i class="bi bi-coin"></i></span> H-Coins</a>
+    <?php endif; ?>
+    <a href="<?= base_url('marketplace.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(245,158,11,0.15);color:#f59e0b;"><i class="bi bi-shop"></i></span> Marketplace</a>
+    <a href="<?= base_url('rules.php') ?>" class="idx-left-item"><span class="idx-left-ico" style="background:rgba(248,113,113,0.15);color:#f87171;"><i class="bi bi-shield-check"></i></span> Rules</a>
+
+    <?php if (!empty($idx_shortcuts)): ?>
+    <div class="idx-left-sec">Your shortcuts</div>
+    <?php foreach ($idx_shortcuts as $s): ?>
+    <a href="<?= base_url('profile.php?id=' . (int)$s['id']) ?>" class="idx-left-item">
+        <span class="idx-left-ico" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);">
+            <?php if (!empty($s['profile_picture'])): ?>
+                <img src="<?= base_url($s['profile_picture']) ?>" alt="">
+            <?php else: ?>
+                <?= htmlspecialchars(strtoupper(mb_substr($s['display_name'], 0, 1))) ?>
+            <?php endif; ?>
+        </span>
+        <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><?= htmlspecialchars($s['display_name']) ?><?php if ((int)$s['is_verified'] === 1): ?><i class="bi bi-patch-check-fill idx-left-verified"></i><?php endif; ?></span>
+    </a>
+    <?php endforeach; ?>
+    <?php endif; ?>
+
+    <div class="idx-left-footer">
+        <a href="<?= base_url('privacy.php') ?>">Privacy</a><span class="dot">·</span>
+        <a href="<?= base_url('terms.php') ?>">Terms</a><span class="dot">·</span>
+        <a href="<?= base_url('rules.php') ?>">Rules</a><span class="dot">·</span>
+        <a href="<?= base_url('contact.php') ?>">Contact</a>
+        <div style="margin-top:0.35rem;">Argonar Software OPC · <?= date('Y') ?></div>
+    </div>
+</aside>

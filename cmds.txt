@@ -1,0 +1,14 @@
+cd /var/www/argonar/voice-signal
+git pull
+sudo cp argonar-voice.service /etc/systemd/system/argonar-voice.service
+sudo systemctl daemon-reload
+sudo systemctl restart argonar-voice
+sleep 1
+curl -s http://127.0.0.1:3000/rtc/health
+echo
+VHOST=$(grep -rl 'argonar\.co' /etc/apache2/sites-available/ 2>/dev/null | xargs -I{} grep -l ':443' {} 2>/dev/null | head -1)
+echo "Detected vhost: $VHOST"
+grep -q 'voice-signal/apache-voice.conf' "$VHOST" || sudo sed -i.bak-$(date +%Y%m%d-%H%M%S) '/<\/VirtualHost>/i\    Include /var/www/argonar/voice-signal/apache-voice.conf' "$VHOST"
+sudo apachectl configtest
+sudo systemctl reload apache2
+curl -s https://argonar.co/rtc/health

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: #0f0f13;
+    font-family: 'Inter', sans-serif;
+    color: #e4e4e7;
+}
+
+/* ═══ SHARED ═══ */
+.scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+    opacity: 0;
+    text-align: center;
+}
+
+/* Background glow */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background:
+        radial-gradient(ellipse at 30% 30%, rgba(124,58,237,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 70%, rgba(251,191,36,0.08) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.scene > * { position: relative; z-index: 1; }
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(60px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slideRight {
+    from { opacity: 0; transform: translateX(-80px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideLeft {
+    from { opacity: 0; transform: translateX(80px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulseGlow {
+    0%, 100% { text-shadow: 0 0 20px rgba(251,191,36,0.5), 0 0 60px rgba(251,191,36,0.2); }
+    50%      { text-shadow: 0 0 40px rgba(251,191,36,0.8), 0 0 100px rgba(251,191,36,0.4); }
+}
+@keyframes strikethrough {
+    from { width: 0; }
+    to   { width: 100%; }
+}
+@keyframes countUp {
+    0%   { content: 'TBD'; }
+    100% { content: 'TBD'; }
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+@keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ═══ SCENE 1: FIGHT FOR GLORY (0s – 3.5s) ═══ */
+#s1 {
+    animation: fadeIn 0.3s 0.2s forwards;
+}
+#s1 .pre-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #a78bfa;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    animation: fadeInUp 0.6s 0.5s both;
+}
+#s1 .main-title {
+    font-size: 120px;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #a78bfa, #c084fc, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeInUp 0.8s 0.8s both;
+}
+#s1 .sub-title {
+    font-size: 36px;
+    color: #9ca3af;
+    margin-top: 30px;
+    animation: fadeInUp 0.6s 1.2s both;
+}
+#s1 .game-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 16px 40px;
+    background: rgba(124,58,237,0.15);
+    border: 2px solid rgba(124,58,237,0.4);
+    border-radius: 20px;
+    font-size: 40px;
+    font-weight: 800;
+    color: #a78bfa;
+    animation: scaleIn 0.5s 1.6s both;
+}
+#s1-out {
+    animation: fadeOut 0.4s 3.2s forwards;
+}
+
+/* ═══ SCENE 2: PRIZE BUMP (3.5s – 7s) ═══ */
+#s2 {
+    animation: fadeIn 0.3s 3.5s forwards;
+}
+#s2 .label {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fb923c;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    animation: fadeInUp 0.5s 3.8s both;
+}
+#s2 .old-price {
+    font-size: 80px;
+    font-weight: 800;
+    color: #6b7280;
+    position: relative;
+    margin-top: 30px;
+    animation: fadeInUp 0.5s 4.2s both;
+}
+#s2 .old-price::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -10px;
+    height: 6px;
+    background: #ef4444;
+    border-radius: 3px;
+    animation: strikethrough 0.4s 4.8s forwards;
+    width: 0;
+}
+#s2 .arrow {
+    font-size: 80px;
+    color: #fbbf24;
+    margin: 10px 0;
+    animation: scaleIn 0.4s 5.2s both;
+}
+#s2 .new-price {
+    font-size: 140px;
+    font-weight: 900;
+    color: #fbbf24;
+    line-height: 1;
+    animation: scaleIn 0.6s 5.5s both;
+}
+#s2 .new-price-glow {
+    animation: pulseGlow 1.5s 5.8s infinite;
+}
+#s2 .cash-label {
+    font-size: 36px;
+    color: #fde68a;
+    margin-top: 10px;
+    font-weight: 600;
+    animation: fadeIn 0.3s 6s both;
+}
+#s2-out {
+    animation: fadeOut 0.4s 6.8s forwards;
+}
+
+/* ═══ SCENE 3: OR PARAGLIDING (7s – 10s) ═══ */
+#s3 {
+    animation: fadeIn 0.3s 7.2s forwards;
+}
+#s3 .or-text {
+    font-size: 48px;
+    font-weight: 800;
+    color: #6b7280;
+    animation: scaleIn 0.4s 7.4s both;
+}
+#s3 .para-title {
+    font-size: 72px;
+    font-weight: 900;
+    color: #38bdf8;
+    margin-top: 20px;
+    line-height: 1.1;
+    animation: fadeInUp 0.6s 7.8s both;
+}
+#s3 .para-desc {
+    font-size: 32px;
+    color: #7dd3fc;
+    margin-top: 20px;
+    animation: fadeInUp 0.5s 8.2s both;
+}
+#s3 .para-img {
+    width: 800px;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 30px;
+    margin-top: 40px;
+    border: 3px solid rgba(56,189,248,0.3);
+    animation: scaleIn 0.6s 8.5s both, breathe 3s 9s infinite;
+}
+#s3-out {
+    animation: fadeOut 0.4s 9.8s forwards;
+}
+
+/* ═══ SCENE 4: DETAILS (10s – 14s) ═══ */
+#s4 {
+    animation: fadeIn 0.3s 10.2s forwards;
+}
+#s4 .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 42px;
+    font-weight: 700;
+    margin: 16px 0;
+    padding: 20px 50px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    width: 860px;
+}
+#s4 .detail-row .icon {
+    font-size: 48px;
+    width: 60px;
+    text-align: center;
+}
+#s4 .d1 { animation: slideRight 0.5s 10.5s both; }
+#s4 .d2 { animation: slideLeft  0.5s 10.9s both; }
+#s4 .d3 { animation: slideRight 0.5s 11.3s both; }
+#s4 .d4 { animation: slideLeft  0.5s 11.7s both; }
+#s4 .d5 { animation: slideRight 0.5s 12.1s both; }
+#s4 .detail-row .accent { color: #fbbf24; }
+#s4 .detail-row .purple { color: #a78bfa; }
+#s4 .detail-row .green  { color: #22c55e; }
+#s4 .detail-row .blue   { color: #60a5fa; }
+#s4 .detail-row .red    { color: #f87171; }
+#s4-out {
+    animation: fadeOut 0.4s 13.5s forwards;
+}
+
+/* ═══ SCENE 5: CTA (14s – 17s) ═══ */
+#s5 {
+    animation: fadeIn 0.3s 14s forwards;
+}
+#s5 .cta-pre {
+    font-size: 36px;
+    color: #9ca3af;
+    animation: fadeInUp 0.5s 14.2s both;
+}
+#s5 .cta-main {
+    font-size: 80px;
+    font-weight: 900;
+    color: #fff;
+    margin-top: 20px;
+    animation: fadeInUp 0.6s 14.5s both;
+}
+#s5 .cta-url {
+    margin-top: 40px;
+    padding: 24px 80px;
+    background: #7c3aed;
+    border-radius: 24px;
+    font-size: 52px;
+    font-weight: 800;
+    color: #fff;
+    animation: scaleIn 0.5s 15s both, breathe 1.5s 15.5s infinite;
+}
+#s5 .cta-sub {
+    font-size: 28px;
+    color: #a78bfa;
+    margin-top: 30px;
+    animation: fadeIn 0.3s 15.5s both;
+}
+#s5 .slots {
+    margin-top: 30px;
+    padding: 16px 40px;
+    background: rgba(239,68,68,0.15);
+    border: 2px solid rgba(239,68,68,0.4);
+    border-radius: 16px;
+    font-size: 36px;
+    font-weight: 800;
+    color: #f87171;
+    animation: scaleIn 0.4s 15.8s both, shake 0.5s 16.2s both;
+}
+#s5 .logos {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-top: 60px;
+    animation: fadeIn 0.5s 16.2s both;
+}
+#s5 .logos span {
+    font-size: 24px;
+    color: #6b7280;
+    font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<!-- Scene 1: Fight for Glory -->
+<div class="scene" id="s1">
+    <div id="s1-out">
+        <div class="pre-title">Argonar Presents</div>
+        <div class="main-title">FIGHT<br>FOR<br>GLORY</div>
+        <div class="sub-title">Dota 2 Tournament — Cebu City</div>
+        <div class="game-badge">🎮 5v5 DOTA 2</div>
+    </div>
+</div>
+
+<!-- Scene 2: Prize Bump -->
+<div class="scene" id="s2">
+    <div id="s2-out">
+        <div class="label">💰 Cash Prize</div>
+        <div class="new-price new-price-glow">TBD</div>
+        <div class="cash-label">Split among the winning team</div>
+    </div>
+</div>
+
+<!-- Scene 4: Tournament Details -->
+<div class="scene" id="s4">
+    <div id="s4-out">
+        <div class="detail-row d1"><span class="icon">⚔️</span> <span><span class="accent">Double Elimination</span> — Lose twice to be out</span></div>
+        <div class="detail-row d2"><span class="icon">📊</span> <span><span class="purple">Rank-Based Seeding</span> — Fair matchups</span></div>
+        <div class="detail-row d3"><span class="icon">📅</span> <span><span class="blue">May 30, 2026</span> — Tournament Day</span></div>
+        <div class="detail-row d4"><span class="icon">📍</span> <span><span class="green">PGL Ibabao</span> — Mandaue, Cebu</span></div>
+        <div class="detail-row d5"><span class="icon">💰</span> <span><span class="red">₱250/team</span> · ₱50/solo · <strong>50% OFF</strong></span></div>
+    </div>
+</div>
+
+<!-- Scene 5: CTA -->
+<div class="scene" id="s5">
+    <div class="cta-pre">The throne is empty.</div>
+    <div class="cta-main">REGISTER<br>NOW</div>
+    <div class="cta-url">argonar.co</div>
+    <div class="cta-sub">Tournament: May 30 at PGL Ibabao</div>
+    <div class="slots">⏰ Limited slots remaining</div>
+    <div class="logos">
+        <span>Argonar</span>
+    </div>
+</div>
+
+</body>
+</html>

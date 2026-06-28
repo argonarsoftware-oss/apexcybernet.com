@@ -1,0 +1,11 @@
+vendor/
+logs/
+*.log
+.env
+uploads/
+promo/node_modules/
+promo/*.mp4
+reels/node_modules/
+reels/output/
+voice-signal/node_modules/
+voice-signal/.voice-secret

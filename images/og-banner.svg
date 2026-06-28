@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f13"/>
+      <stop offset="50%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="title" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="50%" style="stop-color:#c084fc"/>
+      <stop offset="100%" style="stop-color:#f472b6"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="30%" cy="40%" r="50%">
+      <stop offset="0%" style="stop-color:rgba(124,58,237,0.2)"/>
+      <stop offset="100%" style="stop-color:rgba(124,58,237,0)"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="70%" cy="60%" r="50%">
+      <stop offset="0%" style="stop-color:rgba(251,191,36,0.12)"/>
+      <stop offset="100%" style="stop-color:rgba(251,191,36,0)"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow1)"/>
+  <rect width="1200" height="630" fill="url(#glow2)"/>
+
+  <!-- Title -->
+  <text x="600" y="220" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="72" font-weight="800" fill="url(#title)">Fight for Glory</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="275" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="26" fill="#9ca3af">Argonar Gaming Tournament — Dota 2</text>
+
+  <!-- Detail boxes -->
+  <rect x="145" y="310" width="250" height="56" rx="12" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="270" y="345" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="20" fill="#e4e4e7"><tspan fill="#fbbf24" font-weight="700">5v5</tspan> Double Elimination</text>
+
+  <rect x="475" y="310" width="250" height="56" rx="12" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="600" y="345" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="20" fill="#e4e4e7"><tspan fill="#fbbf24" font-weight="700">TBD</tspan> Cash Prize</text>
+
+  <rect x="805" y="310" width="250" height="56" rx="12" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="930" y="345" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="20" fill="#e4e4e7"><tspan fill="#fbbf24" font-weight="700">May 30</tspan> Tournament Day</text>
+
+  <!-- Prize line -->
+  <text x="600" y="425" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="22" font-weight="700" fill="#fbbf24">Win the cash and bragging rights for your squad</text>
+
+  <!-- CTA -->
+  <rect x="450" y="460" width="300" height="50" rx="12" fill="#7c3aed"/>
+  <text x="600" y="492" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="20" font-weight="700" fill="#ffffff">Register Now — argonar.co</text>
+
+  <!-- Brand -->
+  <text x="600" y="600" text-anchor="middle" font-family="Inter, Segoe UI, sans-serif" font-size="15" fill="#6b7280">Argonar</text>
+</svg>

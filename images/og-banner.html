@@ -1,0 +1,42 @@
+<!-- Open this in a browser and screenshot at 1200x630 to create og-banner.png -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    width: 1200px; height: 630px;
+    background: linear-gradient(135deg, #0f0f13 0%, #1a1a2e 50%, #16213e 100%);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #e4e4e7; text-align: center; position: relative; overflow: hidden;
+}
+body::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(124,58,237,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(251,191,36,0.1) 0%, transparent 50%);
+}
+.content { position: relative; z-index: 1; }
+h1 { font-size: 72px; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; }
+.subtitle { font-size: 28px; color: #9ca3af; margin-bottom: 32px; }
+.details { display: flex; gap: 32px; font-size: 20px; }
+.detail { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; }
+.detail strong { color: #fbbf24; }
+.prize { margin-top: 28px; font-size: 24px; color: #fbbf24; font-weight: 700; }
+.brand { position: absolute; bottom: 24px; font-size: 16px; color: #6b7280; }
+</style>
+</head>
+<body>
+<div class="content">
+    <h1>Fight for Glory</h1>
+    <div class="subtitle">Argonar Gaming Tournament &mdash; Dota 2</div>
+    <div class="details">
+        <div class="detail"><strong>5v5</strong> Double Elimination</div>
+        <div class="detail"><strong>TBD</strong> Cash Prize</div>
+        <div class="detail"><strong>May 30</strong> Tournament Day</div>
+    </div>
+    <div class="prize">&#127942; Win the cash and bragging rights for your squad</div>
+</div>
+<div class="brand">argonar.co</div>
+</body>
+</html>

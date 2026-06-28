@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: #0a0a0f;
+    font-family: 'Inter', sans-serif;
+    color: #e4e4e7;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 20%, rgba(239,68,68,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.10) 0%, transparent 55%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 60px;
+    opacity: 0;
+    text-align: center;
+    z-index: 1;
+}
+
+@keyframes fadeIn       { from { opacity:0 } to { opacity:1 } }
+@keyframes fadeOut      { from { opacity:1 } to { opacity:0 } }
+@keyframes fadeInUp     { from { opacity:0; transform:translateY(50px) } to { opacity:1; transform:translateY(0) } }
+@keyframes slideRight   { from { opacity:0; transform:translateX(-70px) } to { opacity:1; transform:translateX(0) } }
+@keyframes scaleIn      { from { opacity:0; transform:scale(0.6) } to { opacity:1; transform:scale(1) } }
+@keyframes pulseRed {
+    0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.0); }
+    50%     { box-shadow: 0 0 40px 8px rgba(239,68,68,0.35); }
+}
+@keyframes breathe {
+    0%,100% { transform:scale(1) }
+    50%     { transform:scale(1.04) }
+}
+
+/* ══ SCENE 1 — HOOK  0s – 5s ══ */
+#s1     { animation: fadeIn  0.3s 0.2s  forwards; }
+#s1-out { animation: fadeOut 0.4s 4.8s  forwards; }
+
+#s1 .warn-badge {
+    display: inline-block;
+    padding: 14px 36px;
+    background: rgba(239,68,68,0.15);
+    border: 2px solid #ef4444;
+    border-radius: 14px;
+    font-size: 30px; font-weight: 800;
+    color: #ef4444; letter-spacing: 4px; text-transform: uppercase;
+    animation: scaleIn 0.4s 0.4s both;
+}
+#s1 .slots-filled {
+    font-size: 108px; font-weight: 900; line-height: 0.95; margin-top: 30px;
+    background: linear-gradient(135deg, #ef4444, #f97316, #fbbf24);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: fadeInUp 0.5s 0.8s both;
+}
+#s1 .slots-sub {
+    font-size: 44px; font-weight: 700; color: #9ca3af; margin-top: 20px;
+    animation: fadeInUp 0.4s 1.3s both;
+}
+#s1 .urgency {
+    margin-top: 40px; padding: 20px 48px;
+    background: rgba(239,68,68,0.12); border: 2px solid rgba(239,68,68,0.5);
+    border-radius: 18px; font-size: 36px; font-weight: 800; color: #fca5a5;
+    animation: scaleIn 0.4s 1.9s both, pulseRed 1.4s 2.4s infinite;
+}
+#s1 .confirmed-count {
+    margin-top: 24px; font-size: 32px; color: #6b7280;
+    animation: fadeIn 0.4s 2.5s both;
+}
+#s1 .confirmed-count strong { color: #22c55e; }
+
+/* ══ SCENE 2 — CONFIRMED  5s – 14s ══ */
+#s2     { animation: fadeIn  0.3s 5.2s  forwards; }
+#s2-out { animation: fadeOut 0.4s 13.8s forwards; }
+
+.section-header {
+    width: 100%; display: flex; align-items: center; gap: 16px; margin-bottom: 22px;
+}
+.section-header .dot { width:16px; height:16px; border-radius:50%; flex-shrink:0; }
+.dot-green { background:#22c55e; }
+.dot-red   { background:#ef4444; }
+.dot-amber { background:#f59e0b; }
+.section-header h2 { font-size: 38px; font-weight: 900; text-align: left; }
+
+#s2 .section-header { animation: fadeInUp 0.4s 5.4s both; }
+#s2 .section-header h2 { color: #22c55e; }
+
+.team-row {
+    width: 100%; display: flex; align-items: center; gap: 20px;
+    padding: 17px 28px; border-radius: 16px; margin-bottom: 10px;
+    font-size: 34px; font-weight: 700;
+}
+.team-row .num { width:40px; font-size:26px; color:#6b7280; font-weight:800; flex-shrink:0; text-align:right; }
+.team-row .name { flex:1; text-align:left; }
+
+.team-confirmed { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.25); color:#dcfce7; }
+.team-confirmed .check { color:#22c55e; font-size:30px; flex-shrink:0; }
+
+/* 0.5s stagger — readable but snappy */
+#s2 .r1 { animation: slideRight 0.4s 5.7s  both; }
+#s2 .r2 { animation: slideRight 0.4s 6.2s  both; }
+#s2 .r3 { animation: slideRight 0.4s 6.7s  both; }
+#s2 .r4 { animation: slideRight 0.4s 7.2s  both; }
+#s2 .r5 { animation: slideRight 0.4s 7.7s  both; }
+#s2 .r6 { animation: slideRight 0.4s 8.2s  both; }
+#s2 .r7 { animation: slideRight 0.4s 8.7s  both; }
+#s2 .r8 { animation: slideRight 0.4s 9.2s  both; }
+#s2 .locked-tag { margin-top:18px; font-size:30px; color:#4b5563; animation: fadeIn 0.4s 10.0s both; }
+#s2 .locked-tag strong { color:#22c55e; }
+
+/* ══ SCENE 3 — UNPAID  14s – 25s ══ */
+#s3     { animation: fadeIn  0.3s 14.2s forwards; }
+#s3-out { animation: fadeOut 0.4s 24.8s forwards; }
+
+#s3 .section-header { animation: fadeInUp 0.4s 14.5s both; }
+#s3 .section-header h2 { color: #f87171; }
+
+.team-unpaid { background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.25); color:#fecaca; }
+.team-unpaid .x { color:#ef4444; font-size:30px; flex-shrink:0; }
+
+#s3 .r1 { animation: slideRight 0.4s 14.9s both; }
+#s3 .r2 { animation: slideRight 0.4s 15.4s both; }
+#s3 .jakolerns-notice {
+    margin: 6px 0 4px 8px; padding: 10px 18px;
+    background: rgba(251,191,36,0.1); border-left: 3px solid rgba(251,191,36,0.6);
+    border-radius: 8px; font-size: 18px; font-weight: 600; color: #fcd34d;
+    line-height: 1.4; animation: slideRight 0.4s 15.6s both;
+}
+#s3 .r3 { animation: slideRight 0.4s 15.9s both; }
+#s3 .r4 { animation: slideRight 0.4s 16.4s both; }
+#s3 .r5 { animation: slideRight 0.4s 16.9s both; }
+#s3 .r6 { animation: slideRight 0.4s 17.4s both; }
+#s3 .r7 { animation: slideRight 0.4s 17.9s both; }
+#s3 .r8 { animation: slideRight 0.4s 18.4s both; }
+#s3 .warning-line {
+    margin-top:20px; padding:16px 32px;
+    background:rgba(239,68,68,0.12); border:2px solid rgba(239,68,68,0.4);
+    border-radius:14px; font-size:30px; font-weight:800; color:#f87171;
+    animation: scaleIn 0.4s 19.4s both;
+}
+
+/* ══ SCENE 4 — WAITLIST TEAMS  25s – 34s ══ */
+#s4     { animation: fadeIn  0.3s 25.2s forwards; }
+#s4-out { animation: fadeOut 0.4s 33.8s forwards; }
+
+#s4 .section-header { animation: fadeInUp 0.4s 25.5s both; }
+#s4 .section-header h2 { color: #f59e0b; }
+
+.team-wait { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); color:#fde68a; }
+.team-wait .clock { color:#f59e0b; font-size:30px; flex-shrink:0; }
+
+#s4 .rw1 { animation: slideRight 0.4s 26.0s both; }
+#s4 .rw2 { animation: slideRight 0.4s 26.8s both; }
+#s4 .rw3 { animation: slideRight 0.4s 27.6s both; }
+
+#s4 .wait-desc {
+    margin-top:28px; font-size:34px; color:#9ca3af; line-height:1.6;
+    animation: fadeInUp 0.4s 28.6s both;
+}
+#s4 .wait-desc strong { color:#fbbf24; }
+#s4 .replace-banner {
+    margin-top:26px; padding:18px 40px;
+    background:rgba(245,158,11,0.12); border:2px solid rgba(245,158,11,0.45);
+    border-radius:16px; font-size:32px; font-weight:800; color:#fbbf24;
+    animation: scaleIn 0.4s 30.2s both, breathe 1.8s 30.6s infinite;
+}
+
+/* ══ SCENE 5 — SOLO WAITLIST  34s – 42s ══ */
+#s5     { animation: fadeIn  0.3s 34.2s forwards; }
+#s5-out { animation: fadeOut 0.4s 41.8s forwards; }
+
+#s5 .section-header { animation: fadeInUp 0.4s 34.5s both; }
+#s5 .section-header h2 { color: #60a5fa; }
+
+.team-solo { background:rgba(96,165,250,0.08); border:1px solid rgba(96,165,250,0.25); color:#bfdbfe; }
+.team-solo .paid-tag {
+    font-size:22px; font-weight:800;
+    background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.4);
+    color:#22c55e; padding:4px 14px; border-radius:8px; flex-shrink:0;
+}
+
+#s5 .rs1 { animation: slideRight 0.4s 35.0s both; }
+#s5 .rs2 { animation: slideRight 0.4s 36.0s both; }
+
+#s5 .solo-info {
+    margin-top:30px; font-size:34px; color:#6b7280; line-height:1.65;
+    animation: fadeInUp 0.4s 37.2s both;
+}
+#s5 .solo-info strong { color:#60a5fa; }
+#s5 .solo-need {
+    margin-top:26px; padding:16px 36px;
+    background:rgba(96,165,250,0.1); border:2px solid rgba(96,165,250,0.3);
+    border-radius:14px; font-size:30px; font-weight:800; color:#93c5fd;
+    animation: scaleIn 0.4s 38.8s both;
+}
+
+/* ══ SCENE 6 — CTA  42s – 51s ══ */
+#s6 { animation: fadeIn 0.3s 42.2s forwards; }
+
+#s6 .deadline-label {
+    font-size:30px; font-weight:700; color:#f87171;
+    text-transform:uppercase; letter-spacing:5px;
+    animation: fadeInUp 0.4s 42.5s both;
+}
+#s6 .cta-main {
+    font-size:110px; font-weight:900; line-height:0.95; margin-top:20px;
+    background: linear-gradient(135deg, #fff, #e4e4e7);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    animation: fadeInUp 0.5s 43.0s both;
+}
+#s6 .cta-sub {
+    font-size:36px; color:#9ca3af; margin-top:16px;
+    animation: fadeInUp 0.4s 43.8s both;
+}
+#s6 .cta-url {
+    margin-top:40px; padding:28px 90px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    border-radius:28px; font-size:56px; font-weight:900; color:#fff; letter-spacing:1px;
+    animation: scaleIn 0.5s 44.6s both, breathe 1.8s 45.1s infinite;
+}
+#s6 .deadline-box {
+    margin-top:28px; padding:18px 44px;
+    background:rgba(239,68,68,0.12); border:2px solid rgba(239,68,68,0.45);
+    border-radius:16px; font-size:34px; font-weight:800; color:#fca5a5;
+    animation: scaleIn 0.4s 45.8s both, pulseRed 1.5s 46.2s infinite;
+}
+#s6 .fee-line {
+    margin-top:26px; font-size:32px; color:#6b7280;
+    animation: fadeIn 0.4s 47.0s both;
+}
+#s6 .fee-line strong { color:#fbbf24; }
+#s6 .hashtags {
+    margin-top:28px; font-size:26px; color:#4b5563; line-height:1.6;
+    animation: fadeIn 0.4s 48.0s both;
+}
+#s6 .hashtags span { color:#7c3aed; }
+</style>
+</head>
+<body>
+
+<!-- ══ SCENE 1: HOOK (0–5s) ══ -->
+<div class="scene" id="s1">
+    <div id="s1-out">
+        <div class="warn-badge">📋 &nbsp; REGISTRATION UPDATE &nbsp; 📋</div>
+        <div class="slots-filled">ALL<br>16<br>SLOTS<br>TAKEN</div>
+        <div class="slots-sub">Dota 2 — Cebu City</div>
+        <div class="urgency">8 teams — payment still pending 🙏</div>
+        <div class="confirmed-count"><strong>8 confirmed</strong> · 3 teams on the waiting list</div>
+    </div>
+</div>
+
+<!-- ══ SCENE 2: CONFIRMED (5–14s) ══ -->
+<div class="scene" id="s2">
+    <div id="s2-out">
+        <div class="section-header">
+            <div class="dot dot-green"></div>
+            <h2>✅ &nbsp;8 CONFIRMED &nbsp;—&nbsp; LOCKED IN</h2>
+        </div>
+        <div class="team-row team-confirmed r1"><span class="num">1</span><span class="check">✓</span><span class="name">Padaoga mi please</span></div>
+        <div class="team-row team-confirmed r2"><span class="num">2</span><span class="check">✓</span><span class="name">It's not you, it's me</span></div>
+        <div class="team-row team-confirmed r3"><span class="num">3</span><span class="check">✓</span><span class="name">CREAMSILK NI LAPAD</span></div>
+        <div class="team-row team-confirmed r4"><span class="num">4</span><span class="check">✓</span><span class="name">Invicta gaming</span></div>
+        <div class="team-row team-confirmed r5"><span class="num">5</span><span class="check">✓</span><span class="name">BOOTCAMP</span></div>
+        <div class="team-row team-confirmed r6"><span class="num">6</span><span class="check">✓</span><span class="name">Teknova</span></div>
+        <div class="team-row team-confirmed r7"><span class="num">7</span><span class="check">✓</span><span class="name">Kuya J and Friends</span></div>
+        <div class="team-row team-confirmed r8"><span class="num">8</span><span class="check">✓</span><span class="name">Jox.wteph.com</span></div>
+        <div class="locked-tag">Congrats to all <strong>confirmed teams</strong> — see you on April 19! 🎉</div>
+    </div>
+</div>
+
+<!-- ══ SCENE 3: UNPAID (14–25s) ══ -->
+<div class="scene" id="s3">
+    <div id="s3-out">
+        <div class="section-header">
+            <div class="dot dot-red"></div>
+            <h2>⏳ &nbsp;8 TEAMS &nbsp;—&nbsp; PAYMENT PENDING</h2>
+        </div>
+        <div class="team-row team-unpaid r1"><span class="num">1</span><span class="x">✕</span><span class="name">Ubec Maniac</span></div>
+        <div class="team-row team-unpaid r2"><span class="num">2</span><span class="x">✕</span><span class="name">team jakolerns</span></div>
+        <div class="jakolerns-notice">⚠️ Due to complaints from five anonymous users alleging that this team's members are intentionally lowering their ranks despite being highly ranked, all members will have their ranks adjusted to the highest level as determined by the organizers.</div>
+        <div class="team-row team-unpaid r3"><span class="num">3</span><span class="x">✕</span><span class="name">RYANNA FAYE</span></div>
+        <div class="team-row team-unpaid r4"><span class="num">4</span><span class="x">✕</span><span class="name">Alopez Finest</span></div>
+        <div class="team-row team-unpaid r5"><span class="num">5</span><span class="x">✕</span><span class="name">CLINTBIOT</span></div>
+        <div class="team-row team-unpaid r6"><span class="num">6</span><span class="x">✕</span><span class="name">Invicta</span></div>
+        <div class="team-row team-unpaid r7"><span class="num">7</span><span class="x">✕</span><span class="name">MeteorGarden</span></div>
+        <div class="team-row team-unpaid r8"><span class="num">8</span><span class="x">✕</span><span class="name">DaddyEulBuff</span></div>
+        <div class="warning-line">🙏 &nbsp;Please complete your payment before April 17</div>
+    </div>
+</div>
+
+<!-- ══ SCENE 4: WAITLIST TEAMS (25–34s) ══ -->
+<div class="scene" id="s4">
+    <div id="s4-out">
+        <div class="section-header">
+            <div class="dot dot-amber"></div>
+            <h2>⏳ &nbsp;WAITING LIST &nbsp;—&nbsp; TEAMS</h2>
+        </div>
+        <div class="team-row team-wait rw1"><span class="num">1</span><span class="clock">⏳</span><span class="name">TACAD</span></div>
+        <div class="team-row team-wait rw2"><span class="num">2</span><span class="clock">⏳</span><span class="name">Choygz</span></div>
+        <div class="team-row team-wait rw3"><span class="num">3</span><span class="clock">⏳</span><span class="name">Ace Skylark Esports</span></div>
+        <div class="wait-desc">
+            These teams registered after all slots were taken.<br>
+            If a pending team's payment doesn't go through,<br>
+            the <strong>next team on this list</strong> gets their spot.
+        </div>
+        <div class="replace-banner">✨ &nbsp;Your slot is still possible — stay ready</div>
+    </div>
+</div>
+
+<!-- ══ SCENE 5: SOLO WAITLIST (34–42s) ══ -->
+<div class="scene" id="s5">
+    <div id="s5-out">
+        <div class="section-header">
+            <div class="dot" style="background:#60a5fa"></div>
+            <h2>🎯 &nbsp;SOLO WAITLIST &nbsp;—&nbsp; PAID</h2>
+        </div>
+        <div class="team-row team-solo rs1">
+            <span class="num">1</span>
+            <span style="font-size:30px">🎮</span>
+            <span class="name">Shed.</span>
+            <span class="paid-tag">PAID ✓</span>
+        </div>
+        <div class="team-row team-solo rs2">
+            <span class="num">2</span>
+            <span style="font-size:30px">🎮</span>
+            <span class="name">Skadoosh</span>
+            <span class="paid-tag">PAID ✓</span>
+        </div>
+        <div class="solo-info">
+            Solo players are grouped into teams of <strong>5</strong>.<br>
+            <strong>2 paid</strong> so far — <strong>3 more</strong> needed<br>
+            to activate a full team slot.
+        </div>
+        <div class="solo-need">📣 &nbsp;3 more solo players needed to form a slot</div>
+    </div>
+</div>
+
+<!-- ══ SCENE 6: CTA (42–51s) ══ -->
+<div class="scene" id="s6">
+    <div class="deadline-label">📅 &nbsp; Payment Deadline: April 17 &nbsp; 📅</div>
+    <div class="cta-main">SECURE<br>YOUR<br>SLOT</div>
+    <div class="cta-sub">Complete your payment before April 17</div>
+    <div class="cta-url">argonar.co</div>
+    <div class="deadline-box">💳 &nbsp;₱250/team &nbsp;·&nbsp; ₱50/solo &nbsp;·&nbsp; <strong>50% OFF</strong></div>
+    <div class="fee-line">e-Wallet / InstaPay &nbsp;·&nbsp; or on-site at <strong>Hide Out Cafe</strong></div>
+    <div class="hashtags">
+        <span>#ArgonarTournament</span> &nbsp;<span>#Dota2Cebu</span><br>
+        <span>#CebuEsports</span> &nbsp;<span>#HideOutCafe</span>
+    </div>
+</div>
+
+</body>
+</html>

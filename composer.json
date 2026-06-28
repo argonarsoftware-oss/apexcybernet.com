@@ -1,0 +1,7 @@
+{
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.30",
+        "payrex/payrex-php": "^1.8",
+        "cboden/ratchet": "^0.4"
+    }
+}
