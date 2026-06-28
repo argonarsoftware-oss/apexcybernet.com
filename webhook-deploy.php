@@ -24,7 +24,11 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-define('WEBHOOK_SECRET', 'kirfenia123');
+// Secret is read from a file OUTSIDE the web root so it is never committed to git.
+// The provisioning script writes it to /etc/apexcybernet/deploy.secret.
+// Optional override via env (e.g. SetEnv in the vhost).
+$__secretFile = getenv('APEX_DEPLOY_SECRET_FILE') ?: '/etc/apexcybernet/deploy.secret';
+define('WEBHOOK_SECRET', is_readable($__secretFile) ? trim(file_get_contents($__secretFile)) : '');
 define('DEPLOY_KEYWORD', '[deploy]');
 define('WEB_ROOT', '/var/www/apexcybernet');
 define('LOG_DIR', __DIR__ . '/logs');
