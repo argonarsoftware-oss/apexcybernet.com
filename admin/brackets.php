@@ -113,8 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     return $a['registered_at'] <=> $b['registered_at'];
                 });
 
-                // Cap at 12 teams
-                $max_teams = 12;
+                // Cap at 16 teams
+                $max_teams = 16;
                 if (count($team_seeds) > $max_teams) {
                     $team_seeds = array_slice($team_seeds, 0, $max_teams);
                 }

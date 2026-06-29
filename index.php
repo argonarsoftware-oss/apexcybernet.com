@@ -325,7 +325,7 @@ $idx_shortcuts = [];
 $idx_hc_shown = false;
 
 $dota_main_count    = $dota_paid_tc + (int)floor($dota_paid_sc / 5);
-$dota_max_slots     = 12;
+$dota_max_slots     = 16;
 $dota_registered    = $dota_tc;
 $dota_solo_pending  = $dota_sc;
 $dota_date_label    = 'July 11, 2026';
@@ -1556,7 +1556,7 @@ $dota_all_paid = $dota_paid_in_main >= 16;
 </div>
 
 <?php
-$max_teams = 12;
+$max_teams = 16;
 // Solo players form teams of 5
 function estimate_date($team_count, $solo_count, $fixed_date = null) {
     if ($fixed_date) {
@@ -2094,7 +2094,7 @@ $chat_logged_in = !empty($_SESSION['account_id']);
                 <div style="font-size:0.85rem; color:var(--text-muted);">Organizers have locked the registered field. New registrations join the waitlist; getting in now requires a withdrawal or organizer approval.</div>
             <?php else: ?>
                 <div style="font-weight:700; font-size:0.95rem; color:var(--text);">Lock your slot — pay to confirm</div>
-                <div style="font-size:0.85rem; color:var(--text-muted);">₱550/team · ₱110/solo entry. Slots are first-come, first-served. Once 12 teams register the field is locked and the rest go to the waitlist.</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">₱550/team · ₱110/solo entry. Slots are first-come, first-served. Once 16 teams register the field is locked and the rest go to the waitlist.</div>
             <?php endif; ?>
         </div>
     </div>

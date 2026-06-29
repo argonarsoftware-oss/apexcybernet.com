@@ -39,7 +39,7 @@ Are you ready to prove you're the best? 🔥
 🔗 REGISTER NOW: https://apexcybernet.com
 
 ⚡ Double Elimination Format — you have to lose TWICE to be out!
-🏆 12 teams max per game — slots are filling up FAST!
+🏆 16 teams max per game — slots are filling up FAST!
 
 Don't have a team? No problem! Join solo and we'll build one for you 💪
 
@@ -63,7 +63,7 @@ Your aim, your strats, your team — it's time to prove it on the big stage. 5v5
 📋 DETAILS:
 • Format: Double Elimination (Bo1 / Bo3 Grand Finals)
 • Entry: ₱550/team · ₱110/solo (pay via QR Ph)
-• Max: 12 teams only — first come, first served!
+• Max: 16 teams only — first come, first served!
 • All agents allowed. Standard competitive settings.
 
 🎮 No team? Register solo — we'll match you with players at your rank!
@@ -95,7 +95,7 @@ Mga lodi ng Dota, tara na! 🔥
 • Format: Double Elimination (Bo1 / Bo3 Grand Finals)
 • Mode: Captains Mode (CM)
 • Entry: ₱550/team · ₱110/solo (pay via QR Ph)
-• Max: 12 teams — limited slots!
+• Max: 16 teams — limited slots!
 • All heroes allowed (current patch)
 
 🎮 Solo player? Register and we'll match you by rank!
@@ -127,7 +127,7 @@ CrossFire on GameClub — the classic FPS is back and better than ever. 5v5 Sear
 • Format: Double Elimination (Bo1 / Bo3 Grand Finals)
 • Mode: Search & Destroy (SnD)
 • Entry: ₱550/team · ₱110/solo (pay via QR Ph)
-• Max: 12 teams — don't miss out!
+• Max: 16 teams — don't miss out!
 • GameClub client required
 
 🎮 Flying solo? We got you — register solo and we'll build your dream team based on your skill level!

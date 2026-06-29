@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                 <li><strong>Losers bracket:</strong> Best of 1. Lose here and you're out.</li>
                 <li><strong>Grand Finals:</strong> Best of 3. The losers bracket winner must take 2 sets.</li>
                 <li>Seeding and brackets are announced before tournament day.</li>
-                <li>Maximum <strong>12 teams</strong>.</li>
+                <li>Maximum <strong>16 teams</strong>.</li>
             </ul>
         </div>
 

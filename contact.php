@@ -75,16 +75,57 @@ require_once __DIR__ . '/includes/he-chrome.php';
     <div class="he-card-inner">
         <div class="he-card-section">
             <div class="he-card-section-label">Tournament day</div>
-            <div style="display:flex; align-items:center; gap:16px; padding:20px 22px; background:linear-gradient(90deg, rgba(226,54,54,0.10), rgba(251,191,36,0.10)); border:1px solid var(--accent); border-radius:14px;">
-                <div style="width:52px; height:52px; background:#fff; border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--accent); font-size:26px;">
-                    <i class="bi bi-calendar-event"></i>
+            <div style="padding:20px 22px; background:linear-gradient(90deg, rgba(226,54,54,0.10), rgba(251,191,36,0.10)); border:1px solid var(--accent); border-radius:14px;">
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <div style="width:52px; height:52px; background:#fff; border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--accent); font-size:26px;">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; font-weight:800; color:var(--accent); margin-bottom:2px;">Mark your calendar</div>
+                        <div style="font-size:28px; font-weight:800; color:var(--text); letter-spacing:-0.02em; line-height:1.1;">July 11, 2026</div>
+                        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Saturday · 11:00&nbsp;AM start · 10:00&nbsp;AM call time · Apex Cybernet Cafe</div>
+                    </div>
                 </div>
-                <div style="flex:1; min-width:0;">
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; font-weight:800; color:var(--accent); margin-bottom:2px;">Mark your calendar</div>
-                    <div style="font-size:28px; font-weight:800; color:var(--text); letter-spacing:-0.02em; line-height:1.1;">July 11, 2026</div>
-                    <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Saturday · 11:00&nbsp;AM start · 10:00&nbsp;AM call time · Apex Cybernet Cafe</div>
+                <div id="tdCdLabel" style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; color:var(--text-muted); margin:18px 0 8px;">Counting down to kickoff</div>
+                <div id="tdCountdown" data-td-target="2026-07-11T11:00:00" style="display:flex; gap:8px;">
+                    <?php
+                    $td_units = ['tdDays' => 'Days', 'tdHours' => 'Hours', 'tdMins' => 'Mins', 'tdSecs' => 'Secs'];
+                    foreach ($td_units as $td_id => $td_label): ?>
+                        <div style="flex:1; text-align:center; background:#fff; border:1px solid var(--border); border-radius:10px; padding:12px 6px;">
+                            <div id="<?= $td_id ?>" style="font-size:26px; font-weight:800; color:var(--text); font-variant-numeric:tabular-nums; line-height:1;">--</div>
+                            <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-top:5px; font-weight:700;"><?= $td_label ?></div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
+            <script>
+            (function () {
+                var box = document.getElementById('tdCountdown');
+                if (!box) return;
+                var target = new Date(box.dataset.tdTarget).getTime();
+                var dEl = document.getElementById('tdDays'),
+                    hEl = document.getElementById('tdHours'),
+                    mEl = document.getElementById('tdMins'),
+                    sEl = document.getElementById('tdSecs'),
+                    lbl = document.getElementById('tdCdLabel');
+                function pad(n) { return n < 10 ? '0' + n : n; }
+                function tick() {
+                    var diff = target - Date.now();
+                    if (diff <= 0) {
+                        dEl.textContent = '0'; hEl.textContent = '00'; mEl.textContent = '00'; sEl.textContent = '00';
+                        if (lbl) lbl.textContent = "It's tournament day — game on!";
+                        clearInterval(iv);
+                        return;
+                    }
+                    dEl.textContent = Math.floor(diff / 86400000);
+                    hEl.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+                    mEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
+                    sEl.textContent = pad(Math.floor((diff % 60000) / 1000));
+                }
+                tick();
+                var iv = setInterval(tick, 1000);
+            })();
+            </script>
         </div>
 
         <div class="he-card-section">
