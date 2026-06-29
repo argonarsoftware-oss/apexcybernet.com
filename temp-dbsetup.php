@@ -125,4 +125,30 @@ if ($action === 'log') {
     exit;
 }
 
+if ($action === 'probe') {
+    @ini_set('display_errors', '1');
+    error_reporting(E_ALL);
+    $target = __DIR__ . '/' . basename($_GET['file'] ?? 'index.php');
+    register_shutdown_function(function () {
+        $e = error_get_last();
+        while (ob_get_level()) ob_end_clean();
+        header('Content-Type: text/plain');
+        if ($e && in_array($e['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+            echo "FATAL: " . $e['message'] . "\n  in " . $e['file'] . ":" . $e['line'] . "\n";
+        }
+    });
+    ob_start();
+    try {
+        require $target;
+        while (ob_get_level()) ob_end_clean();
+        header('Content-Type: text/plain');
+        echo "RAN WITHOUT FATAL (target=" . basename($target) . ")\n";
+    } catch (Throwable $t) {
+        while (ob_get_level()) ob_end_clean();
+        header('Content-Type: text/plain');
+        echo "THROWABLE: " . $t->getMessage() . "\n  in " . $t->getFile() . ":" . $t->getLine() . "\n";
+    }
+    exit;
+}
+
 echo "unknown action\n";
