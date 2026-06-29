@@ -35,7 +35,7 @@
     <meta name="googlebot" content="index, follow">
     <meta name="author" content="<?= !empty($hideCompany) ? 'Apex Cybernet' : 'Apex Cybernet' ?>">
     <meta name="publisher" content="<?= !empty($hideCompany) ? 'Apex Cybernet' : 'Apex Cybernet' ?>">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#0a0a0b">
     <meta name="application-name" content="Apex Cybernet Tournament">
     <meta name="apple-mobile-web-app-title" content="Apex Cybernet">
     <link rel="canonical" href="<?= htmlspecialchars($metaCanonical) ?>">
@@ -69,10 +69,9 @@
     <meta name="twitter:image:alt" content="<?= htmlspecialchars($metaOgImageAlt) ?>">
 
     <!-- Favicons + PWA manifest -->
-    <link rel="icon" type="image/svg+xml" href="<?= base_url('images/favicon.svg') ?>">
-    <link rel="alternate icon" href="<?= base_url('images/favicon.svg') ?>">
-    <link rel="apple-touch-icon" href="<?= base_url('images/favicon.svg') ?>">
-    <link rel="mask-icon" href="<?= base_url('images/favicon.svg') ?>" color="#7c3aed">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('images/favicon-32.png') ?>">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?= base_url('images/icon-192.png') ?>">
+    <link rel="apple-touch-icon" href="<?= base_url('images/favicon-180.png') ?>">
     <link rel="manifest" href="<?= base_url('manifest.webmanifest') ?>">
 
     <!-- Performance hints -->
@@ -278,7 +277,8 @@
 <nav class="navbar">
     <div class="container nav-container">
         <a class="navbar-brand" href="<?= base_url() ?>">
-            <i class="bi bi-controller"></i> Apex Cybernet <span>Tournament</span>
+            <img src="<?= base_url('images/apex-logo.jpg') ?>" alt="Apex Cybernet Cafe" class="brand-logo" width="40" height="40">
+            Apex Cybernet <span>Tournament</span>
         </a>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
             <i class="bi bi-list"></i>

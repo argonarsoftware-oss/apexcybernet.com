@@ -1,36 +1,30 @@
 {
     "name": "Apex Cybernet Tournament",
     "short_name": "Apex Cybernet",
-    "description": "H-Coins wallet, esports predictions, and tournament bracket for Apex Cybernet.",
-    "start_url": "/dashboard.php",
+    "description": "Dota 2 esports tournament — brackets, registration, and live match updates for Apex Cybernet Cafe.",
+    "start_url": "/",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait-primary",
-    "background_color": "#0f0f13",
-    "theme_color": "#7c3aed",
+    "background_color": "#0a0a0b",
+    "theme_color": "#0a0a0b",
     "lang": "en-PH",
     "dir": "ltr",
     "icons": [
         {
-            "src": "/images/favicon.svg",
-            "sizes": "any",
-            "type": "image/svg+xml",
-            "purpose": "any"
-        },
-        {
-            "src": "/icons/icon.php?size=192",
+            "src": "/images/icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "/icons/icon.php?size=512",
+            "src": "/images/icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
         },
         {
-            "src": "/icons/icon.php?size=512",
+            "src": "/images/icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
@@ -38,25 +32,18 @@
     ],
     "shortcuts": [
         {
-            "name": "H-Coin Wallet",
-            "short_name": "Wallet",
-            "description": "Check your H-Coin balance",
-            "url": "/dashboard.php",
-            "icons": [{ "src": "/icons/icon.php?size=192", "sizes": "192x192", "type": "image/png" }]
-        },
-        {
             "name": "Bracket",
             "short_name": "Bracket",
             "description": "View tournament bracket",
             "url": "/bracket.php",
-            "icons": [{ "src": "/icons/icon.php?size=192", "sizes": "192x192", "type": "image/png" }]
+            "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png" }]
         },
         {
-            "name": "Predict",
-            "short_name": "Predict",
-            "description": "Make match predictions",
-            "url": "/predict.php",
-            "icons": [{ "src": "/icons/icon.php?size=192", "sizes": "192x192", "type": "image/png" }]
+            "name": "Register",
+            "short_name": "Register",
+            "description": "Register your team",
+            "url": "/register.php?game=dota2",
+            "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png" }]
         }
     ],
     "categories": ["games", "sports", "entertainment"]

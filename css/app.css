@@ -1,28 +1,28 @@
 :root {
-    /* Editorial light — matches Wealth Engine (zinc + indigo) */
-    --bg-dark:        #fafafa;        /* (legacy name, now off-white) */
-    --bg-card:        #ffffff;
-    --bg-card-hover:  #f9fafb;
-    --bg-subtle:      #f4f4f5;
+    /* Apex Cybernet — dark monochrome (raptor / fossil B&W aesthetic) */
+    --bg-dark:        #0a0a0b;        /* near-black page background */
+    --bg-card:        #141417;        /* elevated card surface */
+    --bg-card-hover:  #1c1c20;
+    --bg-subtle:      #1a1a1e;
 
-    --accent:         #18181b;        /* primary near-black (was gold) */
-    --accent-light:   #5b5bd6;        /* indigo highlight (links, active, focus) */
-    --accent-cyan:    #5b5bd6;        /* unify on indigo */
-    --accent-magenta: #a855f7;
+    --accent:         #fafafa;        /* primary near-white (white-on-black, like the logo) */
+    --accent-light:   #a1a1aa;        /* muted highlight */
+    --accent-cyan:    #e4e4e7;        /* light mono */
+    --accent-magenta: #d4d4d8;
     --accent-gold:    #fbbf24;        /* reserved for trophy / champion accents only */
 
-    --text:           #18181b;
-    --text-main:      #18181b;
-    --text-body:      #27272a;
-    --text-muted:     #71717a;
-    --text-subtle:    #a1a1aa;
+    --text:           #fafafa;
+    --text-main:      #fafafa;
+    --text-body:      #d4d4d8;
+    --text-muted:     #a1a1aa;
+    --text-subtle:    #71717a;
 
-    --border:         #e4e4e7;
-    --border-strong:  #d4d4d8;
+    --border:         #26262b;
+    --border-strong:  #3f3f46;
 
-    --success:        #15803d;
-    --warning:        #b45309;
-    --danger:         #b91c1c;
+    --success:        #22c55e;
+    --warning:        #f59e0b;
+    --danger:         #ef4444;
 
     --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -4950,3 +4950,17 @@ small, .small { color: var(--text-muted); }
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
 }
+
+/* ===== Apex Cybernet — dark monochrome theme overrides ===== */
+body { background: var(--bg-dark); color: var(--text-body); }
+.navbar { background: rgba(10,10,11,0.92); border-bottom: 1px solid var(--border); }
+.navbar-brand { color: var(--text) !important; display: inline-flex; align-items: center; gap: 10px; }
+.navbar-brand img.brand-logo {
+    height: 40px; width: 40px; border-radius: 9px; object-fit: cover;
+    display: inline-block; box-shadow: 0 0 0 1px var(--border-strong);
+}
+/* Primary actions: white surface + black text (mirrors the white-on-black logo) */
+.btn-register, .btn-submit { color: #0a0a0b !important; }
+.btn-register:hover, .btn-submit:hover { background: var(--accent-light) !important; color: #0a0a0b !important; }
+.btn-solo { color: var(--text) !important; border: 1px solid var(--border-strong) !important; }
+.btn-solo:hover { background: var(--accent) !important; color: #0a0a0b !important; }
