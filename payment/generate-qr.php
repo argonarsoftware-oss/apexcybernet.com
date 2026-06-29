@@ -15,32 +15,41 @@ if ($amount <= 0 || $amount > 1000000) {
 
 require_once __DIR__ . '/../includes/qrcode.php';
 
+// Helper: build one EMVCo TLV field with a correctly computed 2-digit length.
+function qrField(string $tag, string $value): string {
+    return $tag . str_pad((string)strlen($value), 2, '0', STR_PAD_LEFT) . $value;
+}
+
 function buildQRPhPayload(float $amount): string {
-    $payload = '';
-    $payload .= '000201';
-    $payload .= '010212';
+    $payload  = '000201';   // payload format indicator
+    $payload .= '010212';   // dynamic QR
 
+    // Merchant account info (tag 27) — Tonik account. This is the field that
+    // routes the money; it matches the account the Apex listener watches.
     $merchantInner  = '0012com.p2pqrpay';
-    $merchantInner .= '0111GXCHPHM2XXX';
-    $merchantInner .= '020899964403';
-    $merchantInner .= '0315217020000000656';
-    $merchantInner .= '0417DWQM4TK3JDO90FAK9';
-    $payload .= '27' . str_pad(strlen($merchantInner), 2, '0', STR_PAD_LEFT) . $merchantInner;
+    $merchantInner .= '0111TDBIPHM2XXX';        // Tonik bank BIC
+    $merchantInner .= '020899964403';           // shared argonar merchant id
+    $merchantInner .= '041460840747650001';     // Tonik account number
+    $payload .= qrField('27', $merchantInner);
 
-    $payload .= '52046016';
-    $payload .= '5303608';
+    $payload .= '52046016';   // MCC
+    $payload .= '5303608';    // currency 608 = PHP
 
     $amtStr = number_format($amount, 2, '.', '');
-    $payload .= '54' . str_pad(strlen($amtStr), 2, '0', STR_PAD_LEFT) . $amtStr;
+    $payload .= qrField('54', $amtStr);   // transaction amount (unique-centavo)
 
-    $payload .= '5802PH';
-    $payload .= '5914Apex Cybernet Softwr';
-    $payload .= '6008Inayawan';
-    $payload .= '61041234';
+    $payload .= '5802PH';                       // country
+    $payload .= qrField('59', 'Apex Cybernet Softwr');  // merchant name (display only)
+    $payload .= qrField('60', 'CEBU CITY');             // merchant city
 
-    $payload .= '6304';
-    $crc = crc16ccitt($payload);
-    $payload .= $crc;
+    // Additional data (tag 62) — reference fields, mirrors the working Tonik QR.
+    $additional  = '001447477334439830';
+    $additional .= '051447477334439830';
+    $additional .= '070868100529';
+    $payload .= qrField('62', $additional);
+
+    $payload .= '6304';                         // CRC tag + length placeholder
+    $payload .= crc16ccitt($payload);
 
     return $payload;
 }

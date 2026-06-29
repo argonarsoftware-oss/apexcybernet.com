@@ -28,7 +28,7 @@ if ($type === 'solo') {
     $registration = $stmt->fetch();
     if ($registration) {
         $game_name = $valid_games[$registration['game']] ?? $registration['game'];
-        $amount = 100.00;
+        $amount = 110.00;
         $description = "Solo: {$registration['player_name']} - $game_name";
     }
 } else {
@@ -37,7 +37,7 @@ if ($type === 'solo') {
     $registration = $stmt->fetch();
     if ($registration) {
         $game_name = $valid_games[$registration['game']] ?? $registration['game'];
-        $amount = 500.00;
+        $amount = 550.00;
         $description = "Team: {$registration['team_name']} - $game_name";
     }
 }

@@ -333,8 +333,8 @@ $dota_time_label    = '11:00 AM';
 $dota_call_label    = '10:00 AM';
 $dota_venue_label   = 'PGL Ibabao · Mandaue, Cebu';
 $dota_prize_label   = 'TBD';
-$dota_team_fee      = 500;
-$dota_solo_fee      = 100;
+$dota_team_fee      = 550;
+$dota_solo_fee      = 110;
 ?>
 
 <div class="home-editorial">
