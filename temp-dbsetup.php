@@ -45,11 +45,14 @@ if ($action === 'inspect') {
 
 if ($action === 'create') {
     $log = [];
+    $COLLATE = 'utf8mb4_general_ci'; // single consistent collation across the whole DB
 
-    // 1. Create the database (clean slate, nothing from argonar)
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS apexcybernet DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    // 1. Clean slate — drop and recreate with one consistent collation.
+    //    Safe: no real data yet (only a seeded admin). Avoids collation-mix errors.
+    $pdo->exec("DROP DATABASE IF EXISTS apexcybernet");
+    $pdo->exec("CREATE DATABASE apexcybernet DEFAULT CHARACTER SET utf8mb4 COLLATE $COLLATE");
     $pdo->exec("USE apexcybernet");
-    $log[] = "database `apexcybernet` ready";
+    $log[] = "database `apexcybernet` recreated ($COLLATE)";
 
     // 2. Load setup.sql tables (strip its CREATE DATABASE / USE lines)
     $sql = @file_get_contents(__DIR__ . '/setup.sql');
@@ -61,48 +64,83 @@ if ($action === 'create') {
     }
     $log[] = "setup.sql tables loaded";
 
-    // 3. accounts + cafe_comments (reconstructed from code usage, not argonar)
-    $pdo->exec("CREATE TABLE IF NOT EXISTS `accounts` (
-        `id`              INT UNSIGNED NOT NULL AUTO_INCREMENT,
-        `email`           VARCHAR(255) DEFAULT NULL,
-        `display_name`    VARCHAR(255) NOT NULL,
-        `contact_number`  VARCHAR(32)  DEFAULT NULL,
-        `password_hash`   VARCHAR(255) NOT NULL,
-        `ref_code`        VARCHAR(64)  DEFAULT NULL,
-        `ref_type`        VARCHAR(16)  NOT NULL DEFAULT 'team',
-        `claim_status`    VARCHAR(16)  NOT NULL DEFAULT 'pending',
-        `titles`          TEXT         DEFAULT NULL,
-        `bio`             VARCHAR(255) DEFAULT NULL,
-        `gcash_number`    VARCHAR(32)  DEFAULT NULL,
-        `profile_picture` VARCHAR(255) DEFAULT NULL,
-        `is_verified`     TINYINT(1)   NOT NULL DEFAULT 0,
-        `typing_to`       INT          DEFAULT NULL,
-        `typing_at`       DATETIME     DEFAULT NULL,
-        `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `uq_accounts_display_name` (`display_name`),
-        UNIQUE KEY `uq_accounts_email` (`email`),
-        UNIQUE KEY `uq_accounts_ref_code` (`ref_code`),
-        KEY `idx_accounts_claim_status` (`claim_status`),
-        KEY `idx_accounts_ref` (`ref_type`, `ref_code`),
-        KEY `idx_accounts_created_at` (`created_at`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    // 3. Add columns the live code expects but setup.sql omits (reconstructed from code).
+    //    Plain ALTERs (fresh tables); duplicate-column errors (1060) ignored for idempotency.
+    $alters = [
+        "ALTER TABLE teams ADD COLUMN members_ranks VARCHAR(512) NOT NULL DEFAULT ''",
+        "ALTER TABLE teams ADD COLUMN contact_number VARCHAR(50) NOT NULL DEFAULT ''",
+        "ALTER TABLE teams ADD COLUMN facebook_link VARCHAR(255) NOT NULL DEFAULT ''",
+        "ALTER TABLE teams ADD COLUMN captain_account_id INT NULL DEFAULT NULL",
+        "ALTER TABLE teams ADD COLUMN recruiting TINYINT(1) NOT NULL DEFAULT 0",
+        "ALTER TABLE teams ADD COLUMN reserved TINYINT(1) NOT NULL DEFAULT 0",
+        "ALTER TABLE solo_players ADD COLUMN contact_number VARCHAR(50) NOT NULL DEFAULT ''",
+        "ALTER TABLE solo_players ADD COLUMN facebook_link VARCHAR(255) NOT NULL DEFAULT ''",
+        "ALTER TABLE solo_players ADD COLUMN admin_rating TINYINT NOT NULL DEFAULT 5",
+        "ALTER TABLE solo_players ADD COLUMN account_id INT NULL DEFAULT NULL",
+        "ALTER TABLE solo_players ADD COLUMN reserved TINYINT(1) NOT NULL DEFAULT 0",
+        "ALTER TABLE matches ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
+    ];
+    foreach ($alters as $a) {
+        try { $pdo->exec($a); }
+        catch (PDOException $e) { if ($e->errorInfo[1] != 1060) throw $e; }
+    }
+    $log[] = count($alters) . " missing columns added";
 
-    $pdo->exec("CREATE TABLE IF NOT EXISTS `cafe_comments` (
-        `id`           INT UNSIGNED NOT NULL AUTO_INCREMENT,
-        `account_id`   INT UNSIGNED NOT NULL,
-        `display_name` VARCHAR(255) NOT NULL,
-        `message`      TEXT         NOT NULL,
-        `created_at`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (`id`),
-        KEY `idx_cafe_comments_account_id` (`account_id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    // 4. accounts + cafe_comments (reconstructed from code usage, not argonar)
+    $pdo->exec("CREATE TABLE accounts (
+        id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        email           VARCHAR(255) DEFAULT NULL,
+        display_name    VARCHAR(255) NOT NULL,
+        contact_number  VARCHAR(32)  DEFAULT NULL,
+        password_hash   VARCHAR(255) NOT NULL,
+        ref_code        VARCHAR(64)  DEFAULT NULL,
+        ref_type        VARCHAR(16)  NOT NULL DEFAULT 'team',
+        claim_status    VARCHAR(16)  NOT NULL DEFAULT 'pending',
+        titles          TEXT         DEFAULT NULL,
+        bio             VARCHAR(255) DEFAULT NULL,
+        gcash_number    VARCHAR(32)  DEFAULT NULL,
+        profile_picture VARCHAR(255) DEFAULT NULL,
+        is_verified     TINYINT(1)   NOT NULL DEFAULT 0,
+        typing_to       INT          DEFAULT NULL,
+        typing_at       DATETIME     DEFAULT NULL,
+        created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        UNIQUE KEY uq_accounts_display_name (display_name),
+        UNIQUE KEY uq_accounts_email (email),
+        UNIQUE KEY uq_accounts_ref_code (ref_code),
+        KEY idx_accounts_claim_status (claim_status),
+        KEY idx_accounts_ref (ref_type, ref_code),
+        KEY idx_accounts_created_at (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=$COLLATE");
+
+    $pdo->exec("CREATE TABLE cafe_comments (
+        id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        account_id   INT UNSIGNED NOT NULL,
+        display_name VARCHAR(255) NOT NULL,
+        message      TEXT         NOT NULL,
+        created_at   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        KEY idx_cafe_comments_account_id (account_id),
+        KEY idx_cafe_comments_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=$COLLATE");
     $log[] = "accounts + cafe_comments created";
 
-    // 4. Seed one admin account so you can log in
+    // 5. announcements (dashboard) — referenced but never auto-created
+    $pdo->exec("CREATE TABLE announcements (
+        id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        title      VARCHAR(255) NOT NULL DEFAULT '',
+        content    TEXT         NOT NULL,
+        type       VARCHAR(32)  NOT NULL DEFAULT 'info',
+        created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        KEY idx_announcements_created (created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=$COLLATE");
+    $log[] = "announcements created";
+
+    // 6. Seed one admin account so you can log in
     $adminPass = 'ApexAdmin#2026';
     $hash = password_hash($adminPass, PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("INSERT IGNORE INTO accounts
+    $stmt = $pdo->prepare("INSERT INTO accounts
         (email, display_name, password_hash, ref_code, ref_type, claim_status, is_verified)
         VALUES (?, 'admin', ?, 'ADMIN0001', 'team', 'approved', 1)");
     $stmt->execute(['admin@apexcybernet.com', $hash]);
