@@ -1090,10 +1090,10 @@ body > .hero,
         // Display-only seed teams for early social proof — NOT stored in the DB,
         // excluded from bracket/slot counts, and intentionally show no roster.
         $seed_teams = [
-            ['team_name' => 'Roshan Republic',  'status' => 'approved', 'power' => 30, 'seed' => true],
-            ['team_name' => 'Aegis Vanguard',   'status' => 'approved', 'power' => 27, 'seed' => true],
-            ['team_name' => 'Midnight Carry',   'status' => 'pending',  'power' => 24, 'seed' => true],
-            ['team_name' => 'Throne Breakers',  'status' => 'pending',  'power' => 22, 'seed' => true],
+            ['team_name' => 'Ako Rani',  'status' => 'approved', 'power' => 30, 'seed' => true],
+            ['team_name' => 'Aegis',   'status' => 'approved', 'power' => 27, 'seed' => true],
+            ['team_name' => 'Inayawan Players',   'status' => 'pending',  'power' => 24, 'seed' => true],
+            ['team_name' => 'Mystic',  'status' => 'pending',  'power' => 22, 'seed' => true],
             ['team_name' => 'Rapier Syndicate', 'status' => 'approved', 'power' => 28, 'seed' => true],
         ];
         $dota_field = array_merge($dota_main, $seed_teams);

@@ -159,14 +159,19 @@ require_once __DIR__ . '/includes/he-chrome.php';
     <p class="he-page-sub">Five players, one captain. Substitutes optional. Submit, pay ₱550, and you're seeded into the bracket.</p>
 </section>
 
-<div class="he-card" style="margin-bottom:14px; border:1px solid var(--accent-gold);">
+<div class="he-card" style="margin-bottom:14px;">
     <div class="he-card-inner" style="display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;">
-        <div style="min-width:220px; flex:1;">
-            <div style="font-weight:800; font-size:17px; color:var(--text);"><i class="bi bi-person-fill"></i> Are you solo?</div>
-            <div style="font-size:13px; color:var(--text-muted); margin-top:3px;">No full team? Enter solo for &#8369;110 and we'll match you with 4 other players at your rank and role.</div>
+        <div style="display:flex; align-items:center; gap:14px; min-width:220px; flex:1;">
+            <div style="width:46px; height:46px; border-radius:12px; background:rgba(226,54,54,0.12); border:1px solid rgba(226,54,54,0.30); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--accent-light); font-size:21px;">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div>
+                <div style="font-weight:800; font-size:16px; color:var(--text);">No full team? Go solo.</div>
+                <div style="font-size:13px; color:var(--text-muted); margin-top:2px;">Enter solo for &#8369;110 and we'll match you with 4 other players at your rank and role.</div>
+            </div>
         </div>
         <a href="<?= base_url('matchmaking.php?game=' . $game_slug) ?>"
-           style="display:inline-flex; align-items:center; gap:9px; padding:14px 26px; background:var(--accent-gold); color:#1a1205; font-size:16px; font-weight:800; border-radius:11px; text-decoration:none; white-space:nowrap; box-shadow:0 4px 16px rgba(251,191,36,0.35);">
+           style="display:inline-flex; align-items:center; gap:9px; padding:13px 24px; background:rgba(226,54,54,0.12); border:1px solid var(--accent); color:var(--accent-light); font-size:15px; font-weight:700; border-radius:10px; text-decoration:none; white-space:nowrap;">
             Enter solo instead <i class="bi bi-arrow-right"></i>
         </a>
     </div>
