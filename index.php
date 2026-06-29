@@ -332,7 +332,7 @@ $dota_date_label    = 'May 30, 2026';
 $dota_time_label    = '11:00 AM';
 $dota_call_label    = '10:00 AM';
 $dota_venue_label   = 'PGL Ibabao · Mandaue, Cebu';
-$dota_prize_label   = 'TBD';
+$dota_prize_label   = '&#8369;20,000';
 $dota_team_fee      = 550;
 $dota_solo_fee      = 110;
 ?>
