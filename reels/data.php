@@ -71,10 +71,10 @@ echo json_encode([
         'start_time'        => '1:00 PM',
         'venue'             => 'Hide Out Cybernet Cafe',
         'location'          => 'Brgy. Inayawan, Cebu City',
-        'prize'             => "TBD Cash",
+        'prize'             => "\u{20B1}20,000 Cash",
         'format'            => '5v5 Double Elimination',
-        'entry_fee_team'    => "\u{20B1}250/team (50% OFF)",
-        'entry_fee_solo'    => "\u{20B1}50/solo (50% OFF)",
+        'entry_fee_team'    => "\u{20B1}550/team",
+        'entry_fee_solo'    => "\u{20B1}110/solo",
         'url'               => 'https://apexcybernet.com',
     ],
 ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);

@@ -317,7 +317,7 @@ function toggleVideoSound(btn) {
         <button id="gjb-close" onclick="gjbDismiss()" aria-label="Dismiss">&times;</button>
         <div id="gjb-icon">🏆</div>
         <div id="gjb-heading">Join Apex Cybernet Tournament</div>
-        <div id="gjb-sub">Register to lock in your tournament slot. ₱500/team · ₱100/solo entry.</div>
+        <div id="gjb-sub">Register to lock in your tournament slot. ₱550/team · ₱110/solo entry.</div>
         <div id="gjb-perks">
             <span>🎮 Tournament access</span>
             <span>🏆 Ranked matches</span>

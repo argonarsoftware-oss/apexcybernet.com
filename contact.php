@@ -2,13 +2,13 @@
 require_once __DIR__ . '/includes/db.php';
 
 $pageTitle = 'Contact & Support — Apex Cybernet Dota 2 Tournament';
-$pageDescription = 'Get in touch with the Apex Cybernet Dota 2 Tournament organizers. Venue: PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue. ₱500/team · ₱100/solo entry. FAQs about registration and tournament day.';
+$pageDescription = 'Get in touch with the Apex Cybernet Dota 2 Tournament organizers. Venue: PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue. ₱550/team · ₱110/solo entry. FAQs about registration and tournament day.';
 $canonicalUrl = canonical_url('contact.php');
 
 $faqs = [
     [
         'q' => 'How much is the entry fee?',
-        'a' => '₱500 per team or ₱100 per solo player. Pay via QR Ph (InstaPay) on the payment page right after you register — your slot is locked once payment is confirmed.',
+        'a' => '₱550 per team or ₱110 per solo player. Pay via QR Ph (InstaPay) on the payment page right after you register — your slot is locked once payment is confirmed.',
     ],
     [
         'q' => 'How do I register for the tournament?',
@@ -102,7 +102,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
         <div class="he-card-section">
             <div class="he-card-section-label">Entry</div>
             <div style="font-size:13.5px; color:var(--text-body); line-height:1.6;">
-                <strong>₱500/team · ₱100/solo.</strong> Paid via QR Ph (InstaPay) on the payment page after registration. PC time at PGL Ibabao is paid directly to the venue and is separate.
+                <strong>₱550/team · ₱110/solo.</strong> Paid via QR Ph (InstaPay) on the payment page after registration. PC time at PGL Ibabao is paid directly to the venue and is separate.
             </div>
         </div>
 

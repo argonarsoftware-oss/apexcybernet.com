@@ -34,7 +34,7 @@ m_head('Tournament');
             <i class="bi bi-people-fill"></i>
         </div>
         <div class="m-tour-body">
-            <div class="m-tour-title">Register Team <span style="font-size:0.6rem;color:var(--text-muted);font-weight:700;">&#8369;500</span></div>
+            <div class="m-tour-title">Register Team <span style="font-size:0.6rem;color:var(--text-muted);font-weight:700;">&#8369;550</span></div>
             <div class="m-tour-sub">Sign up your full 5-player team for Dota 2</div>
         </div>
         <i class="bi bi-chevron-right m-tour-chev"></i>
@@ -45,7 +45,7 @@ m_head('Tournament');
             <i class="bi bi-person-plus-fill"></i>
         </div>
         <div class="m-tour-body">
-            <div class="m-tour-title">Solo Player Entry <span style="font-size:0.6rem;color:var(--text-muted);font-weight:700;">&#8369;100</span></div>
+            <div class="m-tour-title">Solo Player Entry <span style="font-size:0.6rem;color:var(--text-muted);font-weight:700;">&#8369;110</span></div>
             <div class="m-tour-sub">No team? We'll match you with other solos</div>
         </div>
         <i class="bi bi-chevron-right m-tour-chev"></i>

@@ -83,7 +83,7 @@ $home_user = current_user($pdo);
 
 $pageTitle = 'Apex Cybernet Tournament';
 $canonicalUrl = 'https://apexcybernet.com/';
-$pageDescription = 'Join the Apex Cybernet Gaming Tournament! Dota 2 5v5. Cash prize TBD. ₱500/team · ₱100/solo entry. Register your team or enter solo.';
+$pageDescription = 'Join the Apex Cybernet Gaming Tournament! Dota 2 5v5. ₱20,000 cash prize. ₱550/team · ₱110/solo entry. Register your team or enter solo.';
 
 // Count registered teams per game
 $counts = [];
@@ -245,7 +245,7 @@ $extraHead = '<script type="application/ld+json">' . json_encode([
     '@context' => 'https://schema.org',
     '@type' => 'Event',
     'name' => 'Apex Cybernet Gaming Tournament — Dota 2',
-    'description' => 'Dota 2 esports tournament with cash prize to be announced. Double elimination, rank-based seeding.',
+    'description' => 'Dota 2 esports tournament with a ₱20,000 cash prize. Double elimination, rank-based seeding.',
     'startDate' => '2026-05-30',
     'eventStatus' => 'https://schema.org/EventScheduled',
     'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
@@ -267,8 +267,8 @@ $extraHead = '<script type="application/ld+json">' . json_encode([
         'url' => 'https://apexcybernet.com',
     ],
     'offers' => [
-        ['@type' => 'Offer', 'name' => 'Team Registration (50% OFF)', 'price' => '250', 'priceCurrency' => 'PHP', 'url' => 'https://apexcybernet.com/register.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
-        ['@type' => 'Offer', 'name' => 'Solo Entry (50% OFF)', 'price' => '50', 'priceCurrency' => 'PHP', 'url' => 'https://apexcybernet.com/matchmaking.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
+        ['@type' => 'Offer', 'name' => 'Team Registration', 'price' => '550', 'priceCurrency' => 'PHP', 'url' => 'https://apexcybernet.com/register.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
+        ['@type' => 'Offer', 'name' => 'Solo Entry', 'price' => '110', 'priceCurrency' => 'PHP', 'url' => 'https://apexcybernet.com/matchmaking.php?game=dota2', 'availability' => 'https://schema.org/InStock'],
     ],
     'image' => 'https://apexcybernet.com/og-image.php',
 ], JSON_UNESCAPED_SLASHES) . '</script>';
@@ -902,14 +902,14 @@ body > .hero,
     </h1>
     <p class="he-sub">
         12 teams. Double elimination. One champion. May 30, 2026 at PGL Ibabao, Mandaue —
-        cash prize to be announced. Register your full squad or enter solo and we'll match you with a team.
+        a ₱20,000 cash prize. Register your full squad or enter solo and we'll match you with a team.
     </p>
     <div class="he-cta-row">
         <a href="<?= base_url('register.php?game=dota2') ?>" class="he-cta-primary">
-            Register your team <span class="he-cta-chip">₱500</span>
+            Register your team <span class="he-cta-chip">₱550</span>
         </a>
         <a href="<?= base_url('matchmaking.php?game=dota2') ?>" class="he-cta-secondary">
-            Enter solo <span class="he-cta-chip">₱100</span>
+            Enter solo <span class="he-cta-chip">₱110</span>
         </a>
     </div>
     <div class="he-quick-meta">
@@ -925,7 +925,7 @@ body > .hero,
     <div class="he-stat-grid">
         <div class="he-stat">
             <div class="he-stat-label">Cash prize</div>
-            <div class="he-stat-value">TBD</div>
+            <div class="he-stat-value"><?= $dota_prize_label ?></div>
             <div class="he-stat-foot">Winner takes all</div>
         </div>
         <div class="he-stat">
@@ -975,12 +975,12 @@ body > .hero,
     <header class="he-section-head">
         <div class="he-section-eyebrow">The prize</div>
         <h2 class="he-section-title">Cash and bragging rights.</h2>
-        <p class="he-section-sub">A cash prize (amount to be announced) for the champion squad — split among five players or kept by the captain to distribute. No vendor lock, no vouchers, no strings.</p>
+        <p class="he-section-sub">A ₱20,000 cash prize for the champion squad — split among five players or kept by the captain to distribute. No vendor lock, no vouchers, no strings.</p>
     </header>
     <div class="he-prize">
         <div class="he-prize-card">
             <div class="he-prize-trophy"><i class="bi bi-trophy-fill"></i></div>
-            <div class="he-prize-amount">TBD</div>
+            <div class="he-prize-amount"><?= $dota_prize_label ?></div>
             <div style="font-size:14px; color:var(--text-muted);">Cash prize · winner takes all</div>
             <div class="he-prize-foot">
                 Paid out via GCash to the team captain within 7 days of the finals. Champions also get
@@ -1058,10 +1058,10 @@ body > .hero,
         <p>Registration cuts off on <?= $dota_date_label ?>. Don't watch this one from the rail.</p>
         <div class="he-cta-row" style="justify-content:center;">
             <a href="<?= base_url('register.php?game=dota2') ?>" class="he-cta-primary">
-                Register your team <span class="he-cta-chip">₱500</span>
+                Register your team <span class="he-cta-chip">₱550</span>
             </a>
             <a href="<?= base_url('matchmaking.php?game=dota2') ?>" class="he-cta-secondary">
-                Enter solo <span class="he-cta-chip">₱100</span>
+                Enter solo <span class="he-cta-chip">₱110</span>
             </a>
         </div>
     </div>
@@ -1261,7 +1261,7 @@ $dota_all_paid = $dota_paid_in_main >= 16;
         All rules, penalties, and final decisions are under the authority of Apex Cybernet.
     </div>
     <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:0.6rem 1rem; font-size:0.85rem; color:var(--text-body); font-weight:600; margin-top:0.5rem;">
-        <i class="bi bi-cash-coin"></i> Entry · <strong>₱500/team · ₱100/solo</strong> — pay via QR Ph (InstaPay) on the payment page after you register.
+        <i class="bi bi-cash-coin"></i> Entry · <strong>₱550/team · ₱110/solo</strong> — pay via QR Ph (InstaPay) on the payment page after you register.
     </div>
     <div style="background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.35); border-radius:10px; padding:0.6rem 1rem; font-size:0.85rem; color:#fbbf24; font-weight:700; margin-top:0.5rem;">
         <i class="bi bi-calendar-event"></i> CAN'T ATTEND? — Teams, registered participants, solo entries, and waiting list who cannot attend on tournament day will be rescheduled to the next season/tournament.
@@ -1304,7 +1304,7 @@ $dota_all_paid = $dota_paid_in_main >= 16;
             </div>
             <div style="display:flex; gap:0.4rem; align-items:flex-start; padding:0.45rem 0.6rem; background:var(--bg-subtle); border-left:2px solid var(--accent-light); border-radius:4px; margin-top:0.25rem; font-size:0.72rem; color:var(--text-body); line-height:1.45; font-weight:600;">
                 <i class="bi bi-cash-coin" style="margin-top:0.15rem; flex-shrink:0; color:var(--accent-light);"></i>
-                <span><strong>₱500/team · ₱100/solo</strong> entry. PC time paid at venue.</span>
+                <span><strong>₱550/team · ₱110/solo</strong> entry. PC time paid at venue.</span>
             </div>
         </div>
     </div>
@@ -1316,10 +1316,10 @@ $dota_all_paid = $dota_paid_in_main >= 16;
     <?php if (!$dota_reg_closed && $dota_slots_left > 0): ?>
     <div style="display:flex; gap:0.75rem; justify-content:center; margin:1.25rem auto 1rem; max-width:420px;">
         <a href="<?= base_url('register.php') ?>?game=dota2" class="btn-register" style="padding:0.85rem 1.25rem; font-size:0.95rem;">
-            <i class="bi bi-people-fill"></i> Register Team <span class="btn-price">₱500</span>
+            <i class="bi bi-people-fill"></i> Register Team <span class="btn-price">₱550</span>
         </a>
         <a href="<?= base_url('matchmaking.php') ?>?game=dota2" class="btn-solo" style="padding:0.85rem 1.25rem; font-size:0.95rem;">
-            <i class="bi bi-person-fill"></i> Solo Entry <span class="btn-price">₱100</span>
+            <i class="bi bi-person-fill"></i> Solo Entry <span class="btn-price">₱110</span>
         </a>
     </div>
     <?php endif; ?>
@@ -1409,13 +1409,13 @@ $dota_all_paid = $dota_paid_in_main >= 16;
         <div class="prize-options" style="justify-content:center;">
             <div class="prize-option" style="max-width:320px;">
                 <div class="prize-icon"><i class="bi bi-cash-stack"></i></div>
-                <div class="prize-amount">TBD</div>
+                <div class="prize-amount">&#8369;20,000</div>
                 <div class="prize-desc">Split among the winning team</div>
             </div>
         </div>
         <div class="prize-note">Cash prize is subject to change and final organizer confirmation.</div>
         <div class="prize-note" style="color:var(--text-body); font-weight:600; font-style:normal; font-size:0.9rem; margin-top:0.5rem; background:var(--bg-subtle); border:1px solid var(--border); padding:0.6rem 1rem; border-radius:8px;">
-            <i class="bi bi-cash-coin" style="color:var(--accent-light);"></i> Entry: <strong>₱500/team · ₱100/solo</strong>. Pay during registration to lock your slot.
+            <i class="bi bi-cash-coin" style="color:var(--accent-light);"></i> Entry: <strong>₱550/team · ₱110/solo</strong>. Pay during registration to lock your slot.
         </div>
         <div style="
             margin-top:0.75rem;
@@ -2038,7 +2038,7 @@ $chat_logged_in = !empty($_SESSION['account_id']);
                 <div style="font-size:0.85rem; color:var(--text-muted);">Organizers have locked the registered field. New registrations join the waitlist; getting in now requires a withdrawal or organizer approval.</div>
             <?php else: ?>
                 <div style="font-weight:700; font-size:0.95rem; color:var(--text);">Lock your slot — pay to confirm</div>
-                <div style="font-size:0.85rem; color:var(--text-muted);">₱500/team · ₱100/solo entry. Slots are first-come, first-served. Once 12 teams register the field is locked and the rest go to the waitlist.</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">₱550/team · ₱110/solo entry. Slots are first-come, first-served. Once 12 teams register the field is locked and the rest go to the waitlist.</div>
             <?php endif; ?>
         </div>
     </div>
@@ -2168,10 +2168,10 @@ $chat_logged_in = !empty($_SESSION['account_id']);
                         </div>
                     <?php elseif ($slots_left > 0): ?>
                         <a href="<?= base_url('register.php') ?>?game=<?= $game['slug'] ?>" class="btn-register">
-                            <i class="bi bi-people-fill"></i> Register Team <span class="btn-price">₱500</span>
+                            <i class="bi bi-people-fill"></i> Register Team <span class="btn-price">₱550</span>
                         </a>
                         <a href="<?= base_url('matchmaking.php') ?>?game=<?= $game['slug'] ?>" class="btn-solo">
-                            <i class="bi bi-person-fill"></i> Solo Entry <span class="btn-price">₱100</span>
+                            <i class="bi bi-person-fill"></i> Solo Entry <span class="btn-price">₱110</span>
                         </a>
                     <?php else: ?>
                         <a href="<?= base_url('register.php') ?>?game=<?= $game['slug'] ?>" class="btn-register" style="background:#fbbf24; color:#0f0f13;">
@@ -2695,7 +2695,7 @@ foreach ($featured_games as $fg) {
                 <li><strong>Media Release:</strong> You consent to being photographed, filmed, and/or recorded during the tournament. All media may be used for promotional, social media, and public purposes by the organizers.</li>
                 <li><strong>Fair Play &amp; Integrity:</strong> You commit to playing with honesty and sportsmanship. Any form of cheating, rank manipulation, or unsportsmanlike behavior may result in disqualification.</li>
                 <li><strong>Violations &amp; Penalties:</strong> Rank manipulation, submitting false information, smurfing, or any form of dishonesty will be subject to penalties — including disqualification and prize forfeiture — at the discretion of Apex Cybernet.</li>
-                <li><strong>Entry Fee:</strong> ₱500 per team or ₱100 per solo player. Pay via QR Ph (InstaPay) on the payment page after registration. PC time at the venue is paid directly to PGL Ibabao.</li>
+                <li><strong>Entry Fee:</strong> ₱550 per team or ₱110 per solo player. Pay via QR Ph (InstaPay) on the payment page after registration. PC time at the venue is paid directly to PGL Ibabao.</li>
                 <li><strong>Build Your Reputation:</strong> This tournament is your stage. Your performance, conduct, and teamwork build your credibility as a player in the community. Play with honor.</li>
             </ul>
             <!-- Violations & Penalties Warning -->

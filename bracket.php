@@ -142,7 +142,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
         <div class="he-card-wide">
             <div class="he-notice" style="margin-bottom:18px;">
                 <i class="bi bi-info-circle-fill" style="color:var(--accent-light);"></i>
-                <div>All registered teams are shown. Entry is <strong>₱500/team · ₱100/solo</strong>. Slots are first-come, first-served. The bracket is a live preview and re-seeds as more teams register; it locks at the registration cut-off.</div>
+                <div>All registered teams are shown. Entry is <strong>₱550/team · ₱110/solo</strong>. Slots are first-come, first-served. The bracket is a live preview and re-seeds as more teams register; it locks at the registration cut-off.</div>
             </div>
 
         <?php

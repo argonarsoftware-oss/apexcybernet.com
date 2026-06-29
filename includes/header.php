@@ -8,12 +8,12 @@
     <?php
     // ── SEO defaults ──
     $defaultTitle       = 'Apex Cybernet Tournament — Dota 2 Esports Cebu';
-    $defaultDescription = 'Apex Cybernet Dota 2 Tournament — 5v5 double elimination, cash prize TBD. ₱500/team · ₱100/solo entry. May 30, 2026 at PGL Ibabao, Mandaue, Cebu.';
+    $defaultDescription = 'Apex Cybernet Dota 2 Tournament — 5v5 double elimination, ₱20,000 cash prize. ₱550/team · ₱110/solo entry. May 30, 2026 at PGL Ibabao, Mandaue, Cebu.';
     $effectiveTitle     = $pageTitle ?? $defaultTitle;
     $metaDescription    = $pageDescription ?? $defaultDescription;
     $metaKeywords       = 'Apex Cybernet Tournament, Dota 2 Cebu, Cebu esports, Dota 2 Philippines, gaming tournament Cebu, PGL Ibabao, Mandaue Cebu, double elimination Dota, paid entry esports';
     $metaOgImage        = $ogImage ?? 'https://apexcybernet.com/og-image.php';
-    $metaOgImageAlt     = $ogImageAlt ?? 'Apex Cybernet Dota 2 Tournament — Fight for Glory, cash prize TBD';
+    $metaOgImageAlt     = $ogImageAlt ?? 'Apex Cybernet Dota 2 Tournament — Fight for Glory, ₱20,000 cash prize';
 
     // Canonical URL — strip query string AND honor proxied HTTPS
     $isHttps = (

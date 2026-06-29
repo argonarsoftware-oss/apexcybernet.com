@@ -33,7 +33,7 @@ if (!isset($valid_games[$game_slug])) {
 
 $game_name = $valid_games[$game_slug];
 $pageTitle = "Solo Player Entry — Apex Cybernet $game_name Tournament";
-$pageDescription = "Don't have a team? Enter solo for the Apex Cybernet $game_name Tournament. ₱100 solo entry. Get matched with players of similar rank to form a team automatically.";
+$pageDescription = "Don't have a team? Enter solo for the Apex Cybernet $game_name Tournament. ₱110 solo entry. Get matched with players of similar rank to form a team automatically.";
 $canonicalUrl = canonical_url('matchmaking.php?game=' . $game_slug);
 $extraHead = breadcrumb_jsonld([
     ['name' => 'Home',       'url' => 'https://apexcybernet.com/'],
@@ -236,7 +236,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                 <div style="display:flex; align-items:baseline; justify-content:space-between; padding:14px 16px; background:var(--bg-subtle); border-radius:10px; margin-bottom:10px;">
                     <div>
                         <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin-bottom:2px;">Solo entry fee</div>
-                        <div style="font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.025em;">&#8369;100 <span style="font-size:13px; color:var(--text-muted); font-weight:500;">/ player</span></div>
+                        <div style="font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.025em;">&#8369;110 <span style="font-size:13px; color:var(--text-muted); font-weight:500;">/ player</span></div>
                     </div>
                     <div style="font-size:12px; color:var(--text-muted); max-width:240px; text-align:right;">Pay on the next page via QR Ph. Slot locks when payment clears.</div>
                 </div>
@@ -250,7 +250,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                         <li><strong>Media release.</strong> You consent to photo and video during the event.</li>
                         <li><strong>Fair play.</strong> Cheating or smurfing = disqualification.</li>
                         <li><strong>Violations.</strong> Penalties at organizer discretion.</li>
-                        <li><strong>Entry fee.</strong> ₱100 per solo, payable on the next page.</li>
+                        <li><strong>Entry fee.</strong> ₱110 per solo, payable on the next page.</li>
                         <li><strong>Reputation.</strong> Build your name on this stage.</li>
                     </ul>
                 </div>

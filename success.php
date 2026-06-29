@@ -30,9 +30,9 @@ require_once __DIR__ . '/includes/header.php';
     <?php elseif ($flash): ?>
         <p style="color: var(--success); font-weight: 600;"><?= htmlspecialchars($flash['message']) ?></p>
     <?php elseif ($type === 'solo'): ?>
-        <p>You've been registered for <?= htmlspecialchars($game_name) ?> solo matchmaking. Once your ₱100 entry is confirmed, your slot is locked in. See you at PGL Ibabao on May 30.</p>
+        <p>You've been registered for <?= htmlspecialchars($game_name) ?> solo matchmaking. Once your ₱110 entry is confirmed, your slot is locked in. See you at PGL Ibabao on May 30.</p>
     <?php else: ?>
-        <p>Your team has been registered for <?= htmlspecialchars($game_name) ?>. Once your ₱500 entry is confirmed, your slot is locked in. See you at PGL Ibabao on May 30.</p>
+        <p>Your team has been registered for <?= htmlspecialchars($game_name) ?>. Once your ₱550 entry is confirmed, your slot is locked in. See you at PGL Ibabao on May 30.</p>
     <?php endif; ?>
 
     <?php if ($ref_code): ?>

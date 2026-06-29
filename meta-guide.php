@@ -47,7 +47,7 @@ require_once __DIR__ . '/includes/header.php';
                     Join the Apex Cybernet Gaming Tournament!<br>
                     🔫 Valorant | CrossFire | Dota 2<br><br>
                     📋 Register now: <strong>https://apexcybernet.com</strong><br><br>
-                    🎟️ Entry: ₱250/team · ₱50/solo (50% OFF)<br>
+                    🎟️ Entry: ₱550/team · ₱110/solo<br>
                     📅 May 30, 2026 · 11:00 AM<br>
                     📍 Venue: PGL Ibabao, Mandaue, Cebu<br><br>
                     Presented by Apex Cybernet<br>
@@ -141,7 +141,7 @@ require_once __DIR__ . '/includes/header.php';
                     Hey there! 👋 Thanks for reaching out to Apex Cybernet Tournament!<br><br>
                     🎮 We're hosting a gaming tournament for Valorant, CrossFire &amp; Dota 2.<br><br>
                     📋 Register here: https://apexcybernet.com<br>
-                    🎟️ ₱250/team · ₱50/solo (50% OFF) entry. Pay via QR Ph.<br><br>
+                    🎟️ ₱550/team · ₱110/solo entry. Pay via QR Ph.<br><br>
                     We'll reply to your message shortly! 🙌
                 </div>
                 <p class="guide-note">Enable via: Automations &rarr; Instant Reply &rarr; Toggle ON &rarr; Edit message</p>
@@ -173,7 +173,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">Q: Entry fee?</span>
-                        <span>₱250/team · ₱50/solo (50% OFF) entry. Pay via QR Ph (InstaPay) after registering.</span>
+                        <span>₱550/team · ₱110/solo entry. Pay via QR Ph (InstaPay) after registering.</span>
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">Q: What games?</span>
@@ -195,7 +195,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="guide-template">
                     Thanks for your interest! 🔥<br><br>
                     Register now at https://apexcybernet.com<br>
-                    ₱250/team · ₱50/solo (50% OFF) entry<br><br>
+                    ₱550/team · ₱110/solo entry<br><br>
                     See you there! 💪
                 </div>
                 <p class="guide-note">Enable via: When creating/editing a post &rarr; Toggle "Auto-reply in comments" &rarr; Edit message</p>
@@ -211,15 +211,15 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="guide-schedule">
                     <div class="schedule-item">
                         <span class="schedule-day">register</span>
-                        <span>"Register at https://apexcybernet.com — ₱250/team · ₱50/solo (50% OFF) 🎮"</span>
+                        <span>"Register at https://apexcybernet.com — ₱550/team · ₱110/solo 🎮"</span>
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">price / fee</span>
-                        <span>"Entry: ₱250/team · ₱50/solo (50% OFF). Pay via QR Ph after registering 🎮"</span>
+                        <span>"Entry: ₱550/team · ₱110/solo. Pay via QR Ph after registering 🎮"</span>
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">free / entry</span>
-                        <span>"Tournament entry: ₱250/team · ₱50/solo (50% OFF). Register and pay via QR Ph at https://apexcybernet.com 🎟️"</span>
+                        <span>"Tournament entry: ₱550/team · ₱110/solo. Register and pay via QR Ph at https://apexcybernet.com 🎟️"</span>
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">schedule / when</span>

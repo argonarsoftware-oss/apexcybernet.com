@@ -29,8 +29,8 @@ Are you ready to prove you're the best? 🔥
 💰 PRIZE: TBD cash for the winning team! 🏆
 
 📝 HOW TO JOIN:
-✅ Team Entry (5 players): ₱250 (50% OFF — was ₱500)
-✅ Solo Entry: ₱50 (50% OFF — was ₱100) — we'll match you with a team based on your skill level!
+✅ Team Entry (5 players): ₱550
+✅ Solo Entry: ₱110 — we'll match you with a team based on your skill level!
 ✅ Register, pay via QR Ph (InstaPay), and your slot is locked in
 
 📍 Venue: PGL Ibabao
@@ -62,7 +62,7 @@ Your aim, your strats, your team — it's time to prove it on the big stage. 5v5
 
 📋 DETAILS:
 • Format: Double Elimination (Bo1 / Bo3 Grand Finals)
-• Entry: ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) (pay via QR Ph)
+• Entry: ₱550/team · ₱110/solo (pay via QR Ph)
 • Max: 12 teams only — first come, first served!
 • All agents allowed. Standard competitive settings.
 
@@ -70,7 +70,7 @@ Your aim, your strats, your team — it's time to prove it on the big stage. 5v5
 Iron to Radiant, everyone's welcome.
 
 📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
-🎟️ ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) entry. Pay via QR Ph (InstaPay) right after you register.
+🎟️ ₱550/team · ₱110/solo entry. Pay via QR Ph (InstaPay) right after you register.
 
 🔗 REGISTER: https://apexcybernet.com/register.php?game=valorant
 🔗 SOLO: https://apexcybernet.com/matchmaking.php?game=valorant
@@ -94,7 +94,7 @@ Mga lodi ng Dota, tara na! 🔥
 📋 DETAILS:
 • Format: Double Elimination (Bo1 / Bo3 Grand Finals)
 • Mode: Captains Mode (CM)
-• Entry: ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) (pay via QR Ph)
+• Entry: ₱550/team · ₱110/solo (pay via QR Ph)
 • Max: 12 teams — limited slots!
 • All heroes allowed (current patch)
 
@@ -102,7 +102,7 @@ Mga lodi ng Dota, tara na! 🔥
 Herald to Immortal — Carry, Mid, Offlane, Support — pick your role.
 
 📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
-🎟️ ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) entry. Pay via QR Ph (InstaPay) right after you register.
+🎟️ ₱550/team · ₱110/solo entry. Pay via QR Ph (InstaPay) right after you register.
 
 🔗 REGISTER: https://apexcybernet.com/register.php?game=dota2
 🔗 SOLO: https://apexcybernet.com/matchmaking.php?game=dota2
@@ -126,14 +126,14 @@ CrossFire on GameClub — the classic FPS is back and better than ever. 5v5 Sear
 📋 DETAILS:
 • Format: Double Elimination (Bo1 / Bo3 Grand Finals)
 • Mode: Search & Destroy (SnD)
-• Entry: ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) (pay via QR Ph)
+• Entry: ₱550/team · ₱110/solo (pay via QR Ph)
 • Max: 12 teams — don't miss out!
 • GameClub client required
 
 🎮 Flying solo? We got you — register solo and we'll build your dream team based on your skill level!
 
 📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
-🎟️ ₱250/team · ₱50/solo (50% OFF — was ₱500/₱100) entry. Pay via QR Ph (InstaPay) right after you register.
+🎟️ ₱550/team · ₱110/solo entry. Pay via QR Ph (InstaPay) right after you register.
 
 🔗 REGISTER: https://apexcybernet.com/register.php?game=crossfire
 🔗 SOLO: https://apexcybernet.com/matchmaking.php?game=crossfire
@@ -147,13 +147,13 @@ Lock and load. The battlefield awaits. 💀
         <div class="guide-template" style="position:relative;"><button onclick="copyCaption(this)" class="btn-copy-link" style="position:absolute; top:0.5rem; right:0.5rem; font-size:0.7rem;"><i class="bi bi-clipboard"></i> Copy</button>
 🎮 WALANG TEAM? NO PROBLEM! 🙌
 
-Join the Apex Cybernet Tournament as a SOLO PLAYER — only ₱50 entry (50% OFF — was ₱100)!
+Join the Apex Cybernet Tournament as a SOLO PLAYER — only ₱110 entry!
 
 Here's how it works:
 1️⃣ Register at https://apexcybernet.com
 2️⃣ Pick your game (Valorant, Dota 2, or CrossFire)
 3️⃣ Select your rank and preferred role
-4️⃣ Pay ₱50 via QR Ph (50% OFF promo) and we'll match you with players of similar skill level
+4️⃣ Pay ₱110 via QR Ph and we'll match you with players of similar skill level
 5️⃣ Show up, play, and WIN! 🏆
 
 💰 Your team can win TBD cash for the whole squad!

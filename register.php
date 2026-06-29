@@ -27,7 +27,7 @@ $game_prefixes = [
 
 $game_name = $valid_games[$game_slug];
 $pageTitle = "Register Your Team — Apex Cybernet $game_name Tournament";
-$pageDescription = "Register your $game_name team for the Apex Cybernet Tournament. ₱250/team entry (50% OFF — was ₱500), 5-player team, cash prize TBD. Double elimination at PGL Ibabao, Mandaue, Cebu.";
+$pageDescription = "Register your $game_name team for the Apex Cybernet Tournament. ₱550/team entry, 5-player team, ₱20,000 cash prize. Double elimination at PGL Ibabao, Mandaue, Cebu.";
 $canonicalUrl = canonical_url('register.php?game=' . $game_slug);
 $extraHead = breadcrumb_jsonld([
     ['name' => 'Home',          'url' => 'https://apexcybernet.com/'],
@@ -156,7 +156,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
 <section class="he-page-hero">
     <div class="he-page-eyebrow">Team registration · <?= htmlspecialchars($game_name) ?></div>
     <h1 class="he-page-title">Lock in your squad.</h1>
-    <p class="he-page-sub">Five players, one captain. Substitutes optional. Submit, pay ₱500, and you're seeded into the bracket.</p>
+    <p class="he-page-sub">Five players, one captain. Substitutes optional. Submit, pay ₱550, and you're seeded into the bracket.</p>
 </section>
 
 <div class="he-card">
@@ -232,7 +232,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                 <div style="display:flex; align-items:baseline; justify-content:space-between; padding:14px 16px; background:var(--bg-subtle); border-radius:10px; margin-bottom:10px;">
                     <div>
                         <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin-bottom:2px;">Registration fee</div>
-                        <div style="font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.025em;">&#8369;500 <span style="font-size:13px; color:var(--text-muted); font-weight:500;">/ team</span></div>
+                        <div style="font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.025em;">&#8369;550 <span style="font-size:13px; color:var(--text-muted); font-weight:500;">/ team</span></div>
                     </div>
                     <div style="font-size:12px; color:var(--text-muted); max-width:240px; text-align:right;">Pay on the next page via QR Ph. Your slot locks when payment clears.</div>
                 </div>
@@ -246,7 +246,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                         <li><strong>Media release.</strong> You consent to photo, video, and live recording during the event.</li>
                         <li><strong>Fair play.</strong> Cheating, smurfing, or unsportsmanlike behavior = disqualification.</li>
                         <li><strong>Violations.</strong> Penalties including DQ, prize forfeiture, and bans at organizer discretion.</li>
-                        <li><strong>Entry fee.</strong> ₱500 per team, payable on the next page.</li>
+                        <li><strong>Entry fee.</strong> ₱550 per team, payable on the next page.</li>
                         <li><strong>Reputation.</strong> Your record on this stage builds your standing in the community.</li>
                     </ul>
                 </div>

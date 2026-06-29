@@ -545,7 +545,7 @@ body::after{
     <div class="s6-main">SECURE<br>YOUR<br>SLOT</div>
     <div class="s6-sub">Register and pay at</div>
     <div class="s6-url">apexcybernet.com</div>
-    <div class="s6-fee">₱250 / team &nbsp;·&nbsp; ₱50 / solo &nbsp;·&nbsp; <strong>50% OFF · GCash / InstaPay</strong></div>
+    <div class="s6-fee">₱550 / team &nbsp;·&nbsp; ₱110 / solo &nbsp;·&nbsp; <strong>GCash / InstaPay</strong></div>
     <div class="s6-tags">
         <span>#ApexCybernetTournament</span> &nbsp; <span>#Dota2Cebu</span><br>
         <span>#CebuEsports</span> &nbsp; <span>#HideOutCafe</span>
