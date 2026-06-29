@@ -978,8 +978,8 @@ body > .hero,
 <section class="he-section">
     <header class="he-section-head">
         <div class="he-section-eyebrow">The prize</div>
-        <h2 class="he-section-title">Cash and bragging rights.</h2>
-        <p class="he-section-sub">A ₱20,000 cash prize for the champion squad — split among five players or kept by the captain to distribute. No vendor lock, no vouchers, no strings.</p>
+        <h2 class="he-section-title">Real cash. No strings.</h2>
+        <p class="he-section-sub">₱20,000 goes to the champion squad — paid straight to the captain to split five ways or divvy up however the team agreed. No vouchers, no store credit, no vendor lock. Win it, take it.</p>
     </header>
     <div class="he-prize">
         <div class="he-prize-card">
