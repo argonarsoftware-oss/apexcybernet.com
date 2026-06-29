@@ -115,4 +115,14 @@ if ($action === 'create') {
     exit;
 }
 
+if ($action === 'log') {
+    $f = '/var/log/apache2/apexcybernet.com-error.log';
+    if (!is_readable($f)) { exit("cannot read $f\n"); }
+    $lines = @file($f, FILE_IGNORE_NEW_LINES);
+    $tail = array_slice($lines, -40);
+    echo "== last 40 lines of $f ==\n";
+    echo implode("\n", $tail) . "\n";
+    exit;
+}
+
 echo "unknown action\n";
