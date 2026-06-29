@@ -893,6 +893,11 @@ body > .hero,
 </header>
 
 <section class="he-hero">
+    <div class="he-logos">
+        <img src="<?= base_url('images/apex-logo.jpg') ?>" alt="Apex Cybernet Cafe" class="he-logo-img">
+        <span class="he-logos-x">×</span>
+        <img src="<?= base_url('images/icon-512.png') ?>" alt="Dota 2" class="he-logo-img">
+    </div>
     <span class="he-eyebrow">
         <span class="he-eyebrow-dot"></span>
         Season 2 · Registration open

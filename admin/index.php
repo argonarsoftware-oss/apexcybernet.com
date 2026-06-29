@@ -521,7 +521,6 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
             <a href="<?= base_url('admin/brackets.php') ?>" class="btn-back-site"><i class="bi bi-diagram-3"></i> Brackets</a>
             <a href="<?= base_url('admin/tools.php') ?>" class="btn-back-site" style="border-color:rgba(167,139,250,0.35); color:#a78bfa;"><i class="bi bi-tools"></i> Admin Tools</a>
             <?php if ($is_owner): ?>
-            <a href="<?= base_url('admin/activity.php') ?>" class="btn-back-site" style="border-color:rgba(124,58,237,0.35); color:#a78bfa;"><i class="bi bi-activity"></i> Activity</a>
             <?php endif; ?>
             <a href="<?= base_url('admin/chat.php') ?>" class="btn-back-site" style="border-color:rgba(167,139,250,0.35); color:#a78bfa;"><i class="bi bi-chat-dots-fill"></i> Chat</a>
             <a href="<?= base_url('admin/matchmaking.php') ?>" class="btn-back-site"><i class="bi bi-puzzle"></i> Matchmaking</a>

@@ -5014,3 +5014,11 @@ select option { background: #181a20; color: var(--text); }
 .btn-register:hover, .btn-submit:hover { background: #c92a2a !important; color: #fff !important; }
 .btn-solo { background: transparent !important; color: var(--accent-light) !important; border: 1px solid var(--accent) !important; }
 .btn-solo:hover { background: var(--accent) !important; color: #fff !important; }
+
+/* Hero dual-logo lockup (Apex Cybernet × Dota 2) */
+.he-logos { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 22px; }
+.he-logos .he-logo-img { height: 64px; width: 64px; border-radius: 14px; object-fit: cover; box-shadow: 0 6px 20px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06); }
+.he-logos-x { color: var(--text-muted); font-size: 20px; font-weight: 800; }
+
+/* Remove the bottom-right guest-join modal */
+#guest-join-banner { display: none !important; }
