@@ -154,58 +154,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_registration']
     }
 }
 
-// ── Pay with H-Coins ──
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pay_hcoins'])) {
-    if (empty($_SESSION['account_id'])) {
-        flash('error', 'You must be logged in to pay with H-Coins.');
-        header("Location: " . base_url("ticket.php?ref=$ref&type=$type"));
-        exit;
-    }
-    $uid = (int)$_SESSION['account_id'];
-    $hcoin_fee = ($type === 'solo') ? 100 : 500;
-
-    $bal = $pdo->prepare("SELECT h_coins FROM accounts WHERE id = ?");
-    $bal->execute([$uid]);
-    $balance = (int)$bal->fetchColumn();
-
-    if ($balance < $hcoin_fee) {
-        flash('error', "Not enough H-Coins. You have $balance HC but need $hcoin_fee HC.");
-        header("Location: " . base_url("ticket.php?ref=$ref&type=$type"));
-        exit;
-    }
-
-    $deduct = $pdo->prepare("UPDATE accounts SET h_coins = h_coins - ? WHERE id = ? AND h_coins >= ?");
-    $deduct->execute([$hcoin_fee, $uid, $hcoin_fee]);
-    if ($deduct->rowCount() === 0) {
-        flash('error', 'Not enough H-Coins.');
-        header("Location: " . base_url("ticket.php?ref=$ref&type=$type"));
-        exit;
-    }
-
-    $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'debit', ?, 'admin_credit', ?)")
-        ->execute([$uid, $hcoin_fee, ($type === 'solo' ? 'solo_reg:' : 'team_reg:') . $ref]);
-
-    $proof = 'HCOIN | ' . $hcoin_fee . ' HC | account:' . $uid;
-    if ($type === 'solo') {
-        $pdo->prepare("UPDATE solo_players SET status = 'approved', payment_proof = ? WHERE ref_code = ? AND status = 'pending'")
-            ->execute([$proof, $ref]);
-    } else {
-        $pdo->prepare("UPDATE teams SET status = 'approved', payment_proof = ? WHERE ref_code = ? AND status = 'pending'")
-            ->execute([$proof, $ref]);
-    }
-
-    $label = ($type === 'solo') ? $registration['player_name'] : $registration['team_name'];
-    try {
-        $pdo->prepare("INSERT INTO user_notifications (account_id, title, message, icon, link) VALUES (?, ?, ?, 'bi-coin', ?)")
-            ->execute([$uid, 'Payment Confirmed!', ($type === 'solo' ? 'Solo entry' : 'Team') . ' "' . $label . '" locked in. ' . $hcoin_fee . ' HC deducted.', 'ticket.php?ref=' . $ref]);
-    } catch (Exception $e) {}
-
-    $_SESSION['ref_code'] = $ref;
-    flash('success', "Paid with $hcoin_fee H-Coins! Your slot is locked in.");
-    header("Location: " . base_url("success.php?type=$type&game={$registration['game']}"));
-    exit;
-}
-
 // ── AJAX: Upload proof fallback ──
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_proof'])) {
     $upload_path = '';
@@ -379,48 +327,6 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
 
-        <!-- H-Coin Payment -->
-        <?php $hcoin_fee = ($type === 'solo') ? 100 : 500; $logged_in = !empty($_SESSION['account_id']); ?>
-        <div style="background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:1rem; margin-bottom:1rem;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:0.75rem; flex-wrap:wrap;">
-                <div>
-                    <div style="font-weight:800; color:var(--accent-light); font-size:0.88rem;">
-                        <i class="bi bi-coin"></i> Pay with H-Coins — <?= number_format($hcoin_fee) ?> HC
-                    </div>
-                    <div style="font-size:0.72rem; color:var(--text-muted); margin-top:0.15rem;">
-                        <?php if ($logged_in):
-                            $__hc = $pdo->prepare("SELECT h_coins FROM accounts WHERE id = ?");
-                            $__hc->execute([$_SESSION['account_id']]);
-                            $__bal = (int)$__hc->fetchColumn();
-                        ?>
-                            Balance: <strong style="color:<?= $__bal >= $hcoin_fee ? 'var(--success)' : '#f87171' ?>;"><?= number_format($__bal) ?> HC</strong>
-                            <?php if ($__bal < $hcoin_fee): ?>
-                            — <a href="<?= base_url('coins.php') ?>" style="color:var(--accent-light);">Buy more</a>
-                            <?php else: ?>
-                            — Instant confirmation, no QR needed
-                            <?php endif; ?>
-                        <?php else: ?>
-                            Instant slot lock — no QR or cash needed
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php if ($logged_in && $__bal >= $hcoin_fee): ?>
-                <form method="POST" style="flex-shrink:0;">
-                    <input type="hidden" name="pay_hcoins" value="1">
-                    <button type="submit" onclick="return confirm('Pay <?= $hcoin_fee ?> HC to lock your slot?')"
-                            style="background:var(--accent); color:#fff; border:none; border-radius:9px; padding:0.55rem 1.2rem; font-size:0.82rem; font-weight:800; cursor:pointer; font-family:inherit; white-space:nowrap;">
-                        <i class="bi bi-lightning-fill"></i> Pay Now
-                    </button>
-                </form>
-                <?php elseif (!$logged_in): ?>
-                <button type="button" onclick="document.getElementById('hcoinLoginModal').classList.add('open')"
-                        style="background:var(--accent); color:#fff; border:none; border-radius:9px; padding:0.55rem 1.2rem; font-size:0.82rem; font-weight:800; cursor:pointer; font-family:inherit; white-space:nowrap; flex-shrink:0;">
-                    <i class="bi bi-lightning-fill"></i> Pay Now
-                </button>
-                <?php endif; ?>
-            </div>
-        </div>
-
         <!-- Bracket disclaimer -->
         <div style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.2); border-radius:10px; padding:0.7rem 1rem; margin-bottom:1rem; font-size:0.78rem; color:var(--text-muted); display:flex; gap:0.6rem; align-items:flex-start;">
             <i class="bi bi-diagram-3-fill" style="color:#fbbf24; flex-shrink:0; margin-top:0.1rem;"></i>
@@ -443,37 +349,6 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </div>
-
-<!-- Login modal for H-Coin payment (guests) -->
-<?php if (empty($_SESSION['account_id'])): ?>
-<div id="hcoinLoginModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:1000; align-items:center; justify-content:center; padding:1rem;">
-    <div style="background:var(--bg-card, #1a1a24); border:1px solid var(--border); border-radius:18px; padding:2rem 1.75rem; max-width:380px; width:100%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-        <i class="bi bi-shield-lock-fill" style="font-size:2.5rem; color:var(--accent-light, #a78bfa); display:block; margin-bottom:0.75rem;"></i>
-        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:0.4rem;">Account Required</h3>
-        <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1.25rem; line-height:1.5;">
-            You need an Apex Cybernet account to pay with H-Coins. Log in or create an account to get started.
-        </p>
-        <a href="<?= base_url('login.php') ?>" style="display:inline-flex; align-items:center; gap:0.4rem; background:var(--accent, #7c3aed); color:#fff; border:none; border-radius:10px; padding:0.7rem 1.5rem; font-size:0.9rem; font-weight:800; text-decoration:none;">
-            <i class="bi bi-box-arrow-in-right"></i> Log In / Sign Up
-        </a>
-        <button onclick="document.getElementById('hcoinLoginModal').classList.remove('open'); document.getElementById('hcoinLoginModal').style.display='none';"
-                style="display:block; margin:0.85rem auto 0; font-size:0.75rem; color:var(--text-muted); cursor:pointer; background:none; border:none; font-family:inherit;">
-            Maybe later
-        </button>
-    </div>
-</div>
-<script>
-document.getElementById('hcoinLoginModal').addEventListener('click', function(e) {
-    if (e.target === this) { this.classList.remove('open'); this.style.display = 'none'; }
-});
-// Override display for .open class
-var hcModal = document.getElementById('hcoinLoginModal');
-var observer = new MutationObserver(function() {
-    if (hcModal.classList.contains('open')) hcModal.style.display = 'flex';
-});
-observer.observe(hcModal, { attributes: true, attributeFilter: ['class'] });
-</script>
-<?php endif; ?>
 
 <script>
 (function() {

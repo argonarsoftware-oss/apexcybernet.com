@@ -1,9 +1,6 @@
 <?php
 session_start();
 
-// QR pay HMAC secret — used to sign and verify wallet QR tokens
-define('QR_HMAC_SECRET', 'apexcybernet_qr_secret_2026');
-
 $host = 'localhost';
 $dbname = 'apexcybernet';
 $user = 'root';

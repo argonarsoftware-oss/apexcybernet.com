@@ -54,34 +54,6 @@ foreach ($matches as $m) {
 // Announcements
 $announcements = $pdo->query("SELECT * FROM announcements ORDER BY created_at DESC LIMIT 4")->fetchAll();
 
-// H-Coin data
-$hc_stmt = $pdo->prepare("SELECT h_coins, gcash_number FROM accounts WHERE id = ?");
-$hc_stmt->execute([$user['id']]);
-$hc_row      = $hc_stmt->fetch();
-$h_coins     = (int)($hc_row['h_coins'] ?? 0);
-$gcash_saved = $hc_row['gcash_number'] ?? '';
-
-$tx_stmt = $pdo->prepare("SELECT type, amount, reason, ref, created_at FROM h_coin_transactions WHERE account_id = ? ORDER BY created_at DESC LIMIT 6");
-$tx_stmt->execute([$user['id']]);
-$hc_txns = $tx_stmt->fetchAll();
-
-// Season Pass
-$sp_stmt = $pdo->prepare("SELECT * FROM season_passes WHERE account_id = ? AND status IN ('active','pending') ORDER BY FIELD(status,'active','pending') ASC, id DESC LIMIT 1");
-try { $sp_stmt->execute([$user['id']]); $season_pass = $sp_stmt->fetch(); } catch (Exception $e) { $season_pass = null; }
-
-// Predictions
-$pred_stmt = $pdo->prepare("
-    SELECT mp.picked_team, mp.wager, mp.status,
-           m.team1_name, m.team2_name, m.round, m.bracket_side, m.winner, m.status AS match_status
-    FROM match_predictions mp
-    JOIN matches m ON m.id = mp.match_id
-    WHERE mp.account_id = ?
-    ORDER BY mp.created_at DESC
-    LIMIT 5
-");
-$pred_stmt->execute([$user['id']]);
-$my_preds = $pred_stmt->fetchAll();
-
 // Handle profile edit
 $profile_saved = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_profile'])) {
@@ -126,13 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_roster']) && $us
 $initials = strtoupper(substr($user['display_name'] ?: $user['email'], 0, 2));
 
 require_once __DIR__ . '/includes/header.php';
-$hc_hidden = false;
 
 // Compute quick stats
 $total_matches  = count($matches);
 $wins           = count(array_filter($matches, fn($m) => $m['winner'] === $team_name));
-$pred_won       = count(array_filter($my_preds, fn($p) => $p['status'] === 'won'));
-$pred_total     = count($my_preds);
 $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : null;
 ?>
 
@@ -211,7 +180,6 @@ $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : nul
     display: grid; grid-template-columns: 1fr 1fr;
     gap: 1.25rem; margin-bottom: 1.25rem;
 }
-.db-grid.wide { grid-template-columns: 1.35fr 1fr; }
 
 /* ── Card ── */
 .db-card {
@@ -232,56 +200,6 @@ $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : nul
 }
 .db-card-link:hover { text-decoration: underline; }
 .db-card-body { padding: 0.85rem 1.1rem; flex: 1; }
-
-/* ── HC hero inside card ── */
-.db-hc-big {
-    font-size: 2.2rem; font-weight: 900; color: var(--accent-light);
-    display: flex; align-items: center; gap: 0.45rem; line-height: 1;
-    margin-bottom: 0.35rem;
-}
-.db-hc-big img { width: 26px; height: 26px; object-fit: contain; }
-.db-hc-unit { font-size: 1rem; font-weight: 600; color: rgba(167,139,250,0.5); }
-.db-hc-sub { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.85rem; }
-
-/* ── Action buttons ── */
-.db-actions {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;
-}
-.db-action {
-    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
-    padding: 0.7rem 0.3rem;
-    background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.18);
-    border-radius: 10px; color: var(--accent-light); text-decoration: none;
-    font-size: 0.65rem; font-weight: 700; transition: all 0.15s; text-align: center;
-}
-.db-action i { font-size: 1.1rem; }
-.db-action:hover { background: rgba(139,92,246,0.16); border-color: rgba(139,92,246,0.4); transform: translateY(-1px); }
-.db-action.primary { background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(109,40,217,0.15)); border-color: rgba(139,92,246,0.4); }
-
-/* ── Txn rows ── */
-.db-tx { display: flex; align-items: center; gap: 0.65rem; padding: 0.6rem 1.1rem; border-top: 1px solid var(--border); font-size: 0.8rem; }
-.db-tx-lbl { flex: 1; color: var(--text-muted); font-size: 0.78rem; }
-.db-tx-ref { font-size: 0.63rem; color: #374151; }
-.db-tx-amt { font-weight: 700; white-space: nowrap; }
-.db-tx-date { font-size: 0.65rem; color: var(--text-muted); white-space: nowrap; }
-.credit { color: #34d399; }
-.debit  { color: #f87171; }
-
-/* ── Prediction rows ── */
-.db-pred { display: flex; align-items: center; gap: 0.65rem; padding: 0.65rem 1.1rem; border-top: 1px solid var(--border); font-size: 0.82rem; }
-.db-pred-meta { font-size: 0.63rem; color: var(--text-muted); margin-bottom: 0.1rem; }
-.db-badge {
-    font-size: 0.58rem; font-weight: 800; text-transform: uppercase;
-    padding: 0.18rem 0.5rem; border-radius: 4px; flex-shrink: 0;
-}
-.db-badge.won      { background: rgba(34,197,94,0.15);  color: #34d399; }
-.db-badge.lost     { background: rgba(239,68,68,0.15);  color: #f87171; }
-.db-badge.active,
-.db-badge.pending  { background: rgba(124,58,237,0.15); color: var(--accent-light); }
-.db-badge.win      { background: rgba(34,197,94,0.15);  color: #34d399; }
-.db-badge.loss     { background: rgba(239,68,68,0.15);  color: #f87171; }
-.db-badge.live     { background: rgba(239,68,68,0.18);  color: #f87171; }
-.db-badge.upcoming { background: rgba(124,58,237,0.15); color: var(--accent-light); }
 
 /* ── Announcement rows ── */
 .db-ann { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.65rem 1.1rem; border-top: 1px solid var(--border); }
@@ -340,23 +258,12 @@ $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : nul
 .db-roster-row select { width: 120px; flex-shrink: 0; }
 .db-roster-row select option { background: var(--bg-card); }
 
-/* ── Season pass strip ── */
-.db-pass {
-    display: flex; align-items: center; gap: 0.85rem;
-    border-radius: 12px; padding: 0.85rem 1.1rem; margin-bottom: 1.25rem;
-    text-decoration: none; color: var(--text); transition: filter 0.15s;
-}
-.db-pass:hover { filter: brightness(1.08); }
-.db-pass-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-
 @media (max-width: 900px) {
     .db-stats { grid-template-columns: repeat(2, 1fr); }
-    .db-grid, .db-grid.wide { grid-template-columns: 1fr; }
-    .db-actions { grid-template-columns: repeat(3, 1fr); }
+    .db-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
     .db-stats { grid-template-columns: repeat(2, 1fr); }
-    .db-hc-big { font-size: 1.7rem; }
 }
 </style>
 
@@ -389,50 +296,13 @@ $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : nul
     </div>
     <?php endif; ?>
 
-    <!-- ── Season Pass ── -->
-    <?php if (!empty($season_pass)): ?>
-    <?php if ($season_pass['status'] === 'active'): ?>
-    <a href="<?= base_url('season-pass.php') ?>" class="db-pass" style="background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(217,119,6,0.03));border:1px solid rgba(251,191,36,0.3);">
-        <div class="db-pass-icon" style="background:rgba(251,191,36,0.15);color:#fbbf24;"><i class="bi bi-patch-check-fill"></i></div>
-        <div style="flex:1;min-width:0;">
-            <div style="font-size:0.85rem;font-weight:800;color:#fde68a;">Season 1 Pass · Active</div>
-            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:1px;"><?= (int)$season_pass['tournaments_max'] - (int)$season_pass['tournaments_used'] ?> of <?= (int)$season_pass['tournaments_max'] ?> entries remaining<?php if ($season_pass['expires_at']): ?> · Expires <?= date('M j, Y', strtotime($season_pass['expires_at'])) ?><?php endif; ?></div>
-        </div>
-        <i class="bi bi-chevron-right" style="color:var(--text-muted);font-size:0.85rem;"></i>
-    </a>
-    <?php else: ?>
-    <a href="<?= base_url('season-pass.php') ?>" class="db-pass" style="background:rgba(96,165,250,0.05);border:1px solid rgba(96,165,250,0.25);">
-        <div class="db-pass-icon" style="background:rgba(96,165,250,0.12);color:#60a5fa;"><i class="bi bi-clock-history"></i></div>
-        <div style="flex:1;min-width:0;">
-            <div style="font-size:0.85rem;font-weight:800;color:#93c5fd;">Season 1 Pass · Payment Pending</div>
-            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:1px;">Ref: <code style="color:#93c5fd;"><?= htmlspecialchars($season_pass['ref_code']) ?></code> · Send ₱999 to GCash to activate</div>
-        </div>
-        <i class="bi bi-chevron-right" style="color:var(--text-muted);font-size:0.85rem;"></i>
-    </a>
-    <?php endif; ?>
-    <?php endif; ?>
-
     <!-- ── Stats row ── -->
     <div class="db-stats">
-        <?php if (!$hc_hidden): ?>
-        <div class="db-stat">
-            <div class="db-stat-ico" style="color:var(--accent-light);"><i class="bi bi-coin"></i></div>
-            <div class="db-stat-val" style="color:var(--accent-light);"><?= number_format($h_coins) ?></div>
-            <div class="db-stat-lbl">H-Coins</div>
-            <div class="db-stat-sub">balance</div>
-        </div>
-        <?php endif; ?>
         <div class="db-stat">
             <div class="db-stat-ico" style="color:#60a5fa;"><i class="bi bi-controller"></i></div>
             <div class="db-stat-val"><?= $total_matches ?></div>
             <div class="db-stat-lbl">Matches</div>
             <div class="db-stat-sub"><?= $wins ?> win<?= $wins !== 1 ? 's' : '' ?></div>
-        </div>
-        <div class="db-stat">
-            <div class="db-stat-ico" style="color:#a78bfa;"><i class="bi bi-graph-up"></i></div>
-            <div class="db-stat-val"><?= $pred_total ?></div>
-            <div class="db-stat-lbl">Predictions</div>
-            <div class="db-stat-sub"><?= $pred_won ?> correct</div>
         </div>
         <div class="db-stat">
             <div class="db-stat-ico" style="color:<?= $win_rate !== null ? '#34d399' : 'var(--text-muted)' ?>;"><i class="bi bi-bar-chart-fill"></i></div>
@@ -442,51 +312,8 @@ $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : nul
         </div>
     </div>
 
-    <!-- ── Row 1: Wallet + Tournament ── -->
-    <div class="db-grid<?= $hc_hidden ? '' : ' wide' ?>">
-
-        <?php if (!$hc_hidden): ?>
-        <!-- Wallet card -->
-        <div class="db-card">
-            <div class="db-card-head">
-                <span class="db-card-label">H-Coin Wallet</span>
-                <a href="<?= base_url('coins.php') ?>" class="db-card-link">Full history</a>
-            </div>
-            <div class="db-card-body">
-                <div class="db-hc-big">
-                    <img src="<?= base_url('images/hcoin-icon.png') ?>" alt="HC">
-                    <?= number_format($h_coins) ?> <span class="db-hc-unit">HC</span>
-                </div>
-                <?php if ($gcash_saved): ?>
-                    <div class="db-hc-sub"><i class="bi bi-phone"></i> GCash on file: <?= htmlspecialchars($gcash_saved) ?></div>
-                <?php else: ?>
-                    <div class="db-hc-sub" style="color:#f87171;"><i class="bi bi-exclamation-circle"></i> No GCash number saved</div>
-                <?php endif; ?>
-                <div class="db-actions">
-                    <a href="<?= base_url('coins.php') ?>" class="db-action primary"><i class="bi bi-coin"></i>Buy/Sell</a>
-                    <a href="<?= base_url('predict.php') ?>" class="db-action"><i class="bi bi-trophy"></i>Predict</a>
-                    <a href="<?= base_url('send-hcoins.php') ?>" class="db-action"><i class="bi bi-send-fill"></i>Send</a>
-                    <a href="<?= base_url('receive-hcoins.php') ?>" class="db-action"><i class="bi bi-arrow-down-circle"></i>Receive</a>
-                    <a href="<?= base_url('qr-wallet.php') ?>" class="db-action"><i class="bi bi-qr-code"></i>QR Pay</a>
-                </div>
-            </div>
-            <?php if (!empty($hc_txns)):
-                $reason_labels = ['purchase' => 'Bought coins', 'match_stake' => 'Prediction stake', 'match_win' => 'Prediction payout', 'prediction_rake' => 'Rake (house)', 'sell' => 'Listed for sale', 'sell_cancelled' => 'Sell cancelled', 'admin_credit' => 'Admin credit'];
-            ?>
-            <?php foreach ($hc_txns as $tx):
-                $is_credit = $tx['type'] === 'credit';
-                $label = $reason_labels[$tx['reason']] ?? ucwords(str_replace('_', ' ', $tx['reason']));
-            ?>
-            <div class="db-tx">
-                <i class="bi <?= $is_credit ? 'bi-arrow-down-circle-fill credit' : 'bi-arrow-up-circle-fill debit' ?>" style="font-size:1rem;flex-shrink:0;"></i>
-                <div class="db-tx-lbl"><?= htmlspecialchars($label) ?><?php if ($tx['ref']): ?><div class="db-tx-ref"><?= htmlspecialchars($tx['ref']) ?></div><?php endif; ?></div>
-                <div class="db-tx-amt <?= $is_credit ? 'credit' : 'debit' ?>"><?= $is_credit ? '+' : '−' ?><?= number_format((int)$tx['amount']) ?> HC</div>
-                <div class="db-tx-date"><?= date('M j', strtotime($tx['created_at'])) ?></div>
-            </div>
-            <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-        <?php endif; ?>
+    <!-- ── Row 1: Tournament + Announcements ── -->
+    <div class="db-grid">
 
         <!-- Tournament / Next match card -->
         <div class="db-card">
@@ -545,34 +372,6 @@ $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : nul
                 <?php endif; ?>
             </div>
         </div>
-
-    </div>
-
-    <!-- ── Row 2: Predictions + Announcements ── -->
-    <div class="db-grid<?= $hc_hidden ? '' : '' ?>" style="<?= $hc_hidden ? 'grid-template-columns:1fr;' : '' ?>">
-
-        <?php if (!$hc_hidden): ?>
-        <!-- Predictions -->
-        <div class="db-card">
-            <div class="db-card-head">
-                <span class="db-card-label">My Predictions</span>
-                <a href="<?= base_url('predict.php') ?>" class="db-card-link">Place a bet</a>
-            </div>
-            <?php if (!empty($my_preds)): foreach ($my_preds as $p):
-                $side_label = ucfirst($p['bracket_side']) . ' R' . $p['round'];
-            ?>
-            <div class="db-pred">
-                <div style="flex:1;min-width:0;">
-                    <div class="db-pred-meta"><?= htmlspecialchars($side_label) ?> · <?= htmlspecialchars($p['team1_name']) ?> vs <?= htmlspecialchars($p['team2_name']) ?></div>
-                    Backing <strong><?= htmlspecialchars($p['picked_team']) ?></strong> · <span class="credit" style="font-weight:700;"><?= number_format((int)$p['wager']) ?> HC</span>
-                </div>
-                <span class="db-badge <?= $p['status'] ?>"><?= $p['status'] ?></span>
-            </div>
-            <?php endforeach; else: ?>
-            <div class="db-empty"><i class="bi bi-graph-up"></i> No predictions yet</div>
-            <?php endif; ?>
-        </div>
-        <?php endif; // end !$hc_hidden ?>
 
         <!-- Announcements -->
         <div class="db-card">
@@ -655,12 +454,6 @@ $win_rate       = $total_matches > 0 ? round($wins / $total_matches * 100) : nul
                     <button type="submit" class="db-save" style="margin-top:0.4rem;"><i class="bi bi-pencil"></i> Update Roster</button>
                 </form>
             </div>
-        </div>
-        <?php else: ?>
-        <!-- Marketplace shortcut if no roster -->
-        <div class="db-card">
-            <div class="db-card-head"><span class="db-card-label">Marketplace</span><a href="<?= base_url('marketplace.php') ?>" class="db-card-link">View all</a></div>
-            <div class="db-empty" style="padding:2rem;"><i class="bi bi-shop"></i> Browse the HC marketplace</div>
         </div>
         <?php endif; ?>
 

@@ -51,17 +51,6 @@ m_head('Tournament');
         <i class="bi bi-chevron-right m-tour-chev"></i>
     </a>
 
-    <a class="m-tour-item" href="https://apexcybernet.com/predict.php?full_once=1">
-        <div class="m-tour-ico" style="background:rgba(34,197,94,0.12);color:#22c55e;">
-            <i class="bi bi-graph-up-arrow"></i>
-        </div>
-        <div class="m-tour-body">
-            <div class="m-tour-title">Predictions</div>
-            <div class="m-tour-sub">Predict match winners &amp; earn HC</div>
-        </div>
-        <i class="bi bi-chevron-right m-tour-chev"></i>
-    </a>
-
     <a class="m-tour-item" href="https://apexcybernet.com/leaderboard.php?full_once=1">
         <div class="m-tour-ico" style="background:rgba(239,68,68,0.12);color:#f87171;">
             <i class="bi bi-bar-chart-fill"></i>
@@ -90,4 +79,4 @@ m_head('Tournament');
 .m-tour-chev{color:var(--muted);font-size:0.85rem;flex-shrink:0;}
 </style>
 
-<?php m_nav('home'); m_toast(); m_foot(); ?>
+<?php m_nav('tournament'); m_toast(); m_foot(); ?>

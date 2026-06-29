@@ -1,7 +1,7 @@
 <?php
 /**
- * Soketi WebSocket event dispatcher — no external SDK, pure PHP HTTP.
- * Include this file then call hc_push() after every HC credit commit.
+ * Notification dispatcher — no external SDK, pure PHP.
+ * Include this file then call notify_user() to queue a bell notification.
  */
 
 define('PUSHER_APP_ID', '1');
@@ -21,19 +21,4 @@ function notify_user(PDO $pdo, int $uid, string $title, string $message, string 
                                 VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$uid, $title, $message, $icon, $link]);
     } catch (Exception $e) { /* table may not exist in all envs — skip */ }
-}
-
-/**
- * Credit-side helper — writes a bell-ready "+N HC received" notification row.
- * Clients pick it up via the poller and surface an HC-received toast (desktop)
- * or slide-up receipt overlay (mobile).
- */
-function hc_push(PDO $pdo, int $uid, int $amount, string $from, int $new_balance, string $reason = 'credit'): void {
-    notify_user(
-        $pdo, $uid,
-        '+' . number_format($amount) . ' HC received',
-        'From ' . $from,
-        'bi-coin',
-        '/mobile/'
-    );
 }

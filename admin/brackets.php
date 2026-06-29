@@ -3,9 +3,6 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/bracket_logic.php';
 require_once __DIR__ . '/../includes/pusher.php';
 
-// Account that receives the 10% prediction rake
-define('HOUSE_ACCOUNT_ID', 1);
-
 // Token-based login
 if (isset($_GET['token']) && $_GET['token'] === 'apexcybernet-admin-2026-token') {
     $_SESSION['admin_logged_in'] = true;
@@ -65,68 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'generate') {
         $gen_game = $_POST['game'] ?? '';
         if (isset($valid_games[$gen_game])) {
-            // --- Step 1: Identify locked matches (WB R1 with active predictions) ---
-            $locked_q = $pdo->prepare("
-                SELECT DISTINCT m.id, m.match_order, m.team1_name, m.team2_name
-                FROM matches m
-                JOIN match_predictions p ON p.match_id = m.id AND p.status = 'active'
-                WHERE m.game = ? AND m.bracket_side = 'winners' AND m.round = 1
-            ");
-            $locked_q->execute([$gen_game]);
-            $locked_matches = $locked_q->fetchAll();
-            $locked_ids = array_column($locked_matches, 'id');
+            // Delete any existing bracket for this game and regenerate from scratch
+            $del = $pdo->prepare("DELETE FROM matches WHERE game = ?");
+            $del->execute([$gen_game]);
+
+            // No prediction-locked matches to preserve
             $locked_orders = []; // match_order => true
-            $locked_teams = [];  // team names that are locked
-            foreach ($locked_matches as $lm) {
-                $locked_orders[(int)$lm['match_order']] = true;
-                $locked_teams[$lm['team1_name']] = true;
-                $locked_teams[$lm['team2_name']] = true;
-            }
-            $locked_count = count($locked_matches);
-
-            // --- Step 2: Refund only NON-locked predictions ---
-            if (!empty($locked_ids)) {
-                $placeholders = implode(',', array_fill(0, count($locked_ids), '?'));
-                $refund_preds = $pdo->prepare("
-                    SELECT p.id, p.account_id, p.wager
-                    FROM match_predictions p
-                    JOIN matches m ON m.id = p.match_id
-                    WHERE m.game = ? AND p.status = 'active' AND m.id NOT IN ($placeholders)
-                ");
-                $refund_preds->execute(array_merge([$gen_game], $locked_ids));
-            } else {
-                $refund_preds = $pdo->prepare("
-                    SELECT p.id, p.account_id, p.wager
-                    FROM match_predictions p
-                    JOIN matches m ON m.id = p.match_id
-                    WHERE m.game = ? AND p.status = 'active'
-                ");
-                $refund_preds->execute([$gen_game]);
-            }
-            $refunded_count = 0;
-            foreach ($refund_preds->fetchAll() as $rp) {
-                $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$rp['wager'], $rp['account_id']]);
-                $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'admin_credit', ?)")
-                    ->execute([$rp['account_id'], $rp['wager'], 'predict_refund:' . $rp['id']]);
-                $rpBal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = {$rp['account_id']}")->fetchColumn();
-                hc_push($pdo, (int)$rp['account_id'], (int)$rp['wager'], 'Apex Cybernet (predict refund)', $rpBal, 'predict_refund');
-                $pdo->prepare("DELETE FROM match_predictions WHERE id = ?")->execute([$rp['id']]);
-                try {
-                    $pdo->prepare("INSERT INTO user_notifications (account_id, title, message, icon, link) VALUES (?, ?, ?, ?, ?)")
-                        ->execute([$rp['account_id'], 'Prediction Refunded', 'Your prediction of ' . $rp['wager'] . ' HC was refunded due to bracket regeneration.', 'bi-coin', base_url('predict.php')]);
-                } catch (Exception $e) {}
-                $refunded_count++;
-            }
-
-            // --- Step 3: Delete only NON-locked matches ---
-            if (!empty($locked_ids)) {
-                $placeholders = implode(',', array_fill(0, count($locked_ids), '?'));
-                $del = $pdo->prepare("DELETE FROM matches WHERE game = ? AND id NOT IN ($placeholders)");
-                $del->execute(array_merge([$gen_game], $locked_ids));
-            } else {
-                $del = $pdo->prepare("DELETE FROM matches WHERE game = ?");
-                $del->execute([$gen_game]);
-            }
+            $locked_teams  = []; // team names that are locked
+            $locked_count  = 0;
 
             ensure_reserved_columns($pdo);
             // Get ALL non-reserved teams (paid + unpaid) with member ranks for seeding
@@ -322,9 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $insert->execute([$gen_game, 'grand', 1, 1, 'TBD', 'TBD', 'pending', '']);
 
                 $bye_note = $bye_count > 0 ? " ($bye_count BYE" . ($bye_count > 1 ? 's' : '') . ")" : '';
-                $refund_note = $refunded_count > 0 ? " $refunded_count prediction(s) refunded." : '';
-                $locked_note = $locked_count > 0 ? " $locked_count match(es) preserved (have active predictions)." : '';
-                $message = 'Bracket generated for ' . $valid_games[$gen_game] . ' with ' . $count . ' teams' . $bye_note . '!' . $refund_note . $locked_note;
+                $message = 'Bracket generated for ' . $valid_games[$gen_game] . ' with ' . $count . ' teams' . $bye_note . '!';
                 $msg_type = 'success';
                 $game_filter = $gen_game;
             }
@@ -534,7 +475,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $upd = $pdo->prepare("UPDATE matches SET team1_score = ?, team2_score = ?, winner = ?, status = ?, scheduled_at = ? WHERE id = ?");
         $upd->execute([$team1_score, $team2_score, $winner, $status, $scheduled_at, $match_id]);
 
-        // If completed, advance winner/loser + settle predictions
+        // If completed, advance winner/loser across the bracket
         if ($status === 'completed' && $winner) {
             $match = $pdo->prepare("SELECT * FROM matches WHERE id = ?");
             $match->execute([$match_id]);
@@ -544,102 +485,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // ── Use bracket_logic for proper cross-bracket advancement ──
                 // This handles: UB winner advance, UB loser drop to LB, LB advance,
                 // GF bracket reset, and marks destination matches as 'upcoming'
-                $affected_ids = bracketAdvanceMatch($pdo, $m);
-
-                // ── Futures: mark losing futures predictions (team didn't advance) as lost ──
-                foreach ($affected_ids as $affected_id) {
-                    $nq = $pdo->prepare("SELECT * FROM matches WHERE id = ?");
-                    $nq->execute([$affected_id]);
-                    $nm = $nq->fetch();
-                    if ($nm && $nm['team1_name'] !== 'TBD' && $nm['team1_name'] !== ''
-                        && $nm['team2_name'] !== 'TBD' && $nm['team2_name'] !== '') {
-                        $futures_preds = $pdo->prepare("SELECT * FROM match_predictions WHERE match_id = ? AND status = 'active' AND is_futures = 1 AND picked_team NOT IN (?, ?)");
-                        $futures_preds->execute([$affected_id, $nm['team1_name'], $nm['team2_name']]);
-                        foreach ($futures_preds->fetchAll() as $fp) {
-                            // Stake stays in pool — just mark lost, no refund
-                            $pdo->prepare("UPDATE match_predictions SET status = 'lost' WHERE id = ?")->execute([$fp['id']]);
-                            try {
-                                $pdo->prepare("INSERT INTO user_notifications (account_id, title, message, icon, link) VALUES (?, ?, ?, ?, ?)")
-                                    ->execute([$fp['account_id'], 'Futures Prediction Lost', 'Your futures prediction of ' . $fp['wager'] . ' HC on ' . htmlspecialchars($fp['picked_team']) . ' was lost — team did not advance to this match.', 'bi-graph-up-arrow', base_url('predict.php')]);
-                            } catch (Exception $e) {}
-                        }
-                    }
-                }
-
-                // ── Settle match predictions ──
-                $preds = $pdo->prepare("SELECT * FROM match_predictions WHERE match_id = ? AND status = 'active'");
-                $preds->execute([$match_id]);
-                $all_preds = $preds->fetchAll();
-
-                $regular_preds = array_filter($all_preds, fn($p) => !$p['is_futures']);
-                $futures_preds = array_filter($all_preds, fn($p) => $p['is_futures']);
-
-                // Settle regular predictions
-                if (!empty($regular_preds)) {
-                    $pool_sum     = array_sum(array_column($regular_preds, 'wager'));
-                    $winner_preds = array_filter($regular_preds, fn($p) => $p['picked_team'] === $winner);
-                    $winner_pool  = array_sum(array_column($winner_preds, 'wager'));
-                    $house_cut    = (int)round($pool_sum * 0.10);
-                    $reward_pool  = $pool_sum - $house_cut;
-
-                    foreach ($regular_preds as $pred) {
-                        if ($pred['picked_team'] === $winner) {
-                            $payout = $winner_pool > 0
-                                ? (int)round(($pred['wager'] / $winner_pool) * $reward_pool)
-                                : 0;
-                            $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$payout, $pred['account_id']]);
-                            $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'match_win', ?)")->execute([$pred['account_id'], $payout, (string)$match_id]);
-                            $winBal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = {$pred['account_id']}")->fetchColumn();
-                            hc_push($pdo, (int)$pred['account_id'], $payout, 'Apex Cybernet (match win)', $winBal, 'match_win');
-                            $pdo->prepare("UPDATE match_predictions SET status = 'won' WHERE id = ?")->execute([$pred['id']]);
-                        } else {
-                            $pdo->prepare("UPDATE match_predictions SET status = 'lost' WHERE id = ?")->execute([$pred['id']]);
-                        }
-                    }
-
-                    if ($house_cut > 0) {
-                        $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$house_cut, HOUSE_ACCOUNT_ID]);
-                        $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'prediction_rake', ?)")
-                            ->execute([HOUSE_ACCOUNT_ID, $house_cut, 'match:' . $match_id]);
-                    }
-                }
-
-                // Settle futures predictions — pool includes all stakes (wrong-team already marked lost above)
-                // Only active futures predictions remaining are those who backed one of the two actual teams
-                if (!empty($futures_preds)) {
-                    // Total futures pool = ALL futures stakes on this match (active + already-lost from wrong teams)
-                    $all_futures_q = $pdo->prepare("SELECT wager, picked_team, account_id, id, status FROM match_predictions WHERE match_id = ? AND is_futures = 1");
-                    $all_futures_q->execute([$match_id]);
-                    $all_futures = $all_futures_q->fetchAll();
-
-                    $futures_pool_sum  = array_sum(array_column($all_futures, 'wager'));
-                    $futures_house_cut = (int)round($futures_pool_sum * 0.10);
-                    $futures_reward    = $futures_pool_sum - $futures_house_cut;
-
-                    $futures_winner_preds = array_filter($futures_preds, fn($p) => $p['picked_team'] === $winner);
-                    $futures_winner_pool  = array_sum(array_column($futures_winner_preds, 'wager'));
-
-                    foreach ($futures_preds as $pred) {
-                        if ($pred['picked_team'] === $winner) {
-                            $payout = $futures_winner_pool > 0
-                                ? (int)round(($pred['wager'] / $futures_winner_pool) * $futures_reward)
-                                : 0;
-                            $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$payout, $pred['account_id']]);
-                            $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'match_win', ?)")->execute([$pred['account_id'], $payout, 'futures:' . $match_id]);
-                            $winBal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = {$pred['account_id']}")->fetchColumn();
-                            hc_push($pdo, (int)$pred['account_id'], $payout, 'Apex Cybernet (futures win)', $winBal, 'futures_win');
-                            $pdo->prepare("UPDATE match_predictions SET status = 'won' WHERE id = ?")->execute([$pred['id']]);
-                        } else {
-                            $pdo->prepare("UPDATE match_predictions SET status = 'lost' WHERE id = ?")->execute([$pred['id']]);
-                        }
-                    }
-
-                    if ($futures_house_cut > 0) {
-                        $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$futures_house_cut, HOUSE_ACCOUNT_ID]);
-                        $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, 'prediction_rake', ?)")
-                            ->execute([HOUSE_ACCOUNT_ID, $futures_house_cut, 'futures:' . $match_id]);
-                    }
-                }
+                bracketAdvanceMatch($pdo, $m);
             }
         }
 

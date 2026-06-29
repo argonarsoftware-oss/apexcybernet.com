@@ -39,7 +39,7 @@ function m_head(string $title, string $extra = ''): void { ?>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title><?= htmlspecialchars($title) ?> — HCoin</title>
+<title><?= htmlspecialchars($title) ?> — Apex Cybernet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -162,22 +162,17 @@ function m_nav(string $active = 'home'): void {
         <i class="bi bi-house<?= $active==='home'?'-fill':'' ?>"></i>
         <span>Home</span>
     </a>
-    <a href="<?= $b('send.php') ?>" class="m-nav-item <?= $active==='send'?'on':'' ?>">
-        <i class="bi bi-arrow-up-circle<?= $active==='send'?'-fill':'' ?>"></i>
-        <span>Send</span>
+    <a href="<?= $b('tournament.php') ?>" class="m-nav-item <?= $active==='tournament'?'on':'' ?>">
+        <i class="bi bi-trophy<?= $active==='tournament'?'-fill':'' ?>"></i>
+        <span>Tournament</span>
     </a>
-    <div class="m-nav-scan">
-        <a href="<?= $b('send.php') ?>?mode=scan" class="scan-pill" title="Scan to Pay">
-            <i class="bi bi-qr-code-scan"></i>
-        </a>
-    </div>
-    <a href="<?= $b('receive.php') ?>" class="m-nav-item <?= $active==='receive'?'on':'' ?>">
-        <i class="bi bi-arrow-down-circle<?= $active==='receive'?'-fill':'' ?>"></i>
-        <span>Receive</span>
+    <a href="<?= $b('dashboard.php') ?>" class="m-nav-item <?= $active==='dashboard'?'on':'' ?>">
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
     </a>
-    <a href="<?= $b('market.php') ?>" class="m-nav-item <?= $active==='market'?'on':'' ?>">
-        <i class="bi bi-shop<?= $active==='market'?'-fill':'' ?>"></i>
-        <span>Market</span>
+    <a href="<?= $b('profile.php') ?>" class="m-nav-item <?= $active==='profile'?'on':'' ?>">
+        <i class="bi bi-person<?= $active==='profile'?'-fill':'' ?>"></i>
+        <span>Profile</span>
     </a>
 </nav>
 <?php } // end m_nav
@@ -198,57 +193,20 @@ function showToast(msg, type) {
 
 function m_foot(string $js = ''): void {
     $uid = (int)($_SESSION['account_id'] ?? 0);
-    $host = $_SERVER['HTTP_HOST'] ?? '';
-    $is_local = str_contains($host, 'localhost');
     ?>
-
-<!-- HC received receipt overlay (shown by WebSocket push) -->
-<div id="hcReceiptOverlay" style="display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;">
-    <div id="hcReceiptSheet" style="background:var(--card);border-top:1px solid var(--border);border-radius:24px 24px 0 0;padding:2rem 1.5rem 2.5rem;width:100%;max-width:480px;text-align:center;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);">
-        <div style="width:56px;height:56px;border-radius:50%;background:rgba(34,197,94,0.15);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.6rem;color:var(--green);">
-            <i class="bi bi-check-lg"></i>
-        </div>
-        <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.25rem;">HC Received!</div>
-        <div style="font-size:2.8rem;font-weight:900;color:var(--green);letter-spacing:-1px;line-height:1;">+<span id="hcRcptAmount"></span></div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.25rem;">HCoins added to your wallet</div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:0.9rem 1rem;text-align:left;margin-bottom:1.25rem;">
-            <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.3rem 0;border-bottom:1px solid var(--border);">
-                <span style="color:var(--muted);">From</span>
-                <span style="font-weight:700;" id="hcRcptFrom"></span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.3rem 0;border-bottom:1px solid var(--border);">
-                <span style="color:var(--muted);">New Balance</span>
-                <span style="font-weight:800;color:var(--accent-l);" id="hcRcptBal"></span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:0.3rem 0;">
-                <span style="color:var(--muted);">Time</span>
-                <span style="font-weight:600;" id="hcRcptTime"></span>
-            </div>
-        </div>
-        <button onclick="document.getElementById('hcReceiptOverlay').style.display='none';"
-                style="display:block;width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:0.8rem;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;">
-            <i class="bi bi-check2"></i> Got it
-        </button>
-    </div>
-</div>
 
 <?php if ($uid): ?>
 <script>
 window.apexcybernetUid = <?= $uid ?>;
-// ── Central notification poller (replaces the WebSocket path) ──
-// Polls the shared api/notifications.php every 10s. Fires window
-// 'apexcybernet:notification' for page-level listeners; shows the HC receipt
-// overlay and/or bumps the bell badge depending on what's on the page.
+// ── Central notification poller ──
+// Polls the shared api/notifications.php every 10s. Fires the window
+// 'apexcybernet:notification' event for page-level listeners and keeps the
+// mobile bell badge (#mBellBadge) in sync.
 (function() {
     var lastSeenId  = 0;
     var initialized = false;
     var POLL_MS     = 10000;
     var API         = 'https://apexcybernet.com/api/notifications.php?action=list';
-
-    function parseAmount(title) {
-        var m = String(title || '').match(/\+([\d,]+)/);
-        return m ? parseInt(m[1].replace(/,/g,''), 10) : 0;
-    }
 
     function poll() {
         if (document.hidden) return;
@@ -262,19 +220,10 @@ window.apexcybernetUid = <?= $uid ?>;
 
                     // Skip firing events on the first poll — just catch up to current state
                     if (initialized) {
-                        var isHcReceived = (n.icon || '').indexOf('coin') !== -1;
-                        var payload = {
+                        window.dispatchEvent(new CustomEvent('apexcybernet:notification', { detail: {
                             id: id, title: n.title, message: n.message, icon: n.icon, link: n.link,
-                            amount: parseAmount(n.title),
-                            from: String(n.message || '').replace(/^From\s+/i, ''),
                             time: n.created_at
-                        };
-                        window.dispatchEvent(new CustomEvent('apexcybernet:notification', { detail: payload }));
-
-                        if (isHcReceived) {
-                            if (typeof window.onHcReceived === 'function') window.onHcReceived(payload);
-                            if (typeof showHcReceipt === 'function') showHcReceipt(payload);
-                        }
+                        }}));
                     }
                 });
 
@@ -300,21 +249,6 @@ window.apexcybernetUid = <?= $uid ?>;
     poll();
     setInterval(poll, POLL_MS);
 })();
-
-function showHcReceipt(d) {
-    document.getElementById('hcRcptAmount').textContent = Number(d.amount || 0).toLocaleString();
-    document.getElementById('hcRcptFrom').textContent   = d.from || 'Apex Cybernet';
-    var balEl = document.getElementById('hcRcptBal');
-    if (balEl) {
-        balEl.textContent = (d.new_balance != null) ? (Number(d.new_balance).toLocaleString() + ' HC') : '—';
-    }
-    var t = d.time ? new Date(String(d.time).replace(' ', 'T')) : new Date();
-    document.getElementById('hcRcptTime').textContent   = t.toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-    var overlay = document.getElementById('hcReceiptOverlay');
-    var sheet   = document.getElementById('hcReceiptSheet');
-    overlay.style.display = 'flex';
-    setTimeout(function() { sheet.style.transform = 'translateY(0)'; }, 20);
-}
 </script>
 <?php endif; ?>
 

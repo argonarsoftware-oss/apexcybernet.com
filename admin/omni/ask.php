@@ -81,25 +81,11 @@ $TEMPLATES = [
                     LIMIT 100",
         'cols'  => ['label','bookings','participations','captaincies'],
     ],
-    'top_hc' => [
-        'title' => 'Top HC holders',
-        'tags'  => ['wallet', 'whales'],
-        'why'   => 'Apex Cybernet Persons ordered by current HC balance. Top of this list holds real purchasing leverage.',
-        'sql'   => "SELECT p.id, p.ref, p.label,
-                           CAST(JSON_UNQUOTE(JSON_EXTRACT(p.props, '$.h_coins')) AS DECIMAL(20,2)) AS h_coins
-                    FROM omni_objects p
-                    WHERE p.type='Person' AND p.business='apexcybernet'
-                      AND JSON_EXTRACT(p.props, '$.h_coins') IS NOT NULL
-                    ORDER BY h_coins DESC
-                    LIMIT 50",
-        'cols'  => ['label','h_coins'],
-    ],
     'dormant_persons' => [
         'title' => 'Dormant apexcybernet Persons (no Event in 7 days)',
         'tags'  => ['retention', 'winback'],
         'why'   => 'Approved apexcybernet accounts with no session activity in the last 7 days. Winback-campaign targets.',
         'sql'   => "SELECT p.id, p.ref, p.label,
-                           CAST(JSON_UNQUOTE(JSON_EXTRACT(p.props, '$.h_coins')) AS DECIMAL(20,2)) AS h_coins,
                            JSON_UNQUOTE(JSON_EXTRACT(p.props, '$.claim_status')) AS claim_status
                     FROM omni_objects p
                     WHERE p.type='Person' AND p.business='apexcybernet'
@@ -111,14 +97,14 @@ $TEMPLATES = [
                             AND l.relation='PARTICIPATED'
                             AND l.occurred_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
                       )
-                    ORDER BY h_coins DESC
+                    ORDER BY p.label
                     LIMIT 100",
-        'cols'  => ['label','h_coins','claim_status'],
+        'cols'  => ['label','claim_status'],
     ],
     'loan_apexcybernet_overlap' => [
         'title' => 'Borrowers also on Apex Cybernet',
         'tags'  => ['risk', 'overlap', 'collateral'],
-        'why'   => 'Borrowers in the lending book who also have an Apex Cybernet account. Cross-book recovery surface — HC balance is potential offset collateral.',
+        'why'   => 'Borrowers in the lending book who also have an Apex Cybernet account. Cross-book recovery surface — shared identity is a collection lever.',
         'sql'   => "SELECT DISTINCT p.label AS apexcybernet_account, p.ref, p2.label AS loan_account, p2.ref AS loan_ref
                     FROM omni_objects p
                     JOIN omni_links l1 ON l1.from_id = p.id AND l1.relation='BELONGS_TO'

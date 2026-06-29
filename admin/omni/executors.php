@@ -16,92 +16,6 @@
  */
 
 require_once __DIR__ . '/pipelines/taxonomy.php';
-require_once __DIR__ . '/../../includes/pusher.php';
-
-function _omni_proj_credit_hc(PDO $pdo, array $obj, array $p): array {
-    if ($obj['type'] !== 'Person' || $obj['business'] !== 'apexcybernet') {
-        return ['ok'=>false,'message'=>'credit_hc only applies to apexcybernet Persons'];
-    }
-    $amount = (int)($p['amount'] ?? 0);
-    if ($amount <= 0) return ['ok'=>false,'message'=>'amount must be > 0'];
-    $aid = (int)($obj['source_id'] ?? 0);
-    $bal = (int)($pdo->query("SELECT h_coins FROM accounts WHERE id = $aid")->fetchColumn() ?: 0);
-    return [
-        'ok'=>true,
-        'message'=>"Would credit $amount HC ($bal → " . ($bal + $amount) . ")",
-        'projection'=>['before'=>$bal,'after'=>$bal+$amount,'delta'=>$amount],
-    ];
-}
-
-function _omni_exec_credit_hc(PDO $pdo, array $obj, array $p): array {
-    $proj = _omni_proj_credit_hc($pdo, $obj, $p);
-    if (!$proj['ok']) return $proj;
-
-    $amount = (int)$p['amount'];
-    $reason = trim((string)($p['reason'] ?? 'admin-credit'));
-    $aid    = (int)$obj['source_id'];
-
-    $pdo->beginTransaction();
-    try {
-        $pdo->prepare("UPDATE accounts SET h_coins = h_coins + ? WHERE id = ?")->execute([$amount, $aid]);
-        $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', ?, ?, ?)")
-            ->execute([$aid, $amount, $reason, 'omni:' . ($_SESSION['admin_username'] ?? 'admin')]);
-        $new_bal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = $aid")->fetchColumn();
-        $pdo->commit();
-    } catch (Exception $e) {
-        $pdo->rollBack();
-        return ['ok'=>false,'message'=>'DB error: ' . $e->getMessage()];
-    }
-
-    try {
-        hc_push($pdo, $aid, $amount, 'Omniscient', $new_bal, $reason);
-    } catch (Throwable $e) { /* notification best-effort */ }
-
-    return [
-        'ok'=>true,
-        'message'=>"Credited $amount HC. New balance: $new_bal",
-        'result'=>['new_balance'=>$new_bal,'delta'=>$amount],
-    ];
-}
-
-function _omni_proj_debit_hc(PDO $pdo, array $obj, array $p): array {
-    if ($obj['type'] !== 'Person' || $obj['business'] !== 'apexcybernet') {
-        return ['ok'=>false,'message'=>'debit_hc only applies to apexcybernet Persons'];
-    }
-    $amount = (int)($p['amount'] ?? 0);
-    if ($amount <= 0) return ['ok'=>false,'message'=>'amount must be > 0'];
-    $aid = (int)($obj['source_id'] ?? 0);
-    $bal = (int)($pdo->query("SELECT h_coins FROM accounts WHERE id = $aid")->fetchColumn() ?: 0);
-    if ($bal < $amount) return ['ok'=>false,'message'=>"Balance $bal < debit $amount"];
-    return [
-        'ok'=>true,
-        'message'=>"Would debit $amount HC ($bal → " . ($bal - $amount) . ")",
-        'projection'=>['before'=>$bal,'after'=>$bal-$amount,'delta'=>-$amount],
-    ];
-}
-
-function _omni_exec_debit_hc(PDO $pdo, array $obj, array $p): array {
-    $proj = _omni_proj_debit_hc($pdo, $obj, $p);
-    if (!$proj['ok']) return $proj;
-
-    $amount = (int)$p['amount'];
-    $reason = trim((string)($p['reason'] ?? 'admin-debit'));
-    $aid    = (int)$obj['source_id'];
-
-    $pdo->beginTransaction();
-    try {
-        $pdo->prepare("UPDATE accounts SET h_coins = h_coins - ? WHERE id = ? AND h_coins >= ?")
-            ->execute([$amount, $aid, $amount]);
-        $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'debit', ?, ?, ?)")
-            ->execute([$aid, $amount, $reason, 'omni:' . ($_SESSION['admin_username'] ?? 'admin')]);
-        $new_bal = (int)$pdo->query("SELECT h_coins FROM accounts WHERE id = $aid")->fetchColumn();
-        $pdo->commit();
-    } catch (Exception $e) {
-        $pdo->rollBack();
-        return ['ok'=>false,'message'=>'DB error: ' . $e->getMessage()];
-    }
-    return ['ok'=>true,'message'=>"Debited $amount HC. New balance: $new_bal",'result'=>['new_balance'=>$new_bal,'delta'=>-$amount]];
-}
 
 function _omni_proj_team_status(PDO $pdo, array $obj, array $p, string $new_status): array {
     if ($obj['type'] !== 'Team') return ['ok'=>false,'message'=>'only applies to Team'];
@@ -137,8 +51,6 @@ function _omni_exec_close_decision(PDO $pdo, array $obj, array $p): array {
 
 function _omni_dispatch(PDO $pdo, array $obj, string $action_type, array $payload, bool $execute): array {
     switch ($action_type) {
-        case 'credit_hc':    return $execute ? _omni_exec_credit_hc($pdo, $obj, $payload)    : _omni_proj_credit_hc($pdo, $obj, $payload);
-        case 'debit_hc':     return $execute ? _omni_exec_debit_hc($pdo, $obj, $payload)     : _omni_proj_debit_hc($pdo, $obj, $payload);
         case 'approve_team': return $execute ? _omni_exec_team_status($pdo,$obj,$payload,'approved') : _omni_proj_team_status($pdo,$obj,$payload,'approved');
         case 'reject_team':  return $execute ? _omni_exec_team_status($pdo,$obj,$payload,'rejected') : _omni_proj_team_status($pdo,$obj,$payload,'rejected');
         case 'close_decision': return $execute ? _omni_exec_close_decision($pdo, $obj, $payload) : _omni_proj_close_decision($pdo, $obj, $payload);

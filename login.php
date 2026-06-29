@@ -68,10 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_register'])) {
     if (empty($errors)) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $ref_code = 'ACC-' . strtoupper(bin2hex(random_bytes(4)));
-        $stmt = $pdo->prepare("INSERT INTO accounts (email, display_name, contact_number, password_hash, ref_code, ref_type, claim_status, h_coins) VALUES (?, ?, ?, ?, ?, 'team', 'approved', 20)");
+        $stmt = $pdo->prepare("INSERT INTO accounts (email, display_name, contact_number, password_hash, ref_code, ref_type, claim_status) VALUES (?, ?, ?, ?, ?, 'team', 'approved')");
         $stmt->execute([$email, $display_name, $contact_number, $hash, $ref_code]);
         $new_id = $pdo->lastInsertId();
-        $pdo->prepare("INSERT INTO h_coin_transactions (account_id, type, amount, reason, ref) VALUES (?, 'credit', 20, 'welcome_bonus', 'Welcome gift')")->execute([$new_id]);
         $_SESSION['account_id'] = $new_id;
         header('Location: ' . base_url('dashboard.php'));
         exit;

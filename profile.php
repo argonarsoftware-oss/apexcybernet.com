@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile']) && $i
         $profile_errors[] = 'Username is required.';
     } elseif (strtolower(trim($new_display)) !== strtolower(trim($current['display_name'] ?? ''))) {
         // Case-insensitive + trimmed duplicate check so "kirfenia" and "Kirfenia"
-        // cannot coexist (prevents username-impersonation attacks on HCoin sends).
+        // cannot coexist (prevents username-impersonation).
         $dup = $pdo->prepare("SELECT 1 FROM accounts WHERE LOWER(TRIM(display_name)) = LOWER(TRIM(?)) AND id != ?");
         $dup->execute([$new_display, $account_id]);
         if ($dup->fetch()) $profile_errors[] = 'That username is already taken.';
@@ -136,15 +136,6 @@ $placements = $stmt->fetchAll();
 
 // Parse titles
 $titles = !empty($profile['titles']) ? json_decode($profile['titles'], true) : [];
-
-// Prediction stats
-$pred_stats = $pdo->prepare("SELECT
-    COUNT(*) as total,
-    SUM(CASE WHEN status = 'won' THEN 1 ELSE 0 END) as won,
-    SUM(CASE WHEN status = 'lost' THEN 1 ELSE 0 END) as lost
-    FROM match_predictions WHERE account_id = ?");
-$pred_stats->execute([$account_id]);
-$pstats = $pred_stats->fetch();
 
 $pageTitle = htmlspecialchars($display_name) . ' — Player Profile';
 $pageDescription = $display_name . '\'s tournament profile and match history.';
@@ -400,7 +391,6 @@ $initials_pf   = strtoupper(substr($display_name, 0, 2));
     <div class="pf-tabs">
         <span class="pf-tab active">Overview</span>
         <?php if (!empty($matches)): ?><span class="pf-tab">Matches</span><?php endif; ?>
-        <?php if ((int)$pstats['total'] > 0): ?><span class="pf-tab">Predictions</span><?php endif; ?>
         <?php if ($profile['ref_type'] === 'team' && !empty($registration['members_ranks'])): ?><span class="pf-tab">Roster</span><?php endif; ?>
     </div>
 </div>
@@ -437,12 +427,6 @@ $initials_pf   = strtoupper(substr($display_name, 0, 2));
         <div class="pf-card">
             <div class="pf-card-head">Stats</div>
             <div class="pf-stat-grid">
-                <?php if ($is_own): ?>
-                <div class="pf-stat-mini">
-                    <div class="pf-stat-mini-val" style="color:#fbbf24;"><?= number_format((int)$profile['h_coins']) ?></div>
-                    <div class="pf-stat-mini-lbl">H-Coins <span title="Only visible to you" style="display:inline-flex;align-items:center;font-size:0.58rem;color:var(--text-muted);margin-left:0.2rem;"><i class="bi bi-lock-fill"></i></span></div>
-                </div>
-                <?php endif; ?>
                 <div class="pf-stat-mini">
                     <div class="pf-stat-mini-val"><?= count($matches) ?></div>
                     <div class="pf-stat-mini-lbl">Matches</div>
@@ -455,16 +439,6 @@ $initials_pf   = strtoupper(substr($display_name, 0, 2));
                     <div class="pf-stat-mini-val" style="color:#f87171;"><?= $losses ?></div>
                     <div class="pf-stat-mini-lbl">Losses</div>
                 </div>
-                <?php if ((int)$pstats['total'] > 0): ?>
-                <div class="pf-stat-mini">
-                    <div class="pf-stat-mini-val" style="color:var(--accent-light);"><?= (int)$pstats['won'] ?></div>
-                    <div class="pf-stat-mini-lbl">Pred Won</div>
-                </div>
-                <div class="pf-stat-mini">
-                    <div class="pf-stat-mini-val"><?= (int)$pstats['total'] ?></div>
-                    <div class="pf-stat-mini-lbl">Pred Total</div>
-                </div>
-                <?php endif; ?>
             </div>
         </div>
 

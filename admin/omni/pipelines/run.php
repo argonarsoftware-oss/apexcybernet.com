@@ -30,13 +30,11 @@ if (!$ok_token && !$ok_admin && !$ok_cli) {
 
 $only = $_GET['only'] ?? null; // optional: ?only=sync-accounts
 
-// Order matters: accounts before tx (for person links), business roots first
+// Order matters: accounts first (for person links), business roots first
 $order = [
     'sync-accounts.php',
-    'sync-hc-transactions.php',
     'sync-tournaments.php',
     'sync-decisions.php',
-    'sync-marketplace.php',
     'sync-events.php',
     'sync-alrisha.php',
     'sync-loans.php',

@@ -602,12 +602,11 @@ try {
             SUM(g.page_count) as pages,
             g.country, g.device_type, g.browser,
             MAX(g.last_seen) as last_seen,
-            a.email,
-            CASE WHEN a.is_merchant = 1 THEN 'merchant' ELSE 'user' END as role
+            a.email
             FROM user_graph g
             LEFT JOIN accounts a ON a.id = g.uid
             WHERE g.site = ? AND g.uid IS NOT NULL AND g.last_seen > DATE_SUB(NOW(), INTERVAL 30 DAY)
-            GROUP BY g.uid, g.display_name, g.country, g.device_type, g.browser, a.email, a.is_merchant
+            GROUP BY g.uid, g.display_name, g.country, g.device_type, g.browser, a.email
             ORDER BY sessions DESC LIMIT 10");
         $tug->execute([$active_site]);
         $top_users_graph = $tug->fetchAll();
@@ -1167,7 +1166,7 @@ $export_qs = http_build_query(array_filter([
         <?php if ($top_users_graph): ?>
         <div style="overflow-x:auto; margin-bottom:1rem;">
         <table class="log-table">
-            <thead><tr><th>User</th><?php if ($active_site==='apexcybernet'): ?><th>Role</th><?php endif; ?><th>Sessions</th><th>Pages</th><th>Device</th><th>Country</th><th>Last Seen</th></tr></thead>
+            <thead><tr><th>User</th><th>Sessions</th><th>Pages</th><th>Device</th><th>Country</th><th>Last Seen</th></tr></thead>
             <tbody>
             <?php foreach ($top_users_graph as $ug): ?>
             <tr>
@@ -1177,15 +1176,6 @@ $export_qs = http_build_query(array_filter([
                     <div style="font-size:0.65rem; color:#6b7280; margin-top:1px;"><?= htmlspecialchars($ug['email']) ?></div>
                     <?php endif; ?>
                 </td>
-                <?php if ($active_site==='apexcybernet'): ?>
-                <td>
-                    <?php if (($ug['role'] ?? 'user') === 'merchant'): ?>
-                    <span style="font-size:0.65rem; font-weight:700; padding:0.1rem 0.45rem; border-radius:99px; background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.3);">Merchant</span>
-                    <?php else: ?>
-                    <span style="font-size:0.65rem; padding:0.1rem 0.45rem; border-radius:99px; background:rgba(167,139,250,0.1); color:#a78bfa; border:1px solid rgba(167,139,250,0.2);">User</span>
-                    <?php endif; ?>
-                </td>
-                <?php endif; ?>
                 <td style="font-weight:700;"><?= $ug['sessions'] ?></td>
                 <td style="color:#9ca3af;"><?= number_format($ug['pages'] ?? 0) ?></td>
                 <td style="color:#9ca3af;"><?= htmlspecialchars($ug['device_type'] ?? '—') ?></td>
@@ -1683,7 +1673,7 @@ $export_qs = http_build_query(array_filter([
     <h2><i class="bi bi-bullseye"></i> Retargeting</h2>
     <p>Find users & guests who visited a specific page — export for follow-up.</p>
     <div class="retarget-input-row">
-        <input type="text" class="retarget-input" id="retargetUrl" placeholder="Page URL or partial path, e.g. /buy.php or hcoin">
+        <input type="text" class="retarget-input" id="retargetUrl" placeholder="Page URL or partial path, e.g. /bracket.php or predict">
         <select class="retarget-dr" id="retargetDr">
             <option value="today">Today</option>
             <option value="7d">Last 7 days</option>

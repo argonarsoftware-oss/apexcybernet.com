@@ -16,14 +16,13 @@
 const OMNI_TYPES = [
     'Person',         // accounts
     'Business',       // apexcybernet, ocpd, loan, alrisha
-    'Transaction',    // h_coin_transactions, loan repayments, alrisha sales
+    'Transaction',    // loan repayments, alrisha sales
     'Loan',           // loan_management_ph.loans
     'Team',           // apexcybernet teams
     'Player',         // solo players
     'Match',          // bracket matches
     'Event',          // activity_logs pageviews / clicks (coarse per session)
     'Decision',       // decision_log BR-XXXX
-    'Listing',        // marketplace_listings
     'Booking',        // oslobparagliding_db.bookings
     'Asset',          // real assets — equity, deed, IP (harvest targets)
 ];
@@ -45,8 +44,6 @@ const OMNI_RELATIONS = [
     'APPROVED',       // Person (admin) → any object
     'IMPACTS',        // Decision → any object it affects
     'HOSTED',         // Business → Business (e.g. Alrisha hosting Apex Cybernet cafe)
-    'SOLD',           // Person → Listing
-    'BOUGHT',         // Person → Listing
     'MENTIONS',       // Decision → tag/object
     'CONVERTED_TO',   // social asset → real Asset (harvest path, BR-0009)
     'BELONGS_TO',     // any object → Business
@@ -54,8 +51,6 @@ const OMNI_RELATIONS = [
 
 // ── Canonical action types (writes to omni_actions) ──
 const OMNI_ACTIONS = [
-    'credit_hc',
-    'debit_hc',
     'approve_team',
     'reject_team',
     'rank_team',

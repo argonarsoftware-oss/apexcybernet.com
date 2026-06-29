@@ -37,22 +37,7 @@ $total_matches = count($matches);
 $wins = count(array_filter($matches, fn($m) => $m['winner'] === $team_name));
 $win_rate = $total_matches > 0 ? round($wins / $total_matches * 100) : null;
 
-$pred_stmt = $pdo->prepare("
-    SELECT mp.picked_team, mp.wager, mp.status,
-           m.team1_name, m.team2_name, m.round, m.bracket_side
-    FROM match_predictions mp
-    JOIN matches m ON m.id = mp.match_id
-    WHERE mp.account_id = ?
-    ORDER BY mp.created_at DESC LIMIT 5
-");
-$pred_stmt->execute([$user['id']]);
-$my_preds = $pred_stmt->fetchAll();
-$pred_won  = count(array_filter($my_preds, fn($p) => $p['status'] === 'won'));
-
 $announcements = $pdo->query("SELECT * FROM announcements ORDER BY created_at DESC LIMIT 4")->fetchAll();
-
-$sp_stmt = $pdo->prepare("SELECT * FROM season_passes WHERE account_id = ? AND status IN ('active','pending') ORDER BY FIELD(status,'active','pending') ASC, id DESC LIMIT 1");
-try { $sp_stmt->execute([$user['id']]); $season_pass = $sp_stmt->fetch(); } catch (Exception $e) { $season_pass = null; }
 
 $unread_notifs = 0;
 try {
@@ -92,29 +77,6 @@ m_head('Dashboard');
 </div>
 <?php endif; ?>
 
-<!-- Season pass -->
-<?php if (!empty($season_pass)): ?>
-<?php if ($season_pass['status'] === 'active'): ?>
-<a href="https://apexcybernet.com/season-pass.php" style="display:flex;align-items:center;gap:0.75rem;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.28);border-radius:14px;color:var(--text);text-decoration:none;">
-    <div style="width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,0.12);color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;"><i class="bi bi-patch-check-fill"></i></div>
-    <div style="flex:1;min-width:0;">
-        <div style="font-weight:800;font-size:0.85rem;color:#fde68a;">Season 1 Pass · Active</div>
-        <div style="font-size:0.7rem;color:var(--muted);"><?= (int)$season_pass['tournaments_max'] - (int)$season_pass['tournaments_used'] ?> of <?= (int)$season_pass['tournaments_max'] ?> entries remaining</div>
-    </div>
-    <i class="bi bi-chevron-right" style="color:var(--muted);font-size:0.85rem;"></i>
-</a>
-<?php else: ?>
-<a href="https://apexcybernet.com/season-pass.php" style="display:flex;align-items:center;gap:0.75rem;margin:0 1rem 1rem;padding:0.9rem 1.1rem;background:rgba(96,165,250,0.05);border:1px solid rgba(96,165,250,0.22);border-radius:14px;color:var(--text);text-decoration:none;">
-    <div style="width:36px;height:36px;border-radius:10px;background:rgba(96,165,250,0.1);color:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;"><i class="bi bi-clock-history"></i></div>
-    <div style="flex:1;min-width:0;">
-        <div style="font-weight:800;font-size:0.85rem;color:#93c5fd;">Season 1 Pass · Pending</div>
-        <div style="font-size:0.7rem;color:var(--muted);">Ref: <?= htmlspecialchars($season_pass['ref_code']) ?></div>
-    </div>
-    <i class="bi bi-chevron-right" style="color:var(--muted);font-size:0.85rem;"></i>
-</a>
-<?php endif; ?>
-<?php endif; ?>
-
 <!-- Stat chips -->
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem;padding:0 1rem 1rem;">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0.9rem 1rem;">
@@ -128,11 +90,6 @@ m_head('Dashboard');
         <div style="font-size:0.7rem;color:var(--muted);">tournament</div>
     </div>
     <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0.9rem 1rem;">
-        <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:0.2rem;">Predictions</div>
-        <div style="font-size:1.6rem;font-weight:900;color:var(--accent-l);line-height:1;"><?= count($my_preds) ?></div>
-        <div style="font-size:0.7rem;color:var(--muted);"><?= $pred_won ?> correct</div>
-    </div>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0.9rem 1rem;">
         <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:0.2rem;">Game</div>
         <div style="font-size:1rem;font-weight:900;color:var(--text);line-height:1;margin-top:0.25rem;"><?= $game ? htmlspecialchars($valid_games[$game] ?? $game) : '—' ?></div>
         <div style="font-size:0.7rem;color:var(--muted);margin-top:0.2rem;"><?= $team_name ? htmlspecialchars($team_name) : 'Not registered' ?></div>
@@ -140,10 +97,7 @@ m_head('Dashboard');
 </div>
 
 <!-- Quick actions -->
-<div class="quick" style="grid-template-columns:repeat(3,1fr);">
-    <a href="https://apexcybernet.com/predict.php" class="quick-btn">
-        <i class="bi bi-graph-up-arrow" style="color:#a78bfa;"></i>Predict
-    </a>
+<div class="quick" style="grid-template-columns:repeat(2,1fr);">
     <a href="<?= $game ? 'https://apexcybernet.com/bracket.php?game=' . $game : 'https://apexcybernet.com/bracket.php' ?>" class="quick-btn">
         <i class="bi bi-diagram-3-fill" style="color:#60a5fa;"></i>Bracket
     </a>
@@ -177,36 +131,6 @@ m_head('Dashboard');
     </div>
 </div>
 <?php endif; ?>
-
-<!-- My Predictions -->
-<div class="card" style="margin-bottom:1rem;">
-    <div class="card-body" style="padding-bottom:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="card-title" style="margin-bottom:0;">My Predictions</div>
-            <a href="https://apexcybernet.com/predict.php" style="font-size:0.72rem;color:var(--accent-l);font-weight:700;">Place bet</a>
-        </div>
-    </div>
-    <?php if (empty($my_preds)): ?>
-    <div class="empty"><i class="bi bi-graph-up"></i><p>No predictions yet</p></div>
-    <?php else: foreach ($my_preds as $p):
-        $status_colors = ['won'=>'#34d399','lost'=>'#f87171','active'=>'var(--accent-l)','pending'=>'var(--accent-l)'];
-        $sc = $status_colors[$p['status']] ?? 'var(--muted)';
-    ?>
-    <div class="txn-item">
-        <div class="txn-ico" style="background:rgba(124,58,237,0.12);color:var(--accent-l);">
-            <i class="bi bi-graph-up"></i>
-        </div>
-        <div class="txn-body">
-            <div class="txn-lbl"><?= htmlspecialchars($p['picked_team']) ?></div>
-            <div class="txn-time"><?= htmlspecialchars($p['team1_name']) ?> vs <?= htmlspecialchars($p['team2_name']) ?> · R<?= $p['round'] ?></div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
-            <span style="font-size:0.65rem;font-weight:800;color:<?= $sc ?>;text-transform:uppercase;"><?= $p['status'] ?></span>
-            <span style="font-size:0.78rem;font-weight:700;color:var(--accent-l);"><?= number_format((int)$p['wager']) ?> HC</span>
-        </div>
-    </div>
-    <?php endforeach; endif; ?>
-</div>
 
 <!-- Registration info -->
 <?php if ($registration): ?>
@@ -272,4 +196,4 @@ m_head('Dashboard');
     <?php endforeach; endif; ?>
 </div>
 
-<?php m_nav('tournament'); m_toast(); m_foot(); ?>
+<?php m_nav('dashboard'); m_toast(); m_foot(); ?>

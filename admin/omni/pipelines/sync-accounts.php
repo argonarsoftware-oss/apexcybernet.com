@@ -29,7 +29,7 @@ try {
     $has = fn($c) => in_array($c, $cols, true);
 
     $select = ['id'];
-    foreach (['display_name','email','h_coins','ref_code','claim_status','created_at','gcash_number','contact_number'] as $c) {
+    foreach (['display_name','email','ref_code','claim_status','created_at','gcash_number','contact_number'] as $c) {
         if ($has($c)) $select[] = $c;
     }
     $sql = "SELECT " . implode(',', $select) . " FROM accounts";
@@ -40,7 +40,7 @@ try {
         $ref   = omni_ref('apexcybernet', 'person', $r['id']);
 
         $props = [];
-        foreach (['email','h_coins','ref_code','claim_status','gcash_number','contact_number','created_at'] as $k) {
+        foreach (['email','ref_code','claim_status','gcash_number','contact_number','created_at'] as $k) {
             if (array_key_exists($k, $r)) $props[$k] = $r[$k];
         }
 

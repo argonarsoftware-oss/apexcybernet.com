@@ -40,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $hash     = password_hash($password, PASSWORD_DEFAULT);
         $ref_code = 'ACC-' . strtoupper(bin2hex(random_bytes(4)));
-        $pdo->prepare("INSERT INTO accounts (email, display_name, contact_number, password_hash, ref_code, ref_type, claim_status, h_coins)
-            VALUES (?, ?, ?, ?, ?, 'team', 'approved', 20)")
+        $pdo->prepare("INSERT INTO accounts (email, display_name, contact_number, password_hash, ref_code, ref_type, claim_status)
+            VALUES (?, ?, ?, ?, ?, 'team', 'approved')")
             ->execute([$email, $display_name, $contact_number, $hash, $ref_code]);
         $_SESSION['account_id'] = (int)$pdo->lastInsertId();
         header('Location: ./');
@@ -56,8 +56,7 @@ m_head('Create Account');
 
     <!-- Header -->
     <div style="text-align:center;margin-bottom:2rem;">
-        <img src="<?= m_base('../images/hcoin-icon.png') ?>" style="width:64px;height:64px;border-radius:18px;margin-bottom:1rem;" onerror="this.style.display='none'">
-        <div style="font-size:1.5rem;font-weight:900;color:#fff;">HCoin Wallet</div>
+        <div style="font-size:1.5rem;font-weight:900;color:#fff;">Apex Cybernet</div>
         <div style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Create your Apex Cybernet account</div>
     </div>
 
@@ -149,7 +148,7 @@ m_head('Create Account');
             </div>
             <div>
                 <div style="font-weight:800;font-size:0.88rem;">Tournament Site</div>
-                <div style="font-size:0.68rem;color:var(--muted);margin-top:1px;">Brackets, predictions, leaderboard &amp; more</div>
+                <div style="font-size:0.68rem;color:var(--muted);margin-top:1px;">Brackets, leaderboard &amp; more</div>
             </div>
         </div>
         <i class="bi bi-arrow-up-right" style="color:var(--muted);"></i>

@@ -19,7 +19,7 @@ require_once __DIR__ . '/includes/header.php';
                 <br><br>
                 This Privacy Policy explains how we collect, use, process, store, share, and protect your personal
                 information when you access or use our Platform. This Policy applies to all visitors, registered users,
-                tournament participants, merchants, and any other person who interacts with the Platform in any capacity
+                tournament participants, and any other person who interacts with the Platform in any capacity
                 (collectively, "Users" or "you").
                 <br><br>
                 This Privacy Policy is issued in compliance with Republic Act No. 10173, also known as the Data Privacy
@@ -69,24 +69,16 @@ require_once __DIR__ . '/includes/header.php';
                 • Game-specific information (preferred roles, rank tiers)<br>
                 • Payment method and proof of payment (if applicable)
                 <br><br>
-                <strong style="color:var(--text-main);">c) H-Coin and Financial Data</strong><br>
-                When you use H-Coin features, we collect:<br>
-                • E-wallet number — collected only if you list coins for buyback, used solely to process payment<br>
-                • Transaction records — including H-Coin purchases, prediction entries, marketplace transactions,
-                and sell orders<br>
-                • Payment proof uploads (images) — for payment verification purposes
-                <br><br>
-                <strong style="color:var(--text-main);">d) Profile Data</strong><br>
+                <strong style="color:var(--text-main);">c) Profile Data</strong><br>
                 You may optionally provide:<br>
                 • Profile picture (uploaded image)<br>
                 • Bio/description<br>
                 • Referral code usage
                 <br><br>
-                <strong style="color:var(--text-main);">e) User-Generated Content</strong><br>
-                • Dispute submissions (player name, subject, description of issue)<br>
-                • Marketplace listings (item titles, descriptions, images, pricing)
+                <strong style="color:var(--text-main);">d) User-Generated Content</strong><br>
+                • Dispute submissions (player name, subject, description of issue)
                 <br><br>
-                <strong style="color:var(--text-main);">f) Communication Data</strong><br>
+                <strong style="color:var(--text-main);">e) Communication Data</strong><br>
                 • Any messages, feedback, or inquiries you submit through the our communication channels
                 <br><br>
                 <strong style="color:var(--text-main);">3.2 Information Collected Automatically</strong>
@@ -130,33 +122,22 @@ require_once __DIR__ . '/includes/header.php';
                 • To manage match scheduling, results, and advancement<br>
                 • To administer and distribute prizes
                 <br><br>
-                <strong style="color:var(--text-main);">4.3 H-Coin and Transaction Processing</strong><br>
-                • To process H-Coin purchases and record transactions<br>
-                • To record and settle match predictions<br>
-                • To process platform buyback payments via e-wallet<br>
-                • To maintain accurate transaction histories for reconciliation and dispute resolution
-                <br><br>
-                <strong style="color:var(--text-main);">4.4 Marketplace Operations</strong><br>
-                • To facilitate marketplace listings and purchases between Users<br>
-                • To process merchant account functions including POS terminals
-                <br><br>
-                <strong style="color:var(--text-main);">4.5 Platform Safety and Integrity</strong><br>
+                <strong style="color:var(--text-main);">4.3 Platform Safety and Integrity</strong><br>
                 • To detect, investigate, and prevent fraud, abuse, multi-accounting, and Terms violations<br>
-                • To monitor for and address prediction pool manipulation or collusion<br>
                 • To investigate and resolve disputes between Users<br>
                 • To maintain platform security and prevent unauthorized access
                 <br><br>
-                <strong style="color:var(--text-main);">4.6 Communication</strong><br>
-                • To send on-Platform notifications about matches, predictions, H-Coin transactions, and tournament updates<br>
+                <strong style="color:var(--text-main);">4.4 Communication</strong><br>
+                • To send on-Platform notifications about matches and tournament updates<br>
                 • To respond to your inquiries and support requests<br>
                 • To notify you of material changes to our Terms of Service or Privacy Policy
                 <br><br>
-                <strong style="color:var(--text-main);">4.7 Legal Compliance</strong><br>
+                <strong style="color:var(--text-main);">4.5 Legal Compliance</strong><br>
                 • To comply with applicable Philippine laws, regulations, and legal processes<br>
                 • To respond to lawful requests from government authorities<br>
                 • To establish, exercise, or defend legal claims
                 <br><br>
-                <strong style="color:var(--text-main);">4.8 Service Improvement</strong><br>
+                <strong style="color:var(--text-main);">4.6 Service Improvement</strong><br>
                 • To understand how Users interact with the Platform for the purpose of improving features and user experience<br>
                 • To identify and fix bugs, errors, and technical issues<br>
                 • This is done using aggregated, non-identifiable data only
@@ -166,8 +147,8 @@ require_once __DIR__ . '/includes/header.php';
                 lawful bases:
                 <br><br>
                 <strong style="color:var(--text-main);">5.1 Contractual Necessity</strong><br>
-                Processing that is necessary to perform the services you registered for, including Account management,
-                tournament participation, H-Coin transactions, and match predictions. Without this processing, we cannot
+                Processing that is necessary to perform the services you registered for, including Account management
+                and tournament participation. Without this processing, we cannot
                 provide the services you requested.
                 <br><br>
                 <strong style="color:var(--text-main);">5.2 Legitimate Interests</strong><br>
@@ -201,9 +182,7 @@ require_once __DIR__ . '/includes/header.php';
                 • Your display name (username)<br>
                 • Your team name and game rank (displayed on tournament brackets and standings)<br>
                 • Tournament results, match scores, and bracket placements<br>
-                • Marketplace listings (if you are a seller)<br>
-                • Titles and achievements displayed on your public profile<br>
-                • Prediction pools (aggregate amounts per team per match — individual predictions are not publicly identified)
+                • Titles and achievements displayed on your public profile
                 <br><br>
                 <strong style="color:var(--text-main);">6.3 Authorized Disclosures</strong><br>
                 We may share your personal information with the following categories of recipients, only to the extent
@@ -212,8 +191,8 @@ require_once __DIR__ . '/includes/header.php';
                 (a) <strong style="color:var(--text-main);">Tournament Participants</strong> — Your team name, member
                 names/aliases, and game ranks are shared with other tournament participants as part of bracket and match
                 information. This is essential for the operation of the tournament.<br><br>
-                (b) <strong style="color:var(--text-main);">Payment Processors</strong> — When you make a payment or receive
-                a buyback payout, your e-wallet number or payment reference is shared with the e-wallet provider to
+                (b) <strong style="color:var(--text-main);">Payment Processors</strong> — When you make a payment,
+                your e-wallet number or payment reference is shared with the e-wallet provider to
                 process the transaction. We share only the minimum information necessary to complete the payment.<br><br>
                 (c) <strong style="color:var(--text-main);">Hosting and Infrastructure Providers</strong> — Your data is
                 stored on servers provided by our hosting provider. These providers have access to data only as necessary
@@ -249,8 +228,8 @@ require_once __DIR__ . '/includes/header.php';
                 of the Platform\'s public historical record. This data serves the legitimate interest of maintaining a
                 comprehensive tournament archive for the esports community.
                 <br><br>
-                <strong style="color:var(--text-main);">7.3 Transaction History</strong><br>
-                H-Coin transactions, prediction records, marketplace transactions, and payment records are retained for a
+                <strong style="color:var(--text-main);">7.3 Payment Records</strong><br>
+                Payment records, including tournament entry-fee payments, are retained for a
                 minimum of three (3) years from the date of the transaction for financial record-keeping, audit, and
                 regulatory compliance purposes.
                 <br><br>
@@ -391,8 +370,7 @@ require_once __DIR__ . '/includes/header.php';
             '],
             ['title' => '11. Children\'s Privacy', 'body' => '
                 <strong style="color:var(--text-main);">11.1 Age Restrictions</strong><br>
-                The H-Coin, match prediction, marketplace, and platform buyback features of the Platform are restricted to
-                Users who are at least eighteen (18) years of age. We do not knowingly collect personal data from children
+                We do not knowingly collect personal data from children
                 under the age of thirteen (13). Tournament bracket registration by minors aged 13-17 is permitted only with
                 verifiable parental or legal guardian consent.
                 <br><br>
@@ -429,23 +407,14 @@ require_once __DIR__ . '/includes/header.php';
                 processing is used solely for tournament administration purposes and does not constitute a decision that
                 significantly affects your rights.
                 <br><br>
-                <strong style="color:var(--text-main);">13.2 Prediction Settlement</strong><br>
-                Match prediction payouts are calculated automatically based on pool sizes and the correct prediction outcome.
-                This automated processing is governed by the transparent rules described in our Terms of Service (Section 9.2).
-                <br><br>
-                <strong style="color:var(--text-main);">13.3 Futures Prediction Refunds</strong><br>
-                Futures predictions are automatically evaluated when teams advance through the bracket. If a User\'s predicted
-                team does not advance to the relevant match, the prediction is automatically invalidated and H-Coins are
-                refunded. This process is fully transparent and deterministic.
-                <br><br>
-                <strong style="color:var(--text-main);">13.4 No Profiling</strong><br>
+                <strong style="color:var(--text-main);">13.2 No Profiling</strong><br>
                 We do not engage in profiling as defined under the DPA. We do not use your personal data to make automated
                 decisions that have legal or similarly significant effects on you.
             '],
             ['title' => '14. Third-Party Services', 'body' => '
                 <strong style="color:var(--text-main);">14.1 Payment Processing</strong><br>
                 Payments on the Platform are processed through supported e-wallet providers. When you make a
-                payment or receive a buyback payout, your transaction is subject to the e-wallet provider\'s own terms and
+                payment, your transaction is subject to the e-wallet provider\'s own terms and
                 privacy policy. We recommend you review their privacy practices before using their services.
                 <br><br>
                 <strong style="color:var(--text-main);">14.2 Hosting and Infrastructure</strong><br>
@@ -531,7 +500,7 @@ require_once __DIR__ . '/includes/header.php';
                 <strong style="color:var(--text-main);">18.2 Privacy Impact Assessments</strong><br>
                 For new features, services, or data processing activities that are likely to result in a high risk to the
                 rights and freedoms of data subjects, Apex Cybernet conducts privacy impact assessments to identify and mitigate
-                risks before implementation. This includes assessments for new prediction features, marketplace functionalities,
+                risks before implementation. This includes assessments for new features,
                 payment integrations, and any changes that significantly affect how personal data is processed.
                 <br><br>
                 <strong style="color:var(--text-main);">18.3 Staff Training</strong><br>

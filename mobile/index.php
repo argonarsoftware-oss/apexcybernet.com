@@ -5,14 +5,6 @@ require_once __DIR__ . '/layout.php';
 m_require_login();
 
 $user = current_user($pdo);
-$stmt = $pdo->prepare("SELECT h_coins FROM accounts WHERE id = ?");
-$stmt->execute([$user['id']]);
-$hc = (int)$stmt->fetchColumn();
-
-$txns = $pdo->prepare("SELECT type, amount, reason, ref, created_at FROM h_coin_transactions
-    WHERE account_id = ? ORDER BY id DESC LIMIT 10");
-$txns->execute([$user['id']]);
-$transactions = $txns->fetchAll();
 
 $unread_notifs = 0;
 try {
@@ -20,20 +12,6 @@ try {
     $un->execute([$user['id']]);
     $unread_notifs = (int)$un->fetchColumn();
 } catch (Exception $e) {}
-
-function txn_label(array $t): string {
-    if ($t['reason'] === 'send')     return 'Sent to ' . ltrim($t['ref'] ?? '', 'to:');
-    if ($t['reason'] === 'received') return 'Received from ' . ltrim($t['ref'] ?? '', 'from:');
-    return ucfirst($t['reason'] ?? 'Transaction');
-}
-function txn_time(string $dt): string {
-    $ts = strtotime($dt);
-    $diff = time() - $ts;
-    if ($diff < 60)    return 'just now';
-    if ($diff < 3600)  return (int)($diff/60) . 'm ago';
-    if ($diff < 86400) return (int)($diff/3600) . 'h ago';
-    return date('M j', $ts);
-}
 
 m_head('Home');
 ?>
@@ -57,61 +35,20 @@ m_head('Home');
 .m-bell-badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;min-width:16px;height:16px;padding:0 4px;border-radius:99px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);line-height:1;}
 </style>
 
-<!-- Balance -->
-<div class="bal-hero">
-    <div class="bal-label">HCoin Balance</div>
-    <div class="bal-val"><?= number_format($hc) ?> <span class="bal-unit">HC</span></div>
-    <div style="margin-top:0.5rem;font-size:0.78rem;color:var(--muted);">≈ ₱<?= number_format($hc, 2) ?> est. market value</div>
-</div>
-
 <!-- Quick Actions -->
-<div class="quick">
-    <a href="<?= m_base('send.php') ?>" class="quick-btn">
-        <i class="bi bi-arrow-up-circle-fill"></i>Send
-    </a>
-    <a href="<?= m_base('receive.php') ?>" class="quick-btn">
-        <i class="bi bi-arrow-down-circle-fill"></i>Receive
-    </a>
-    <a href="<?= m_base('pay.php') ?>" class="quick-btn">
-        <i class="bi bi-qr-code-scan"></i>Scan
-    </a>
-    <a href="<?= m_base('market.php') ?>" class="quick-btn">
-        <i class="bi bi-shop-fill"></i>Market
-    </a>
-</div>
-<div class="quick" style="grid-template-columns:repeat(2,1fr);padding-top:0;">
-    <a href="<?= m_base('buy.php') ?>" class="quick-btn">
-        <i class="bi bi-plus-circle-fill" style="color:#22c55e;"></i>Buy HC
-    </a>
-    <a href="<?= m_base('dashboard.php') ?>" class="quick-btn">
+<div class="quick" style="margin-top:1rem;">
+    <a href="<?= m_base('tournament.php') ?>" class="quick-btn">
         <i class="bi bi-trophy-fill" style="color:#fbbf24;"></i>Tournament
     </a>
-</div>
-
-<!-- Recent Transactions -->
-<div class="card">
-    <div class="card-body" style="padding-bottom:0.5rem;">
-        <div class="card-title">Recent Activity</div>
-    </div>
-    <?php if (empty($transactions)): ?>
-    <div class="empty"><i class="bi bi-clock-history"></i><p>No transactions yet</p></div>
-    <?php endif; ?>
-    <?php foreach ($transactions as $t):
-        $cr = $t['type'] === 'credit';
-    ?>
-    <div class="txn-item">
-        <div class="txn-ico <?= $cr ? 'ico-cr' : 'ico-dr' ?>">
-            <i class="bi bi-arrow-<?= $cr ? 'down' : 'up' ?>"></i>
-        </div>
-        <div class="txn-body">
-            <div class="txn-lbl"><?= htmlspecialchars(txn_label($t)) ?></div>
-            <div class="txn-time"><?= txn_time($t['created_at']) ?></div>
-        </div>
-        <div class="txn-amt <?= $cr ? 'amt-cr' : 'amt-dr' ?>">
-            <?= $cr ? '+' : '-' ?><?= number_format($t['amount']) ?> HC
-        </div>
-    </div>
-    <?php endforeach; ?>
+    <a href="<?= m_base('dashboard.php') ?>" class="quick-btn">
+        <i class="bi bi-speedometer2"></i>Dashboard
+    </a>
+    <a href="<?= m_base('notifications.php') ?>" class="quick-btn">
+        <i class="bi bi-bell-fill"></i>Alerts
+    </a>
+    <a href="<?= m_base('profile.php') ?>" class="quick-btn">
+        <i class="bi bi-person-fill"></i>Profile
+    </a>
 </div>
 
 <!-- View full site -->

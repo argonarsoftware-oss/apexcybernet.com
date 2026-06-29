@@ -267,27 +267,10 @@ if ($loan_pdo_e) {
     } catch (Exception $e) {}
 }
 
-// Apex Cybernet — HCoin sales (purchase reason) + season passes
+// Apex Cybernet — tournament participation (player counts; HCoin revenue removed)
 try {
-    $r = $apexcybernet_pdo->query("SELECT
-        COALESCE(SUM(CASE WHEN reason='purchase' AND created_at >= DATE_FORMAT(NOW(),'%Y-%m-01') THEN amount ELSE 0 END),0) AS rev_now,
-        COALESCE(SUM(CASE WHEN reason='purchase' AND created_at >= DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 MONTH),'%Y-%m-01') AND created_at < DATE_FORMAT(NOW(),'%Y-%m-01') THEN amount ELSE 0 END),0) AS rev_prev,
-        COUNT(DISTINCT CASE WHEN reason='purchase' AND created_at >= DATE_FORMAT(NOW(),'%Y-%m-01') THEN account_id END) AS cust_now,
-        COUNT(DISTINCT CASE WHEN reason='purchase' THEN account_id END) AS cust_total
-        FROM h_coin_transactions")->fetch(PDO::FETCH_ASSOC);
-    if ($r) {
-        // HC purchases are stored in HC, ₱1 ≈ 1 HC for apexcybernet season 1
-        $emp['apexcybernet']['rev_now']    = (float)$r['rev_now'];
-        $emp['apexcybernet']['rev_prev']   = (float)$r['rev_prev'];
-        $emp['apexcybernet']['cust_now']   = (int)$r['cust_now'];
-        $emp['apexcybernet']['cust_total'] = (int)$r['cust_total'];
-        $emp['apexcybernet']['avg']        = $emp['apexcybernet']['cust_now'] > 0 ? round($emp['apexcybernet']['rev_now'] / $emp['apexcybernet']['cust_now']) : 0;
-    }
-    // Add season pass revenue if table exists
-    try {
-        $sp = (float)$apexcybernet_pdo->query("SELECT COALESCE(SUM(price),0) FROM season_passes WHERE status='active' AND created_at >= DATE_FORMAT(NOW(),'%Y-%m-01')")->fetchColumn();
-        $emp['apexcybernet']['rev_now'] += $sp;
-    } catch (Exception $e) {}
+    $emp['apexcybernet']['cust_total'] = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM accounts")->fetchColumn();
+    $emp['apexcybernet']['cust_now']   = (int)$apexcybernet_pdo->query("SELECT COUNT(*) FROM accounts WHERE created_at >= DATE_FORMAT(NOW(),'%Y-%m-01')")->fetchColumn();
 } catch (Exception $e) {}
 
 // Compute growth %
@@ -382,16 +365,7 @@ if ($ocpd_pdo_e) {
         }
     } catch (Exception $e) {}
 }
-// Apex Cybernet: admin_credit HC transactions
-try {
-    $r = $apexcybernet_pdo->query("SELECT COUNT(DISTINCT account_id) c, COALESCE(SUM(amount),0) v FROM h_coin_transactions WHERE reason='admin_credit' AND type='credit'")->fetch();
-    $psy['reciprocity']['count'] += (int)$r['c'];
-    $psy['reciprocity']['value'] += (float)$r['v'];
-    $rs = $apexcybernet_pdo->query("SELECT a.display_name, a.email, SUM(t.amount) v FROM h_coin_transactions t JOIN accounts a ON a.id=t.account_id WHERE t.reason='admin_credit' AND t.type='credit' GROUP BY a.id, a.display_name, a.email ORDER BY v DESC LIMIT 3")->fetchAll();
-    foreach ($rs as $row) $psy['reciprocity']['samples'][] = ['name'=>$row['display_name'], 'email'=>$row['email'], 'amount'=>number_format((float)$row['v']).' HC gifted', 'source'=>'Apex Cybernet'];
-} catch (Exception $e) {}
-
-// ── COMMITMENT: registered tournament teams/solos, season pass holders, repeat OCPD bookers ──
+// ── COMMITMENT: registered tournament teams/solos, repeat OCPD bookers ──
 // Apex Cybernet: active Season 1 teams
 try {
     $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM teams WHERE status IN ('approved','confirmed','pending')")->fetch();
@@ -433,7 +407,7 @@ try {
     $psy['sunk_cost']['count'] += (int)$r['c'];
 } catch (Exception $e) {}
 
-// ── AUTHORITY CAPITAL: total principals disbursed + total HC gifted + total vouchers granted ──
+// ── AUTHORITY CAPITAL: total principals disbursed + total vouchers granted ──
 // Every one is a "yes" you've already put in motion — callable social capital.
 if ($loan_pdo_e) {
     try {
@@ -444,10 +418,6 @@ if ($loan_pdo_e) {
         foreach ($rs as $row) $psy['authority']['samples'][] = ['name'=>trim(($row['first_name']??'').' '.($row['last_name']??'')) ?: 'Borrower', 'email'=>$row['email']??'', 'amount'=>'₱'.number_format((float)$row['principal_amount']).' lent', 'source'=>'Loan PH'];
     } catch (Exception $e) {}
 }
-try {
-    $r = $apexcybernet_pdo->query("SELECT COALESCE(SUM(amount),0) v FROM h_coin_transactions WHERE reason='admin_credit' AND type='credit'")->fetch();
-    $psy['authority']['value'] += (float)$r['v'];
-} catch (Exception $e) {}
 
 // ── LIKING: users with deep engagement — many sessions or long relationship ──
 try {
@@ -464,7 +434,7 @@ try {
     foreach ($rs as $row) $psy['liking']['samples'][] = ['name'=>$row['display_name'], 'email'=>$row['email'], 'amount'=>$row['sess'].' sessions', 'source'=>'Apex Cybernet'];
 } catch (Exception $e) {}
 
-// ── SCARCITY / LOSS-AVERSION: active unpaid loans, pending bookings near event date, season passes expiring ──
+// ── SCARCITY / LOSS-AVERSION: active unpaid loans, pending bookings near event date ──
 if ($ocpd_pdo_e) {
     try {
         $r = $ocpd_pdo_e->query("SELECT COUNT(*) c FROM bookings WHERE status='pending' AND event_date >= CURDATE() AND event_date <= DATE_ADD(CURDATE(), INTERVAL 14 DAY)")->fetch();
@@ -473,10 +443,6 @@ if ($ocpd_pdo_e) {
         foreach ($rs as $row) $psy['scarcity']['samples'][] = ['name'=>trim($row['first_name'].' '.$row['last_name']), 'email'=>$row['email'], 'amount'=>'flight on '.$row['event_date'], 'source'=>'OCPD'];
     } catch (Exception $e) {}
 }
-try {
-    $r = $apexcybernet_pdo->query("SELECT COUNT(*) c FROM season_passes WHERE status='active' AND expires_at IS NOT NULL AND expires_at <= DATE_ADD(NOW(), INTERVAL 30 DAY)")->fetch();
-    $psy['scarcity']['count'] += (int)$r['c'];
-} catch (Exception $e) {}
 
 // Total psychological exposure
 $psy_total_value = array_sum(array_column($psy, 'value'));
@@ -782,11 +748,8 @@ try {
     if ($tp) $reel_top_feature = ucfirst(trim(basename($tp['page_url'], '.php'), '/') ?: 'tournaments');
 } catch (Exception $e) {}
 
-// Active prediction pool total
+// Active prediction pool total (match_predictions removed — no HCoin wager pool)
 $reel_predict_pool = 0;
-try {
-    $reel_predict_pool = (int)$apexcybernet_pdo->query("SELECT COALESCE(SUM(wager),0) FROM match_predictions WHERE status='active'")->fetchColumn();
-} catch (Exception $e) {}
 
 // UTM links for reels
 $reel_utm_awareness   = 'https://apexcybernet.com/?utm_source=ig&utm_medium=reel&utm_campaign=arg-aw';

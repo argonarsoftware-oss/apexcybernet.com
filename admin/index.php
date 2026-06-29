@@ -338,21 +338,6 @@ $disputes = $pdo->query("SELECT * FROM disputes ORDER BY created_at DESC LIMIT 1
 $pending_claims = $pdo->query("SELECT * FROM accounts WHERE claim_status = 'pending' ORDER BY created_at DESC")->fetchAll();
 $all_claims = $pdo->query("SELECT * FROM accounts ORDER BY created_at DESC LIMIT 50")->fetchAll();
 
-// Merchants
-$merchants = $pdo->query("
-    SELECT a.id, a.display_name, a.email, a.h_coins, a.is_merchant, a.created_at,
-           COALESCE(SUM(CASE WHEN t.reason = 'qr_received' THEN t.amount ELSE 0 END), 0) AS total_received,
-           COUNT(CASE WHEN t.reason = 'qr_received' THEN 1 END) AS total_txns
-    FROM accounts a
-    LEFT JOIN h_coin_transactions t ON t.account_id = a.id AND t.type = 'credit'
-    WHERE a.is_merchant = 1
-    GROUP BY a.id
-    ORDER BY total_received DESC
-")->fetchAll();
-
-// Approved non-merchant accounts for the grant dropdown
-$non_merchants = $pdo->query("SELECT id, display_name, email FROM accounts WHERE claim_status = 'approved' AND is_merchant = 0 ORDER BY display_name ASC")->fetchAll();
-
 // Announcements
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_announcement'])) {
     $ann_title = trim($_POST['ann_title'] ?? '');
@@ -417,13 +402,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_notification']))
 $recent_notifs = $pdo->query("SELECT n.*, a.display_name FROM user_notifications n LEFT JOIN accounts a ON a.id = n.account_id ORDER BY n.created_at DESC LIMIT 20")->fetchAll();
 // All accounts for dropdown
 $all_accounts = $pdo->query("SELECT id, display_name, email FROM accounts WHERE claim_status = 'approved' ORDER BY display_name ASC")->fetchAll();
-
-// H-Coin sell orders (admin + staff)
-$sell_orders = $pdo->query("SELECT s.*, a.display_name, a.email FROM h_coin_sell_orders s JOIN accounts a ON a.id = s.account_id WHERE s.status = 'pending' ORDER BY s.created_at DESC")->fetchAll();
-
-// Market listings count
-$market_count = 0;
-try { $market_count = (int)$pdo->query("SELECT COUNT(*) FROM marketplace_listings")->fetchColumn(); } catch (Exception $e) {}
 
 // ── Listener API: recent orders & unmatched payments ──
 function listenerGet($endpoint) {
@@ -542,12 +520,9 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
         <div class="admin-header-actions">
             <a href="<?= base_url('admin/brackets.php') ?>" class="btn-back-site"><i class="bi bi-diagram-3"></i> Brackets</a>
             <a href="<?= base_url('admin/tools.php') ?>" class="btn-back-site" style="border-color:rgba(167,139,250,0.35); color:#a78bfa;"><i class="bi bi-tools"></i> Admin Tools</a>
-            <a href="<?= base_url('admin/sell-orders.php') ?>" class="btn-back-site" style="border-color:rgba(245,158,11,0.35); color:#fbbf24;"><i class="bi bi-coin"></i> Sell Orders<?php if (!empty($sell_orders)): ?> <span style="background:#f59e0b; color:#0f0f13; border-radius:99px; padding:0 0.4rem; font-size:0.7rem; font-weight:800; margin-left:0.2rem;"><?= count($sell_orders) ?></span><?php endif; ?></a>
-            <?php if ($is_owner): ?><a href="<?= base_url('admin/merchants.php') ?>" class="btn-back-site" style="border-color:rgba(34,197,94,0.35); color:#34d399;"><i class="bi bi-shop-window"></i> Merchants<?php if (!empty($merchants)): ?> <span style="background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); color:#34d399; border-radius:99px; padding:0 0.4rem; font-size:0.7rem; font-weight:800; margin-left:0.2rem;"><?= count($merchants) ?></span><?php endif; ?></a><?php endif; ?>
             <?php if ($is_owner): ?>
             <a href="<?= base_url('admin/activity.php') ?>" class="btn-back-site" style="border-color:rgba(124,58,237,0.35); color:#a78bfa;"><i class="bi bi-activity"></i> Activity</a>
             <?php endif; ?>
-            <a href="<?= base_url('admin/market.php') ?>" class="btn-back-site" style="border-color:rgba(59,130,246,0.35); color:#60a5fa;"><i class="bi bi-bag-check"></i> Market<?php if ($market_count > 0): ?> <span style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:99px; padding:0 0.4rem; font-size:0.7rem; font-weight:800; margin-left:0.2rem;"><?= $market_count ?></span><?php endif; ?></a>
             <a href="<?= base_url('admin/chat.php') ?>" class="btn-back-site" style="border-color:rgba(167,139,250,0.35); color:#a78bfa;"><i class="bi bi-chat-dots-fill"></i> Chat</a>
             <a href="<?= base_url('admin/matchmaking.php') ?>" class="btn-back-site"><i class="bi bi-puzzle"></i> Matchmaking</a>
             <a href="<?= base_url('admin/accounts.php') ?>" class="btn-back-site" style="border-color:rgba(139,92,246,0.35); color:#a78bfa;"><i class="bi bi-people-fill"></i> Accounts</a>
@@ -906,11 +881,9 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
                     <select name="notif_icon" class="form-control form-select" style="flex:1; font-size:0.8rem;">
                         <option value="bi-bell">Bell</option>
                         <option value="bi-megaphone">Announcement</option>
-                        <option value="bi-coin">H-Coin</option>
                         <option value="bi-trophy">Tournament</option>
                         <option value="bi-exclamation-triangle">Warning</option>
                         <option value="bi-gift">Reward</option>
-                        <option value="bi-bag-check">Market</option>
                         <option value="bi-shield-check">System</option>
                     </select>
                     <input type="text" name="notif_link" class="form-control" placeholder="Link (optional)" style="flex:2; font-size:0.8rem;">
@@ -1172,56 +1145,6 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
         <?php endif; ?>
     </div>
 
-    <!-- H-Coin Sell Orders -->
-    <?php if (!empty($sell_orders)): ?>
-    <div class="admin-section">
-        <div class="admin-section-header">
-            <h2><i class="bi bi-coin"></i> H-Coin Sell Orders <span class="admin-count"><?= count($sell_orders) ?> pending</span></h2>
-        </div>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">
-            These users want to sell H-Coins. Send GCash to their number, then mark as paid. Rate: ₱0.85/coin.
-        </p>
-        <div class="table-responsive">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>GCash #</th>
-                        <th>Coins</th>
-                        <th>Peso</th>
-                        <th>Submitted</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($sell_orders as $so): ?>
-                    <tr id="sell-row-<?= $so['id'] ?>">
-                        <td>
-                            <div style="font-weight:700;"><?= htmlspecialchars($so['display_name']) ?></div>
-                            <div style="font-size:0.75rem; color:var(--text-muted);"><?= htmlspecialchars($so['email']) ?></div>
-                        </td>
-                        <td style="font-weight:700; color:var(--accent-light);"><?= htmlspecialchars($so['gcash_number']) ?></td>
-                        <td style="font-weight:700;"><?= number_format((int)$so['coins']) ?> HC</td>
-                        <td style="font-weight:700; color:#34d399;">₱<?= number_format((float)$so['peso_amount'], 2) ?></td>
-                        <td style="font-size:0.78rem; color:var(--text-muted);"><?= date('M j, g:ia', strtotime($so['created_at'])) ?></td>
-                        <td>
-                            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-                                <button class="btn-admin btn-approve" onclick="processSellOrder(<?= $so['id'] ?>, 'paid')">
-                                    <i class="bi bi-check-lg"></i> Mark Paid
-                                </button>
-                                <button class="btn-admin btn-reject" onclick="processSellOrder(<?= $so['id'] ?>, 'rejected')">
-                                    <i class="bi bi-x-lg"></i> Reject
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <?php endif; ?>
-
     <!-- Disputes -->
     <?php if (!empty($disputes)): ?>
     <div class="admin-section">
@@ -1274,89 +1197,6 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
     </div>
     <?php endif; ?>
 
-    <!-- Merchants (kirfenia only) -->
-    <?php if ($is_owner): ?>
-    <div class="admin-section" id="merchants">
-        <div class="admin-section-header">
-            <h2><i class="bi bi-shop" style="color:#34d399;"></i> Merchants
-                <span class="admin-count"><?= count($merchants) ?> active</span>
-            </h2>
-        </div>
-
-        <?php if (!empty($merchants)): ?>
-        <div class="table-responsive" style="margin-bottom:1.25rem;">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Merchant</th>
-                        <th>Email</th>
-                        <th>Balance</th>
-                        <th>Total Received</th>
-                        <th>Transactions</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($merchants as $m): ?>
-                    <tr>
-                        <td>
-                            <strong><?= htmlspecialchars($m['display_name']) ?></strong>
-                            <div style="font-size:0.68rem;color:#34d399;font-weight:700;margin-top:0.1rem;"><i class="bi bi-shop"></i> Merchant</div>
-                        </td>
-                        <td style="font-size:0.78rem;"><?= htmlspecialchars($m['email']) ?></td>
-                        <td style="font-weight:700;color:#fbbf24;"><?= number_format((int)$m['h_coins']) ?> HC</td>
-                        <td style="font-weight:700;color:#34d399;">+<?= number_format((int)$m['total_received']) ?> HC</td>
-                        <td style="color:var(--text-muted);"><?= (int)$m['total_txns'] ?></td>
-                        <td>
-                            <form method="POST" action="<?= base_url('admin/action.php') ?>" style="display:inline;">
-                                <input type="hidden" name="type" value="merchant">
-                                <input type="hidden" name="id" value="<?= $m['id'] ?>">
-                                <button name="action" value="revoke_merchant" class="btn-delete"
-                                        title="Revoke merchant access"
-                                        onclick="return confirm('Revoke merchant access for <?= htmlspecialchars($m['display_name'], ENT_QUOTES) ?>?')">
-                                    <i class="bi bi-x-lg"></i> Revoke
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        <?php else: ?>
-        <div style="padding:1.5rem; color:var(--text-muted); font-size:0.85rem; text-align:center;">
-            <i class="bi bi-shop" style="font-size:1.5rem; display:block; margin-bottom:0.5rem; opacity:0.2;"></i>
-            No merchant accounts yet.
-        </div>
-        <?php endif; ?>
-
-        <!-- Grant merchant access -->
-        <?php if (!empty($non_merchants)): ?>
-        <div style="background:var(--bg-dark); border:1px solid var(--border); border-radius:10px; padding:1rem; margin-top:0.5rem;">
-            <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:0.75rem;">
-                <i class="bi bi-plus-circle"></i> Grant Merchant Access
-            </div>
-            <form method="POST" action="<?= base_url('admin/action.php') ?>" style="display:flex; gap:0.5rem; align-items:flex-end; flex-wrap:wrap;">
-                <input type="hidden" name="type" value="merchant">
-                <input type="hidden" name="action" value="grant_merchant">
-                <div style="flex:1; min-width:200px;">
-                    <label style="font-size:0.68rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Account</label>
-                    <select name="id" class="form-control form-select" required style="font-size:0.8rem;">
-                        <option value="">— Select account —</option>
-                        <?php foreach ($non_merchants as $nm): ?>
-                        <option value="<?= $nm['id'] ?>"><?= htmlspecialchars($nm['display_name']) ?> — <?= htmlspecialchars($nm['email']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit" style="padding:0.5rem 1.25rem; font-size:0.8rem; white-space:nowrap;">
-                    <i class="bi bi-shop"></i> Grant Merchant
-                </button>
-            </form>
-        </div>
-        <?php endif; ?>
-    </div>
-    <?php endif; ?>
-
     <!-- Accounts -->
     <?php if (!empty($all_claims)): ?>
     <div class="admin-section">
@@ -1370,7 +1210,6 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
                         <th>User</th>
                         <th>Email</th>
                         <th>Ref Code</th>
-                        <th>H-Coins</th>
                         <th>Status</th>
                         <th>Joined</th>
                         <th>Actions</th>
@@ -1382,7 +1221,6 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
                             <td><strong><?= htmlspecialchars($claim['display_name'] ?: '—') ?></strong></td>
                             <td style="font-size:0.78rem;"><?= htmlspecialchars($claim['email']) ?></td>
                             <td><code style="font-size:0.7rem; color:var(--accent-light);"><?= htmlspecialchars($claim['ref_code']) ?></code></td>
-                            <td style="font-weight:700; color:#fbbf24;"><?= number_format((int)$claim['h_coins']) ?></td>
                             <td>
                                 <span class="status-badge status-<?= $claim['claim_status'] === 'approved' ? 'approved' : ($claim['claim_status'] === 'rejected' ? 'rejected' : 'pending') ?>">
                                     <?= $claim['claim_status'] === 'approved' ? 'Active' : ucfirst($claim['claim_status']) ?>
@@ -1409,71 +1247,6 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Add H-Coins -->
-    <?php if (!empty($all_claims)): ?>
-    <div class="admin-section">
-        <div class="admin-section-header">
-            <h2><i class="bi bi-coin"></i> Add H-Coins</h2>
-        </div>
-        <div class="admin-panel-body">
-            <form id="add-hcoin-form" style="display:flex; gap:0.5rem; align-items:flex-end; flex-wrap:wrap; margin-bottom:1rem;">
-                <div style="flex:1; min-width:180px;">
-                    <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Player Account</label>
-                    <select id="hcoin-account" class="form-control form-select" required style="font-size:0.8rem;">
-                        <option value="">— Select account —</option>
-                        <?php foreach ($all_claims as $c): ?>
-                            <?php if ($c['claim_status'] === 'approved'): ?>
-                                <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['display_name'] ?: $c['email']) ?> (<?= $c['ref_code'] ?>) — <?= (int)$c['h_coins'] ?> HC</option>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div style="min-width:100px; max-width:140px;">
-                    <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Amount</label>
-                    <input type="number" id="hcoin-amount" class="form-control" min="1" max="99999" placeholder="e.g. 500" required style="font-size:0.8rem;">
-                </div>
-                <div style="flex:1; min-width:150px;">
-                    <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Reason</label>
-                    <input type="text" id="hcoin-reason" class="form-control" placeholder="e.g. Event prize, Refund" required style="font-size:0.8rem;">
-                </div>
-                <button type="submit" class="btn-approve" style="padding:0.5rem 1rem; font-size:0.8rem; white-space:nowrap;">
-                    <i class="bi bi-coin"></i> Add Coins
-                </button>
-            </form>
-            <div id="hcoin-result" style="display:none; padding:0.5rem; border-radius:6px; font-size:0.8rem; margin-top:0.5rem;"></div>
-
-            <div style="border-top:1px solid var(--border); margin-top:1rem; padding-top:1rem;">
-                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.5rem;">Edit Balance</div>
-                <form id="edit-hcoin-form" style="display:flex; gap:0.5rem; align-items:flex-end; flex-wrap:wrap;">
-                    <div style="flex:1; min-width:180px;">
-                        <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Player Account</label>
-                        <select id="hcoin-edit-account" class="form-control form-select" required style="font-size:0.8rem;">
-                            <option value="">— Select account —</option>
-                            <?php foreach ($all_claims as $c): ?>
-                                <?php if ($c['claim_status'] === 'approved'): ?>
-                                    <option value="<?= $c['id'] ?>" data-balance="<?= (int)$c['h_coins'] ?>"><?= htmlspecialchars($c['display_name'] ?: $c['email']) ?> (<?= $c['ref_code'] ?>) — <?= (int)$c['h_coins'] ?> HC</option>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div style="min-width:100px; max-width:140px;">
-                        <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">New Balance</label>
-                        <input type="number" id="hcoin-edit-balance" class="form-control" min="0" max="999999" placeholder="e.g. 200" required style="font-size:0.8rem;">
-                    </div>
-                    <div style="flex:1; min-width:150px;">
-                        <label style="font-size:0.7rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Reason</label>
-                        <input type="text" id="hcoin-edit-reason" class="form-control" placeholder="e.g. Correction, Penalty" required style="font-size:0.8rem;">
-                    </div>
-                    <button type="submit" class="btn-approve" style="padding:0.5rem 1rem; font-size:0.8rem; white-space:nowrap; background:rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.4); color:#60a5fa;">
-                        <i class="bi bi-pencil-square"></i> Set Balance
-                    </button>
-                </form>
-                <div id="hcoin-edit-result" style="display:none; padding:0.5rem; border-radius:6px; font-size:0.8rem; margin-top:0.5rem;"></div>
-            </div>
         </div>
     </div>
     <?php endif; ?>
@@ -1622,26 +1395,6 @@ function doAction(type, id, action) {
     });
 }
 
-function processSellOrder(id, action) {
-    const label = action === 'paid' ? 'mark as paid (GCash sent)' : 'reject and refund coins';
-    if (!confirm('Are you sure you want to ' + label + '?')) return;
-
-    const formData = new FormData();
-    formData.append('action', 'sell_order_' + action);
-    formData.append('id', id);
-
-    fetch('<?= base_url("admin/action.php") ?>', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('sell-row-' + id)?.remove();
-            } else {
-                alert('Error: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(err => alert('Request failed: ' + err.message));
-}
-
 function saveRating(id) {
     const val = document.getElementById('rating-' + id).value;
     const formData = new FormData();
@@ -1665,102 +1418,6 @@ function saveRating(id) {
     });
 }
 
-// ── Add H-Coins ──
-document.getElementById('add-hcoin-form')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const accountId = document.getElementById('hcoin-account').value;
-    const amount    = document.getElementById('hcoin-amount').value;
-    const reason    = document.getElementById('hcoin-reason').value.trim();
-    const resultDiv = document.getElementById('hcoin-result');
-
-    if (!accountId || !amount || !reason) { alert('Fill in all fields.'); return; }
-    if (!confirm('Add ' + amount + ' H-Coins?\nReason: ' + reason)) return;
-
-    const formData = new FormData();
-    formData.append('action', 'add_hcoins');
-    formData.append('id', accountId);
-    formData.append('amount', amount);
-    formData.append('reason', reason);
-
-    fetch('<?= base_url("admin/action.php") ?>', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                resultDiv.style.display = 'block';
-                resultDiv.style.background = 'var(--success-bg, #065f46)';
-                resultDiv.style.color = 'var(--success-text, #6ee7b7)';
-                resultDiv.innerHTML = '<i class="bi bi-check-circle"></i> Added ' + amount + ' HC to <b>' + data.display_name + '</b>. New balance: ' + data.new_balance + ' HC';
-                document.getElementById('hcoin-amount').value = '';
-                document.getElementById('hcoin-reason').value = '';
-                // Update the dropdown option text with new balance
-                const opt = document.querySelector('#hcoin-account option[value="' + accountId + '"]');
-                if (opt) opt.textContent = opt.textContent.replace(/— \d+ HC$/, '— ' + data.new_balance + ' HC');
-            } else {
-                resultDiv.style.display = 'block';
-                resultDiv.style.background = 'var(--danger-bg, #7f1d1d)';
-                resultDiv.style.color = 'var(--danger-text, #fca5a5)';
-                resultDiv.innerHTML = '<i class="bi bi-x-circle"></i> Error: ' + (data.error || 'Unknown error');
-            }
-        })
-        .catch(err => { alert('Request failed: ' + err.message); });
-});
-
-// ── Auto-fill current balance when account selected ──
-document.getElementById('hcoin-edit-account')?.addEventListener('change', function() {
-    const opt = this.options[this.selectedIndex];
-    const bal = opt.dataset.balance || '';
-    document.getElementById('hcoin-edit-balance').value = bal;
-});
-
-// ── Edit H-Coin Balance ──
-document.getElementById('edit-hcoin-form')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const accountId  = document.getElementById('hcoin-edit-account').value;
-    const newBalance = document.getElementById('hcoin-edit-balance').value;
-    const reason     = document.getElementById('hcoin-edit-reason').value.trim();
-    const resultDiv  = document.getElementById('hcoin-edit-result');
-
-    if (!accountId || newBalance === '' || !reason) { alert('Fill in all fields.'); return; }
-
-    const opt = document.querySelector('#hcoin-edit-account option[value="' + accountId + '"]');
-    const currentBal = opt ? opt.dataset.balance : '?';
-    const diff = parseInt(newBalance) - parseInt(currentBal);
-    const label = diff >= 0 ? '+' + diff : '' + diff;
-
-    if (!confirm('Set balance to ' + newBalance + ' HC (' + label + ')?\nReason: ' + reason)) return;
-
-    const formData = new FormData();
-    formData.append('action', 'edit_hcoins');
-    formData.append('id', accountId);
-    formData.append('new_balance', newBalance);
-    formData.append('reason', reason);
-
-    fetch('<?= base_url("admin/action.php") ?>', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                resultDiv.style.display = 'block';
-                resultDiv.style.background = 'var(--success-bg, #065f46)';
-                resultDiv.style.color = 'var(--success-text, #6ee7b7)';
-                resultDiv.innerHTML = '<i class="bi bi-check-circle"></i> Balance set to <b>' + data.new_balance + ' HC</b> for ' + data.display_name + ' (' + data.change + ')';
-                document.getElementById('hcoin-edit-reason').value = '';
-                // Update both dropdowns
-                ['hcoin-edit-account', 'hcoin-account'].forEach(function(selId) {
-                    var o = document.querySelector('#' + selId + ' option[value="' + accountId + '"]');
-                    if (o) {
-                        o.textContent = o.textContent.replace(/— \d+ HC$/, '— ' + data.new_balance + ' HC');
-                        if (o.dataset.balance !== undefined) o.dataset.balance = data.new_balance;
-                    }
-                });
-            } else {
-                resultDiv.style.display = 'block';
-                resultDiv.style.background = 'var(--danger-bg, #7f1d1d)';
-                resultDiv.style.color = 'var(--danger-text, #fca5a5)';
-                resultDiv.innerHTML = '<i class="bi bi-x-circle"></i> Error: ' + (data.error || 'Unknown error');
-            }
-        })
-        .catch(err => { alert('Request failed: ' + err.message); });
-});
 </script>
 
 </body>

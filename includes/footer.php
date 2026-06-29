@@ -25,23 +25,11 @@ $_ws_uid = (int)($_SESSION['account_id'] ?? 0);
 $_ws_local = str_contains($_SERVER['HTTP_HOST'] ?? '', 'localhost');
 if ($_ws_uid):
 ?>
-<!-- HC received toast (triggered by the central notification poller) -->
-<div id="hcToast" style="display:none;position:fixed;top:1.25rem;right:1.25rem;z-index:9999;background:#0d1f0d;border:1px solid #22c55e;border-radius:14px;padding:1rem 1.25rem;min-width:260px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.4);">
-    <div style="display:flex;align-items:center;gap:0.75rem;">
-        <div style="width:40px;height:40px;border-radius:50%;background:rgba(34,197,94,0.15);border:1.5px solid #22c55e;display:flex;align-items:center;justify-content:center;color:#22c55e;font-size:1.1rem;flex-shrink:0;"><i class="bi bi-coin"></i></div>
-        <div style="flex:1;min-width:0;">
-            <div style="font-size:0.85rem;font-weight:800;color:#86efac;" id="hcToastTitle"></div>
-            <div style="font-size:0.75rem;color:#4ade80;margin-top:1px;" id="hcToastMsg"></div>
-        </div>
-        <button onclick="document.getElementById('hcToast').style.display='none';" style="background:none;border:none;color:#6b7280;font-size:1rem;cursor:pointer;flex-shrink:0;padding:0;">✕</button>
-    </div>
-</div>
-<style>@keyframes hcSlideIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}</style>
 <script>
 // ── Central notification poller (replaces the WebSocket path) ──
 // Polls api/notifications.php?action=list every 10s. For each new item since
 // the last poll: prepends to bell, bumps badge, fires window 'apexcybernet:notification'
-// so per-page listeners (marketplace, buy.php, etc.) can react.
+// so per-page listeners can react.
 window.apexcybernetUid = <?= $_ws_uid ?>;
 (function() {
     var lastSeenId  = 0;
@@ -86,19 +74,6 @@ window.apexcybernetUid = <?= $_ws_uid ?>;
                             list.insertBefore(item, list.firstChild);
                         }
 
-                        // HC-received toast
-                        if ((n.icon || '').indexOf('coin') !== -1) {
-                            var toast = document.getElementById('hcToast');
-                            if (toast) {
-                                document.getElementById('hcToastTitle').textContent = n.title || '';
-                                document.getElementById('hcToastMsg').textContent   = n.message || '';
-                                toast.style.display = 'block';
-                                toast.style.animation = 'none';
-                                void toast.offsetWidth;
-                                toast.style.animation = 'hcSlideIn 0.3s ease';
-                                setTimeout(function() { toast.style.display = 'none'; }, 6000);
-                            }
-                        }
                     }
                 });
 
@@ -477,212 +452,6 @@ function gjbDismiss() {
 </script>
 <?php endif; ?>
 
-<?php
-// ── Logged-in conversion banner — DISABLED (predict + coins archived 2026-05-19) ──
-$_show_predict_banner = false;
-$_pnb_match           = null;
-if (false && !empty($_SESSION['account_id'])) {
-    $_req_uri = $_SERVER['REQUEST_URI'] ?? '';
-    $_on_predict  = (stripos($_req_uri, '/predict.php') !== false);
-    $_on_admin    = (stripos($_req_uri, '/admin/')     !== false);
-    $_on_login    = (stripos($_req_uri, '/login.php')  !== false) || (stripos($_req_uri, '/logout.php') !== false);
-    if (!$_on_predict && !$_on_admin && !$_on_login) {
-        try {
-            $_pbq = $pdo->prepare("SELECT 1 FROM match_predictions WHERE account_id = ? LIMIT 1");
-            $_pbq->execute([(int)$_SESSION['account_id']]);
-            if (!$_pbq->fetch()) {
-                $_hcq = $pdo->prepare("SELECT h_coins FROM accounts WHERE id = ?");
-                $_hcq->execute([(int)$_SESSION['account_id']]);
-                $_user_hc = (int)$_hcq->fetchColumn();
-
-                // Pull the next live "versus" match with both teams known
-                $_mq = $pdo->query("SELECT id, team1_name, team2_name, round, match_order
-                                    FROM matches
-                                    WHERE game = 'dota2' AND status = 'upcoming'
-                                      AND team1_name IS NOT NULL AND team1_name <> ''
-                                      AND team2_name IS NOT NULL AND team2_name <> ''
-                                    ORDER BY round ASC, match_order ASC, id ASC LIMIT 1");
-                $_pnb_match = $_mq ? $_mq->fetch() : null;
-
-                $_show_predict_banner = true;
-            }
-        } catch (Exception $e) {}
-    }
-}
-?>
-<?php if ($_show_predict_banner): ?>
-<div id="predict-nudge-banner" style="display:none;">
-    <div id="pnb-inner">
-        <button id="pnb-close" onclick="pnbDismiss()" aria-label="Dismiss">&times;</button>
-        <div id="pnb-icon">🎯</div>
-        <?php if ($_pnb_match): ?>
-        <div id="pnb-heading">Who wins?</div>
-        <div id="pnb-versus">
-            <span class="pnb-team"><?= htmlspecialchars($_pnb_match['team1_name']) ?></span>
-            <span class="pnb-vs">VS</span>
-            <span class="pnb-team"><?= htmlspecialchars($_pnb_match['team2_name']) ?></span>
-        </div>
-        <div id="pnb-sub">Lock your <?= $_user_hc ?> HC on your pick. Winners split the whole pool.</div>
-        <div id="pnb-perks">
-            <span>🎯 Pick <?= htmlspecialchars($_pnb_match['team1_name']) ?> or <?= htmlspecialchars($_pnb_match['team2_name']) ?></span>
-            <span>💰 Winners share the pool</span>
-            <span>📈 More HC in, bigger cut</span>
-        </div>
-        <a href="<?= base_url('predict.php') ?>#match-<?= (int)$_pnb_match['id'] ?>" id="pnb-cta">Call the winner</a>
-        <?php else: ?>
-        <div id="pnb-heading">Your <?= $_user_hc ?> HC is sleeping</div>
-        <div id="pnb-sub">Call the team you think will win. Lock your HC. Winners split the pool.</div>
-        <div id="pnb-perks">
-            <span>🎯 Pick the winning team</span>
-            <span>💰 Winners share the pool</span>
-            <span>📈 More HC in, bigger cut</span>
-        </div>
-        <a href="<?= base_url('predict.php') ?>" id="pnb-cta">Pick a winner</a>
-        <?php endif; ?>
-        <a href="<?= base_url('coins.php') ?>" id="pnb-secondary">See my H-Coins</a>
-    </div>
-</div>
-<style>
-#predict-nudge-banner {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    z-index: 9999;
-    animation: pnbSlideIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
-}
-@keyframes pnbSlideIn {
-    from { opacity: 0; transform: translateY(24px) scale(0.96); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-#pnb-inner {
-    background: linear-gradient(145deg, #1a1305, #2b1f0a);
-    border: 1px solid rgba(251,191,36,0.4);
-    border-radius: 18px;
-    padding: 1.5rem 1.6rem 1.3rem;
-    width: 280px;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(251,191,36,0.15);
-    position: relative;
-    text-align: center;
-}
-#pnb-close {
-    position: absolute;
-    top: 0.7rem; right: 0.85rem;
-    background: none; border: none;
-    color: #6b7280; font-size: 1.2rem;
-    cursor: pointer; line-height: 1; padding: 0;
-}
-#pnb-close:hover { color: #fde68a; }
-#pnb-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-#pnb-heading {
-    font-size: 1.05rem; font-weight: 900;
-    color: #fde68a;
-    margin-bottom: 0.4rem;
-    letter-spacing: -0.01em;
-}
-#pnb-versus {
-    display: flex; align-items: center; justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 0.55rem;
-}
-#pnb-versus .pnb-team {
-    background: rgba(251,191,36,0.12);
-    border: 1px solid rgba(251,191,36,0.35);
-    color: #fde68a;
-    font-weight: 800;
-    font-size: clamp(0.62rem, 2.2vw, 0.78rem);
-    line-height: 1.2;
-    padding: 0.38rem 0.55rem;
-    border-radius: 8px;
-    flex: 1 1 0;
-    min-width: 0;
-    text-align: center;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-    hyphens: auto;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-#pnb-versus .pnb-vs {
-    font-size: 0.68rem;
-    font-weight: 900;
-    color: #d97706;
-    letter-spacing: 0.1em;
-    flex-shrink: 0;
-}
-#pnb-sub {
-    font-size: 0.75rem;
-    color: #d1b98a;
-    margin-bottom: 0.85rem;
-    line-height: 1.5;
-}
-#pnb-perks {
-    display: flex; flex-direction: column;
-    gap: 0.3rem; margin-bottom: 1rem;
-}
-#pnb-perks span {
-    font-size: 0.72rem;
-    color: #fde68a;
-    background: rgba(251,191,36,0.1);
-    border-radius: 6px;
-    padding: 0.28rem 0.6rem;
-    font-weight: 600;
-}
-#pnb-cta {
-    display: block;
-    background: linear-gradient(135deg, #fbbf24, #d97706);
-    color: #1f1300;
-    text-decoration: none;
-    font-size: 0.85rem; font-weight: 800;
-    padding: 0.65rem 1rem;
-    border-radius: 10px;
-    margin-bottom: 0.55rem;
-    letter-spacing: 0.01em;
-    transition: opacity 0.15s;
-}
-#pnb-cta:hover { opacity: 0.88; color: #1f1300; }
-#pnb-secondary {
-    display: block;
-    font-size: 0.68rem;
-    color: #9a7a3a;
-    text-decoration: none;
-}
-#pnb-secondary:hover { color: #fbbf24; }
-@media (max-width: 480px) {
-    #predict-nudge-banner { bottom: 5rem; right: 0.75rem; }
-    #pnb-inner { width: 260px; }
-}
-</style>
-<script>
-(function() {
-    const PNB_DISMISS = 'pnb_dismissed';
-    const PNB_SEEN    = 'pnb_seen_count';
-    const dismissedAt = parseInt(localStorage.getItem(PNB_DISMISS) || '0');
-    if (Date.now() - dismissedAt < 2 * 24 * 60 * 60 * 1000) return;
-    const seenCount = parseInt(localStorage.getItem(PNB_SEEN) || '0');
-    if (seenCount >= 5) return;
-    setTimeout(function() {
-        const el = document.getElementById('predict-nudge-banner');
-        if (el) {
-            el.style.display = 'block';
-            localStorage.setItem(PNB_SEEN, seenCount + 1);
-        }
-    }, 25000);
-})();
-function pnbDismiss() {
-    const el = document.getElementById('predict-nudge-banner');
-    if (el) {
-        el.style.animation = 'none';
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(16px)';
-        el.style.transition = 'opacity 0.2s, transform 0.2s';
-        setTimeout(() => el.remove(), 250);
-    }
-    localStorage.setItem('pnb_dismissed', Date.now());
-}
-</script>
-<?php endif; ?>
 
 </body>
 </html>

@@ -12,33 +12,6 @@ $flash = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    if ($action === 'adjust_coins') {
-        $uid    = (int)($_POST['uid'] ?? 0);
-        $amount = (int)($_POST['amount'] ?? 0);
-        if ($uid && $amount !== 0) {
-            try {
-                $pdo->prepare("UPDATE accounts SET h_coins = GREATEST(0, h_coins + ?) WHERE id = ?")
-                    ->execute([$amount, $uid]);
-                $flash = ['type' => 'ok', 'msg' => ($amount > 0 ? "Added {$amount} HC" : "Deducted ".abs($amount)." HC") . " for account #{$uid}."];
-            } catch (Exception $e) {
-                $flash = ['type' => 'err', 'msg' => 'DB error: ' . $e->getMessage()];
-            }
-        }
-    }
-
-    if ($action === 'set_coins') {
-        $uid = (int)($_POST['uid'] ?? 0);
-        $val = max(0, (int)($_POST['value'] ?? 0));
-        if ($uid) {
-            try {
-                $pdo->prepare("UPDATE accounts SET h_coins = ? WHERE id = ?")->execute([$val, $uid]);
-                $flash = ['type' => 'ok', 'msg' => "Set HC balance to {$val} for account #{$uid}."];
-            } catch (Exception $e) {
-                $flash = ['type' => 'err', 'msg' => 'DB error: ' . $e->getMessage()];
-            }
-        }
-    }
-
     if ($action === 'set_status' && $is_owner) {
         $uid    = (int)($_POST['uid'] ?? 0);
         $status = in_array($_POST['status'] ?? '', ['approved', 'pending', 'banned']) ? $_POST['status'] : null;
@@ -59,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ── Filters ──
 $search  = trim($_GET['q'] ?? '');
 $status  = $_GET['s'] ?? 'all';
-$sort    = in_array($_GET['sort'] ?? '', ['id','display_name','h_coins','created_at']) ? $_GET['sort'] : 'id';
+$sort    = in_array($_GET['sort'] ?? '', ['id','display_name','created_at']) ? $_GET['sort'] : 'id';
 $dir     = ($_GET['dir'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
 $page    = max(1, (int)($_GET['p'] ?? 1));
 $per     = 30;
@@ -85,7 +58,6 @@ $stats = [];
 try {
     $stats = $pdo->query("SELECT
         COUNT(*) AS total,
-        SUM(h_coins) AS total_hc,
         SUM(claim_status='approved') AS approved,
         SUM(claim_status='pending') AS pending,
         SUM(claim_status='banned') AS banned,
@@ -107,7 +79,7 @@ $offset = ($page - 1) * $per;
 // Rows
 $rows = [];
 try {
-    $st = $pdo->prepare("SELECT id, email, display_name, h_coins, ref_type, claim_status, created_at
+    $st = $pdo->prepare("SELECT id, email, display_name, ref_type, claim_status, created_at
         FROM accounts WHERE $where ORDER BY $sort $dir LIMIT $per OFFSET $offset");
     $st->execute($params);
     $rows = $st->fetchAll();
@@ -163,7 +135,6 @@ a{text-decoration:none;}
 .badge-ok{background:rgba(52,211,153,0.15);color:var(--green);border-radius:6px;padding:0.1rem 0.45rem;font-size:0.68rem;font-weight:700;}
 .badge-pend{background:rgba(251,191,36,0.15);color:var(--yellow);border-radius:6px;padding:0.1rem 0.45rem;font-size:0.68rem;font-weight:700;}
 .badge-ban{background:rgba(248,113,113,0.15);color:var(--red);border-radius:6px;padding:0.1rem 0.45rem;font-size:0.68rem;font-weight:700;}
-.hc-val{font-weight:700;color:var(--yellow);}
 .btn-sm{background:var(--bg);border:1px solid var(--border);color:#e5e7eb;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.72rem;cursor:pointer;white-space:nowrap;}
 .btn-sm:hover{border-color:var(--accent);color:var(--accent-light);}
 .btn-danger{border-color:rgba(248,113,113,0.3);color:var(--red);}
@@ -217,10 +188,6 @@ a{text-decoration:none;}
         <div class="kpi-label"><i class="bi bi-people"></i> Total</div>
         <div class="kpi-val"><?= number_format($stats['total'] ?? 0) ?></div>
     </div>
-    <div class="kpi" style="--kpi-color:var(--yellow);">
-        <div class="kpi-label"><i class="bi bi-coin"></i> Total HC</div>
-        <div class="kpi-val"><?= number_format($stats['total_hc'] ?? 0) ?></div>
-    </div>
     <div class="kpi" style="--kpi-color:var(--green);">
         <div class="kpi-label"><i class="bi bi-check-circle"></i> Approved</div>
         <div class="kpi-val"><?= number_format($stats['approved'] ?? 0) ?></div>
@@ -261,7 +228,6 @@ a{text-decoration:none;}
 <div class="card">
     <div class="card-header">
         <span><i class="bi bi-list-ul"></i> Accounts</span>
-        <span style="font-size:0.7rem;color:#6b7280;">Click <i class="bi bi-coin" style="color:var(--yellow)"></i> to adjust HC</span>
     </div>
     <div style="overflow-x:auto;">
     <table class="acc-table">
@@ -270,7 +236,6 @@ a{text-decoration:none;}
                 <th><?= sort_link('id', 'ID', $sort, $dir, $extra_qs) ?></th>
                 <th><?= sort_link('display_name', 'Name', $sort, $dir, $extra_qs) ?></th>
                 <th>Email</th>
-                <th><?= sort_link('h_coins', 'HC Balance', $sort, $dir, $extra_qs) ?></th>
                 <th>Status</th>
                 <th>Type</th>
                 <th><?= sort_link('created_at', 'Joined', $sort, $dir, $extra_qs) ?></th>
@@ -279,16 +244,13 @@ a{text-decoration:none;}
         </thead>
         <tbody>
         <?php if (empty($rows)): ?>
-        <tr><td colspan="8" style="text-align:center;padding:2rem;color:#6b7280;"><i class="bi bi-inbox"></i> No accounts found</td></tr>
+        <tr><td colspan="7" style="text-align:center;padding:2rem;color:#6b7280;"><i class="bi bi-inbox"></i> No accounts found</td></tr>
         <?php endif; ?>
         <?php foreach ($rows as $r): ?>
         <tr>
             <td style="color:#6b7280;">#<?= $r['id'] ?></td>
             <td style="font-weight:600;"><?= htmlspecialchars($r['display_name']) ?></td>
             <td style="color:#9ca3af;"><?= htmlspecialchars($r['email']) ?></td>
-            <td>
-                <span class="hc-val"><?= number_format($r['h_coins'] ?? 0) ?> HC</span>
-            </td>
             <td>
                 <?php if ($r['claim_status'] === 'approved'): ?>
                     <span class="badge-ok">Approved</span>
@@ -301,9 +263,6 @@ a{text-decoration:none;}
             <td style="color:#6b7280;"><?= htmlspecialchars($r['ref_type'] ?? '—') ?></td>
             <td style="color:#6b7280;white-space:nowrap;"><?= date('M j, Y', strtotime($r['created_at'])) ?></td>
             <td style="white-space:nowrap;">
-                <button class="btn-sm" onclick="openCoinModal(<?= $r['id'] ?>, '<?= htmlspecialchars(addslashes($r['display_name'])) ?>', <?= (int)$r['h_coins'] ?>)">
-                    <i class="bi bi-coin" style="color:var(--yellow)"></i> HC
-                </button>
                 <?php if ($is_owner): ?>
                 <button class="btn-sm btn-danger" onclick="openStatusModal(<?= $r['id'] ?>, '<?= htmlspecialchars(addslashes($r['display_name'])) ?>', '<?= htmlspecialchars($r['claim_status']) ?>')">
                     <i class="bi bi-shield"></i> Status
@@ -332,36 +291,6 @@ a{text-decoration:none;}
 </div>
 
 </div><!-- /wrap -->
-
-<!-- HC Adjust Modal -->
-<div class="modal-overlay" id="coinModal" onclick="closeModal('coinModal',event)">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h3><i class="bi bi-coin" style="color:var(--yellow)"></i> Adjust HC Balance</h3>
-            <button class="modal-close" onclick="document.getElementById('coinModal').classList.remove('open')">✕</button>
-        </div>
-        <form method="post">
-            <input type="hidden" name="action" value="adjust_coins">
-            <input type="hidden" name="uid" id="coinUid">
-            <div class="modal-body">
-                <div id="coinUserInfo" style="font-size:0.82rem;color:#9ca3af;margin-bottom:0.75rem;"></div>
-                <label>Operation</label>
-                <select name="op" id="coinOp" onchange="updateAmount()">
-                    <option value="add">Add HC</option>
-                    <option value="deduct">Deduct HC</option>
-                    <option value="set">Set to exact amount</option>
-                </select>
-                <label>Amount</label>
-                <input type="number" name="amount" id="coinAmount" min="1" value="20" style="margin-bottom:0.25rem;">
-                <div style="font-size:0.7rem;color:#6b7280;margin-top:0.3rem;">Current: <span id="coinCurrent"></span> HC</div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-modal-cancel" onclick="document.getElementById('coinModal').classList.remove('open')">Cancel</button>
-                <button type="submit" class="btn-modal-ok" id="coinSubmitBtn">Apply</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!-- Status Modal (owner only) -->
 <?php if ($is_owner): ?>
@@ -393,28 +322,6 @@ a{text-decoration:none;}
 <?php endif; ?>
 
 <script>
-function openCoinModal(uid, name, current) {
-    document.getElementById('coinUid').value = uid;
-    document.getElementById('coinUserInfo').textContent = 'Account: ' + name + ' (#' + uid + ')';
-    document.getElementById('coinCurrent').textContent = current;
-    document.getElementById('coinAmount').value = 20;
-    document.getElementById('coinModal').classList.add('open');
-}
-function updateAmount() {
-    const op = document.getElementById('coinOp').value;
-    const btn = document.getElementById('coinSubmitBtn');
-    const form = document.querySelector('#coinModal form');
-    if (op === 'set') {
-        form.querySelector('input[name="action"]').value = 'set_coins';
-        form.querySelector('input[name="amount"]').name = 'value';
-        btn.textContent = 'Set Balance';
-    } else {
-        form.querySelector('input[name="action"]').value = 'adjust_coins';
-        const inp = form.querySelector('input[name="value"]');
-        if (inp) inp.name = 'amount';
-        btn.textContent = op === 'add' ? 'Add HC' : 'Deduct HC';
-    }
-}
 function openStatusModal(uid, name, current) {
     document.getElementById('statusUid').value = uid;
     document.getElementById('statusUserInfo').textContent = 'Account: ' + name + ' (#' + uid + ')';

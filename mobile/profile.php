@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile']) && $i
         $profile_errors[] = 'Username is required.';
     } elseif (strtolower(trim($new_display)) !== strtolower(trim($current['display_name'] ?? ''))) {
         // Case-insensitive + trimmed duplicate check so "kirfenia" and "Kirfenia"
-        // cannot coexist (prevents username-impersonation attacks on HCoin sends).
+        // cannot coexist (prevents username-impersonation).
         $dup = $pdo->prepare("SELECT 1 FROM accounts WHERE LOWER(TRIM(display_name)) = LOWER(TRIM(?)) AND id != ?");
         $dup->execute([$new_display, $account_id]);
         if ($dup->fetch()) $profile_errors[] = 'That username is already taken.';
@@ -122,10 +122,6 @@ $placements = $st->fetchAll();
 
 $titles = !empty($profile['titles']) ? json_decode($profile['titles'], true) : [];
 
-$pred_stats = $pdo->prepare("SELECT COUNT(*) as total, SUM(CASE WHEN status='won' THEN 1 ELSE 0 END) as won, SUM(CASE WHEN status='lost' THEN 1 ELSE 0 END) as lost FROM match_predictions WHERE account_id = ?");
-$pred_stats->execute([$account_id]);
-$pstats = $pred_stats->fetch();
-
 $initials_pf = strtoupper(substr($display_name, 0, 2));
 $avatar_radius = $profile['ref_type'] === 'team' ? '18px' : '50%';
 
@@ -207,10 +203,6 @@ m_head(htmlspecialchars($display_name) . ' — Profile');
 <!-- Stats grid -->
 <div class="pf-stat-g">
     <div class="pf-sm">
-        <div class="pf-sm-v" style="color:#fbbf24;"><?= number_format((int)$profile['h_coins']) ?></div>
-        <div class="pf-sm-l">H-Coins</div>
-    </div>
-    <div class="pf-sm">
         <div class="pf-sm-v"><?= count($matches) ?></div>
         <div class="pf-sm-l">Matches</div>
     </div>
@@ -222,16 +214,6 @@ m_head(htmlspecialchars($display_name) . ' — Profile');
         <div class="pf-sm-v" style="color:#f87171;"><?= $losses ?></div>
         <div class="pf-sm-l">Losses</div>
     </div>
-    <?php if ((int)$pstats['total'] > 0): ?>
-    <div class="pf-sm">
-        <div class="pf-sm-v" style="color:var(--accent-l);"><?= (int)$pstats['won'] ?></div>
-        <div class="pf-sm-l">Pred Won</div>
-    </div>
-    <div class="pf-sm">
-        <div class="pf-sm-v"><?= (int)$pstats['total'] ?></div>
-        <div class="pf-sm-l">Pred Total</div>
-    </div>
-    <?php endif; ?>
 </div>
 
 <!-- Alerts -->
@@ -375,4 +357,4 @@ function previewAv(input) {
 </script>
 <?php endif; ?>
 
-<?php m_nav(''); m_toast(); m_foot(); ?>
+<?php m_nav('profile'); m_toast(); m_foot(); ?>

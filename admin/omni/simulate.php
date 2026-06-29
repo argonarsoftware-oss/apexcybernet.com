@@ -219,7 +219,7 @@ function bizc2(string $biz): string {
       <div class="sim-grid" style="grid-template-columns:1fr 90px 1fr;">
         <div>
           <label>Prop key (JSON)</label>
-          <input type="text" name="pk" value="<?= htmlspecialchars($prop_key) ?>" placeholder="h_coins, status, principal_amount…">
+          <input type="text" name="pk" value="<?= htmlspecialchars($prop_key) ?>" placeholder="status, principal_amount, claim_status…">
         </div>
         <div>
           <label>Op</label>
@@ -316,7 +316,7 @@ function bizc2(string $biz): string {
         </div>
         <div>
           <label>Payload (JSON)</label>
-          <input type="text" name="payload" value='{"amount": 10, "reason": "omni-reward"}' placeholder='{"amount": 10, "reason": "text"}'>
+          <input type="text" name="payload" value='{"note": "reviewed via omni"}' placeholder='{"note": "text"} or {"outcome": "positive"}'>
         </div>
       </div>
       <div style="display:flex;gap:0.5rem;margin-top:0.6rem;">

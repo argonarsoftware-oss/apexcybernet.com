@@ -4,20 +4,20 @@
 
 This repo is the **Apex Cybernet** platform: a single PHP site that deploys to apexcybernet.com via `webhook-deploy.php` at the root.
 
-- **`/` (repo root)** → Apex Cybernet (Dota 2 / Valorant / CrossFire esports site + HCoin wallet + POS/marketplace + admin). DB: `apexcybernet`.
+- **`/` (repo root)** → Apex Cybernet (Dota 2 / Valorant / CrossFire esports site + admin). DB: `apexcybernet`.
 
-> Note: this codebase was forked from the Argonar platform. The `fer/` Wealth Engine (private loan-book / collections tracker, DB `payment_calc`) was **intentionally excluded** from this repo and does not exist here.
+> Note: this codebase was forked from the Argonar platform. The `fer/` Wealth Engine (private loan-book / collections tracker, DB `payment_calc`) was **intentionally excluded** from this repo and does not exist here. The `/sec` module likewise does not exist in this fork.
+
+> **Removed:** the HCoin virtual-currency subsystem and everything that depended on it — wallet (send/receive/QR pay), top-ups, cash-out / sell orders, the marketplace, merchant/POS, match predictions/betting, and season passes — were fully removed from this repo. The `h_coin_*`, `marketplace_*`, `match_predictions`, `season_passes`, and `qr_tokens_used` tables and the `accounts.h_coins` / `accounts.is_merchant` columns are no longer used by the app. Tournament entry continues to use GCash (listener API), which is unrelated to HCoin.
 
 ## Project
-Multi-business PHP platform running at https://apexcybernet.com. Covers:
-- **Tournaments / brackets** — `bracket.php`, `matchmaking.php`, `predict.php`, `leaderboard.php`, confirm/waitlist flow (`send-confirm.php`, `fetch_waitlist.php`)
-- **HCoin wallet** — `coins.php`, `send-hcoins.php`, `receive-hcoins.php`, `qr-wallet.php`, `qr-receipt.php` (ERC-20 on Polygon, see HCoin section below)
-- **POS / merchant / marketplace** — `pos.php`, `demo-pos.php`, `product.php`, `marketplace.php`, `api/merchant-*`, `api/qr-*`
-- **Cafe** — `cafe.php` + `admin/cafe.php`
-- **Admin console** (`admin/`) — per-business activity pages (alrisha, apexcybernet, bizops, loan, ocpd, manual), reconciliation, topups, merchants, accounts, Jayar DB vault
+PHP esports-tournament platform running at https://apexcybernet.com. Covers:
+- **Tournaments / brackets** — `bracket.php`, `matchmaking.php`, `leaderboard.php`, waitlist flow (`fetch_waitlist.php`), registration/tickets (`register.php`, `ticket.php`) paid via GCash (listener API)
+- **Cafe live chat** — `cafe_comments` wall (AJAX in `index.php`)
+- **Admin console** (`admin/`) — per-business activity pages (alrisha, bizops, loan, ocpd, manual), reconciliation, accounts, omni knowledge-graph (`admin/omni/`), brain notebook (`activity-brain.php`)
 - **Reels generator** — Puppeteer + ffmpeg (`reels/`)
 - **PWA** — `manifest.webmanifest`, `sw.js`, `offline.html`
-- **Realtime** — HTTP polling (Soketi is not deployed). Central JS poller in `includes/footer.php` + `mobile/layout.php` polls `api/notifications.php` every 10s; `api/marketplace-feed.php` every 15s.
+- **Realtime** — HTTP polling (Soketi is not deployed). Central JS poller in `includes/footer.php` + `mobile/layout.php` polls `api/notifications.php` every 10s.
 
 Previous construction-tools project is archived in `archive/construction-tools` branch.
 
@@ -45,13 +45,7 @@ Previous construction-tools project is archived in `archive/construction-tools` 
 - Delete after running — never leave deployed
 
 ## Payments
-- PayRex integration: webhook + success page dual activation pattern
-- Both endpoints must independently activate the payment (idempotent)
-
-## HCoin
-- Internal ledger only — `accounts.h_coins` column + `h_coin_transactions` audit table
-- No blockchain / no Polygon / no wallet — HC is a virtual reward currency, not a token
-- Credit flows through `hc_push()` (now poll-driven, see Realtime section)
+- Tournament entry fees (₱500/team, ₱100/solo) are paid via GCash and confirmed through the listener API (`includes/listener-api.php`, `ticket.php`, `admin/reconciliation.php`). This is unrelated to the removed HCoin subsystem.
 
 ## Reels
 - Reel recorder: `reels/record.js` — runs Puppeteer + ffmpeg, JPEG pipe to ffmpeg (no temp frames)
