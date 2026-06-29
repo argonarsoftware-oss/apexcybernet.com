@@ -244,7 +244,7 @@ require_once __DIR__ . '/includes/header.php';
                 <a href="sms:?body=My%20Apex Cybernet%20Tournament%20code:%20<?= urlencode($ref) ?>%20-%20https://apexcybernet.com/" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:0.3rem 0.75rem; border-radius:8px; font-size:0.75rem; text-decoration:none; font-weight:600;">
                     <i class="bi bi-chat-dots"></i> SMS
                 </a>
-                <a href="https://www.facebook.com/argonarsoftware/?text=My%20tournament%20code:%20<?= urlencode($ref) ?>" target="_blank" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:0.3rem 0.75rem; border-radius:8px; font-size:0.75rem; text-decoration:none; font-weight:600;">
+                <a href="https://www.facebook.com/people/APEX-cybernet-cafe/61590841850979/?text=My%20tournament%20code:%20<?= urlencode($ref) ?>" target="_blank" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; padding:0.3rem 0.75rem; border-radius:8px; font-size:0.75rem; text-decoration:none; font-weight:600;">
                     <i class="bi bi-messenger"></i> Messenger
                 </a>
             </div>

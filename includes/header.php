@@ -95,7 +95,7 @@
         "url": "https://apexcybernet.com",
         "logo": "https://apexcybernet.com/images/apexcybernet-logo.svg",
         "sameAs": [
-            "https://www.facebook.com/argonarsoftware"
+            "https://www.facebook.com/people/APEX-cybernet-cafe/61590841850979/"
         ],
         "address": {
             "@type": "PostalAddress",

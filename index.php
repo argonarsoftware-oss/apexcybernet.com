@@ -2732,7 +2732,7 @@ foreach ($featured_games as $fg) {
 <div class="orgs-section">
     <h2>Presented By</h2>
     <div class="orgs-grid">
-        <a href="https://www.facebook.com/argonarsoftware" target="_blank" rel="noopener" class="org-card">
+        <a href="https://www.facebook.com/people/APEX-cybernet-cafe/61590841850979/" target="_blank" rel="noopener" class="org-card">
             <img src="<?= base_url('images/apexcybernet-logo.svg') ?>" alt="Apex Cybernet" class="org-logo" loading="lazy" decoding="async">
             <div class="org-info">
                 <div class="org-name">Apex Cybernet</div>

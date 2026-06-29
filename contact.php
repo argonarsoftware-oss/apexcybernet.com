@@ -74,8 +74,22 @@ require_once __DIR__ . '/includes/he-chrome.php';
 <div class="he-card" style="max-width:780px;">
     <div class="he-card-inner">
         <div class="he-card-section">
+            <div class="he-card-section-label">Tournament day</div>
+            <div style="display:flex; align-items:center; gap:16px; padding:20px 22px; background:linear-gradient(90deg, rgba(226,54,54,0.10), rgba(251,191,36,0.10)); border:1px solid var(--accent); border-radius:14px;">
+                <div style="width:52px; height:52px; background:#fff; border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--accent); font-size:26px;">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; font-weight:800; color:var(--accent); margin-bottom:2px;">Mark your calendar</div>
+                    <div style="font-size:28px; font-weight:800; color:var(--text); letter-spacing:-0.02em; line-height:1.1;">July 11, 2026</div>
+                    <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Saturday · 11:00&nbsp;AM start · 10:00&nbsp;AM call time · Apex Cybernet Cafe</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="he-card-section">
             <div class="he-card-section-label">Channels</div>
-            <a href="https://www.facebook.com/argonarsoftware" target="_blank" rel="noopener"
+            <a href="https://www.facebook.com/people/APEX-cybernet-cafe/61590841850979/" target="_blank" rel="noopener"
                style="display:flex; align-items:center; gap:14px; padding:16px 18px; background:var(--bg-subtle); border:1px solid var(--border); border-radius:12px; text-decoration:none; transition:border-color 0.15s; margin-bottom:10px;">
                 <div style="width:40px; height:40px; background:#fff; border:1px solid var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#1877f2; font-size:20px;">
                     <i class="bi bi-facebook"></i>
@@ -124,7 +138,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
         </div>
 
         <div style="text-align:center; padding-top:8px;">
-            <a href="https://www.facebook.com/argonarsoftware" target="_blank" rel="noopener" class="he-btn-primary">
+            <a href="https://www.facebook.com/people/APEX-cybernet-cafe/61590841850979/" target="_blank" rel="noopener" class="he-btn-primary">
                 <i class="bi bi-messenger"></i> Message us on Messenger
             </a>
         </div>

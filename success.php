@@ -46,7 +46,7 @@ require_once __DIR__ . '/includes/header.php';
                 <a href="sms:?body=My%20Apex Cybernet%20Tournament%20code:%20<?= urlencode($ref_code) ?>%20-%20https://apexcybernet.com/" style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; padding:0.4rem 1rem; border-radius:8px; font-size:0.8rem; text-decoration:none; font-weight:600;">
                     <i class="bi bi-chat-dots"></i> Text Myself
                 </a>
-                <a href="https://www.facebook.com/argonarsoftware/?text=Save%20my%20tournament%20code:%20<?= urlencode($ref_code) ?>" target="_blank" style="background:rgba(24,119,242,0.1); border:1px solid rgba(24,119,242,0.3); color:#1877f2; padding:0.4rem 1rem; border-radius:8px; font-size:0.8rem; text-decoration:none; font-weight:600;">
+                <a href="https://www.facebook.com/people/APEX-cybernet-cafe/61590841850979/?text=Save%20my%20tournament%20code:%20<?= urlencode($ref_code) ?>" target="_blank" style="background:rgba(24,119,242,0.1); border:1px solid rgba(24,119,242,0.3); color:#1877f2; padding:0.4rem 1rem; border-radius:8px; font-size:0.8rem; text-decoration:none; font-weight:600;">
                     <i class="bi bi-messenger"></i> Send to Messenger
                 </a>
             </div>

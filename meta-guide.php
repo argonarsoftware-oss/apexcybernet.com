@@ -240,7 +240,7 @@ require_once __DIR__ . '/includes/header.php';
                     <span>business.facebook.com</span>
                 </div>
             </a>
-            <a href="https://www.facebook.com/argonarsoftware" target="_blank" rel="noopener" class="guide-link-card">
+            <a href="https://www.facebook.com/people/APEX-cybernet-cafe/61590841850979/" target="_blank" rel="noopener" class="guide-link-card">
                 <i class="bi bi-facebook"></i>
                 <div>
                     <strong>Apex Cybernet</strong>
