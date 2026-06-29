@@ -324,9 +324,22 @@ require_once __DIR__ . '/includes/header.php';
 $idx_shortcuts = [];
 $idx_hc_shown = false;
 
-$dota_main_count    = $dota_paid_tc + (int)floor($dota_paid_sc / 5);
+// ── Display-only seed teams for early social proof — NOT stored in the DB.
+// Defined once here so the hero stat counters and the "Registered squads"
+// list stay in sync. Excluded from real bracket seeding and payments.
+$seed_teams = [
+    ['team_name' => 'Ako Rani',         'status' => 'approved', 'power' => 40, 'members_ranks' => 'Rani Carry:Immortal', 'seed' => true],
+    ['team_name' => 'Aegis',            'status' => 'approved', 'power' => 40, 'seed' => true],
+    ['team_name' => 'Inayawan Players', 'status' => 'pending',  'power' => 40, 'seed' => true],
+    ['team_name' => 'Mystic',           'status' => 'pending',  'power' => 40, 'seed' => true],
+    ['team_name' => 'Syndicate',        'status' => 'approved', 'power' => 40, 'seed' => true],
+];
+$seed_team_count = count($seed_teams);
+$seed_paid_count = count(array_filter($seed_teams, fn($t) => ($t['status'] ?? '') === 'approved'));
+
+$dota_main_count    = $dota_paid_tc + (int)floor($dota_paid_sc / 5) + $seed_paid_count;
 $dota_max_slots     = 16;
-$dota_registered    = $dota_tc;
+$dota_registered    = $dota_tc + $seed_team_count;
 $dota_solo_pending  = $dota_sc;
 $dota_date_label    = 'July 11, 2026';
 $dota_time_label    = '11:00 AM';
@@ -1024,6 +1037,11 @@ body > .hero,
             <h3 class="he-feature-title">Solo matchmaking</h3>
             <p class="he-feature-desc">No team? Enter solo, we'll match you with 4 other players at your rank and form a squad.</p>
         </article>
+        <article class="he-feature">
+            <div class="he-feature-ico"><i class="bi bi-pc-display"></i></div>
+            <h3 class="he-feature-title">Brand-new gaming rigs</h3>
+            <p class="he-feature-desc">Freshly upgraded specs on brand-new units — no more lag, just buttery-smooth frames and a hassle-free tournament from your first pick to grand finals.</p>
+        </article>
     </div>
 </section>
 
@@ -1096,15 +1114,7 @@ body > .hero,
             }
         }
         $dota_main = $bracket_split['dota2']['main'] ?? [];
-        // Display-only seed teams for early social proof — NOT stored in the DB,
-        // excluded from bracket/slot counts, and intentionally show no roster.
-        $seed_teams = [
-            ['team_name' => 'Ako Rani',  'status' => 'approved', 'power' => 30, 'seed' => true],
-            ['team_name' => 'Aegis',   'status' => 'approved', 'power' => 27, 'seed' => true],
-            ['team_name' => 'Inayawan Players',   'status' => 'pending',  'power' => 24, 'seed' => true],
-            ['team_name' => 'Mystic',  'status' => 'pending',  'power' => 22, 'seed' => true],
-            ['team_name' => 'Syndicate', 'status' => 'approved', 'power' => 28, 'seed' => true],
-        ];
+        // $seed_teams defined near the top (display-only social proof)
         $dota_field = array_merge($dota_main, $seed_teams);
         if (empty($dota_field)) {
             echo '<div class="he-empty">No teams registered yet — be the first to claim a seat.</div>';
