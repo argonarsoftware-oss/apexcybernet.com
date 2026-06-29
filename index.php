@@ -1052,6 +1052,45 @@ body > .hero,
     </div>
 </section>
 
+<section class="he-section">
+    <header class="he-section-head">
+        <div class="he-section-eyebrow">The pool</div>
+        <h2 class="he-section-title">Solo players.</h2>
+        <p class="he-section-sub">No team? Enter solo — every five paid solos forms one bracket seat, matched by rank and role.</p>
+    </header>
+    <div class="he-teams">
+        <div class="he-teams-head">
+            <div>#</div>
+            <div>Player</div>
+            <div>Status</div>
+            <div style="text-align:right;">Rank</div>
+        </div>
+        <?php
+        $dota_solos = $solo_players['dota2'] ?? [];
+        if (empty($dota_solos)) {
+            echo '<div class="he-empty">No solo players yet — enter solo and we\'ll find your squad.</div>';
+        } else {
+            foreach ($dota_solos as $i => $sp) {
+                $sstatus = $sp['status'] ?? 'pending';
+                $sclass  = ($sstatus === 'approved' || $sstatus === 'matched') ? 'he-status-paid' : 'he-status-pending';
+                $slabel  = $sstatus === 'approved' ? 'Paid' : ($sstatus === 'matched' ? 'Matched' : 'Pending');
+                ?>
+                <div class="he-team">
+                    <div class="he-team-num"><?= str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT) ?></div>
+                    <div class="he-team-name">
+                        <?= htmlspecialchars($sp['player_name']) ?>
+                        <span style="display:block; font-size:11.5px; color:var(--text-muted); font-weight:500;"><?= htmlspecialchars($sp['preferred_role'] ?: 'Flexible') ?></span>
+                    </div>
+                    <div>
+                        <span class="he-team-status <?= $sclass ?>"><?= $slabel ?></span>
+                    </div>
+                    <div class="he-team-power" style="font-size:12.5px;"><?= htmlspecialchars($sp['rank_tier'] ?: '—') ?></div>
+                </div>
+            <?php }
+        } ?>
+    </div>
+</section>
+
 <section class="he-closing">
     <div class="he-closing-card">
         <h2>Ready to play?</h2>
