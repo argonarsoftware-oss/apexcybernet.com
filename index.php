@@ -874,9 +874,7 @@ body > .hero,
     <div class="he-nav-inner">
         <a href="<?= base_url() ?>" class="he-brand">
             <div class="he-brand-mark">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/>
-                </svg>
+                <img src="<?= base_url('images/apex-logo.jpg') ?>" alt="Apex Cybernet Cafe" width="40" height="40">
             </div>
             <div>
                 <div class="he-brand-name">Apex Cybernet</div>
@@ -906,8 +904,9 @@ body > .hero,
         Fight for glory in the<br><em>Apex Cybernet Dota 2 Tournament.</em>
     </h1>
     <p class="he-sub">
-        12 teams. Double elimination. One champion. May 30, 2026 at Apex Cybernet Cafe, Cebu City —
-        a ₱20,000 cash prize. Register your full squad or enter solo and we'll match you with a team.
+        Twelve teams enter, one walks away with <strong>₱20,000</strong>. Rank-seeded double elimination —
+        no easy byes, no cheap exits — decided live at Apex Cybernet Cafe, Cebu City on May 30, 2026.
+        Bring your full five, or queue solo and we'll build your squad.
     </p>
     <div class="he-cta-row">
         <a href="<?= base_url('register.php?game=dota2') ?>" class="he-cta-primary">

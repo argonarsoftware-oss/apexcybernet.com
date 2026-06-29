@@ -1,5 +1,5 @@
 // Apex Cybernet Service Worker
-const CACHE_NAME = 'apexcybernet-v7';
+const CACHE_NAME = 'apexcybernet-v8';
 
 // Static assets to pre-cache on install
 const PRECACHE = [
