@@ -8,7 +8,7 @@
     <?php
     // ── SEO defaults ──
     $defaultTitle       = 'Apex Cybernet Tournament — Dota 2 Esports Cebu';
-    $defaultDescription = 'Apex Cybernet Dota 2 Tournament — 5v5 double elimination, ₱20,000 cash prize. ₱550/team · ₱110/solo entry. May 30, 2026 at Apex Cybernet Cafe, Cebu City.';
+    $defaultDescription = 'Apex Cybernet Dota 2 Tournament — 5v5 double elimination, ₱20,000 cash prize. ₱550/team · ₱110/solo entry. July 11, 2026 at Apex Cybernet Cafe, Cebu City.';
     $effectiveTitle     = $pageTitle ?? $defaultTitle;
     $metaDescription    = $pageDescription ?? $defaultDescription;
     $metaKeywords       = 'Apex Cybernet Tournament, Dota 2 Cebu, Cebu esports, Dota 2 Philippines, gaming tournament Cebu, Apex Cybernet Cafe, Cebu City, double elimination Dota, paid entry esports';

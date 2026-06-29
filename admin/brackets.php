@@ -275,12 +275,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ── Generate schedule ──
     if ($action === 'generate_schedule') {
         $sched_game    = $_POST['sched_game'] ?? 'dota2';
-        $start_str     = $_POST['start_datetime'] ?? '2026-05-30 11:00:00';
+        $start_str     = $_POST['start_datetime'] ?? '2026-07-11 11:00:00';
         $match_mins    = max(30, (int)($_POST['match_duration'] ?? 90));
         $concurrent    = max(1, (int)($_POST['concurrent'] ?? 1));
 
         $start_ts = strtotime($start_str);
-        if (!$start_ts) $start_ts = strtotime('2026-05-30 11:00:00');
+        if (!$start_ts) $start_ts = strtotime('2026-07-11 11:00:00');
 
         // Load all real (non-BYE-auto) matches ordered by bracket wave
         // Wave order: WB rounds interleaved with LB rounds, then grand finals
@@ -687,7 +687,7 @@ foreach ($valid_games as $slug => $name) {
                     <div>
                         <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Start date &amp; time</label>
                         <input type="datetime-local" name="start_datetime" class="form-control" style="font-size:0.85rem; padding:0.4rem 0.6rem;"
-                               value="2026-05-30T11:00" required>
+                               value="2026-07-11T11:00" required>
                     </div>
                     <div>
                         <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;">Duration per match (min)</label>

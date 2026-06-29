@@ -48,7 +48,7 @@ require_once __DIR__ . '/includes/header.php';
                     🔫 Valorant | CrossFire | Dota 2<br><br>
                     📋 Register now: <strong>https://apexcybernet.com</strong><br><br>
                     🎟️ Entry: ₱550/team · ₱110/solo<br>
-                    📅 May 30, 2026 · 11:00 AM<br>
+                    📅 July 11, 2026 · 11:00 AM<br>
                     📍 Venue: Apex Cybernet Cafe, Cebu City<br><br>
                     Presented by Apex Cybernet<br>
                     #ApexCybernetTournament #Valorant #Dota2 #CrossFire #Gaming #Esports
@@ -181,7 +181,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="schedule-item">
                         <span class="schedule-day">Q: Where?</span>
-                        <span>Apex Cybernet Cafe, Cebu City — May 30, 2026, 11:00 AM.</span>
+                        <span>Apex Cybernet Cafe, Cebu City — July 11, 2026, 11:00 AM.</span>
                     </div>
                 </div>
                 <p class="guide-note">Enable via: Automations &rarr; Frequently Asked Questions &rarr; Add questions &amp; answers</p>

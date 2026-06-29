@@ -41,7 +41,7 @@ if ($has_font) {
     imagettftext($img, 22, 0, (int)$tx, 260, $muted, $font, $sub);
 
     // Detail boxes
-    $details = ['5v5 Double Elim', 'P20,000 Prize', 'May 30, 2026'];
+    $details = ['5v5 Double Elim', 'P20,000 Prize', 'July 11, 2026'];
     $box_w = 280;
     $box_h = 50;
     $gap = 30;
@@ -88,7 +88,7 @@ if ($has_font) {
     $tx = ($w - strlen($sub) * 9) / 2;
     imagestring($img, 4, (int)$tx, 300, $sub, $muted);
 
-    $prize = 'P20,000 Prize | May 30, 2026';
+    $prize = 'P20,000 Prize | July 11, 2026';
     $tx = ($w - strlen($prize) * 9) / 2;
     imagestring($img, 4, (int)$tx, 340, $prize, $gold);
 }

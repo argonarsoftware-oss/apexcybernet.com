@@ -537,7 +537,7 @@ require_once __DIR__ . '/includes/header.php';
                 For questions, concerns, or notices regarding these Terms, please contact us at:
                 <br><br>
                 <strong style="color:var(--text-main);">Apex Cybernet</strong><br>
-                Cebu City, Philippines<br>
+                Inayawan Central, Cebu City<br>
                 <a href="' . base_url('contact.php') . '" style="color:var(--accent-light);">Contact form →</a>
             '],
         ];

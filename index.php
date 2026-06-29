@@ -236,7 +236,7 @@ $dota_paid_tc = $paid_team_counts['dota2'] ?? 0;
 $dota_paid_sc = $paid_solo_counts['dota2'] ?? 0;
 $dota_effective = $dota_tc + floor($dota_paid_sc / 5);
 $dota_slots_left = max(0, 16 - $dota_effective);
-$dota_deadline = '2026-05-30';
+$dota_deadline = '2026-07-11';
 $dota_days_left = max(0, (int)ceil((strtotime($dota_deadline . ' 23:59:59') - time()) / 86400));
 $dota_reg_closed = strtotime($dota_deadline . ' 23:59:59') < time();
 
@@ -246,7 +246,7 @@ $extraHead = '<script type="application/ld+json">' . json_encode([
     '@type' => 'Event',
     'name' => 'Apex Cybernet Gaming Tournament — Dota 2',
     'description' => 'Dota 2 esports tournament with a ₱20,000 cash prize. Double elimination, rank-based seeding.',
-    'startDate' => '2026-05-30',
+    'startDate' => '2026-07-11',
     'eventStatus' => 'https://schema.org/EventScheduled',
     'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
     'location' => [
@@ -280,10 +280,10 @@ $games = [
         'logo'    => 'images/dota.webp',
         'desc'    => '5v5 MOBA battle. Outplay, outfarm, outdraft.',
         'banner'  => 'dota2',
-        'date'    => '2026-05-30',
+        'date'    => '2026-07-11',
         'time'       => '11:00 AM',
         'call_time'  => '10:00 AM',
-        'reg_deadline' => '2026-05-30',
+        'reg_deadline' => '2026-07-11',
         'featured' => true,
         'focus_note' => 'Current featured tournament',
     ],
@@ -328,7 +328,7 @@ $dota_main_count    = $dota_paid_tc + (int)floor($dota_paid_sc / 5);
 $dota_max_slots     = 12;
 $dota_registered    = $dota_tc;
 $dota_solo_pending  = $dota_sc;
-$dota_date_label    = 'May 30, 2026';
+$dota_date_label    = 'July 11, 2026';
 $dota_time_label    = '11:00 AM';
 $dota_call_label    = '10:00 AM';
 $dota_venue_label   = 'Apex Cybernet Cafe · Cebu City';
@@ -517,39 +517,52 @@ body > .hero,
 .he-cta-secondary {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 22px;
-    font-size: 14.5px;
-    font-weight: 600;
-    border-radius: 9px;
+    gap: 9px;
+    padding: 16px 32px;
+    font-size: 17px;
+    font-weight: 800;
+    border-radius: 11px;
     text-decoration: none;
-    transition: transform 0.05s, background 0.12s, border-color 0.12s;
+    transition: transform 0.08s, background 0.12s, border-color 0.12s, box-shadow 0.12s;
     letter-spacing: -0.005em;
 }
+/* Register — bold red, glowing, gently pulsing to draw the eye */
 .he-cta-primary {
-    background: #18181b;
-    color: #fafafa;
-    border: 1px solid #18181b;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(90deg, #e23636, #f04444);
+    color: #fff;
+    border: 1px solid #e23636;
+    box-shadow: 0 6px 22px rgba(226, 54, 54, 0.45);
+    animation: heCtaPulse 2.2s ease-in-out infinite;
 }
-.he-cta-primary:hover { background: #000; color: #fff; }
+.he-cta-primary:hover { background: linear-gradient(90deg, #c52d2d, #e23636); box-shadow: 0 8px 28px rgba(226, 54, 54, 0.6); transform: translateY(-1px); }
 .he-cta-primary:active { transform: translateY(1px); }
-.he-cta-secondary {
-    background: var(--bg-card);
-    color: var(--text);
-    border: 1px solid var(--border-strong);
+@keyframes heCtaPulse {
+    0%, 100% { box-shadow: 0 6px 22px rgba(226, 54, 54, 0.4); }
+    50%      { box-shadow: 0 6px 30px rgba(226, 54, 54, 0.7); }
 }
-.he-cta-secondary:hover { border-color: #18181b; }
+@media (prefers-reduced-motion: reduce) {
+    .he-cta-primary { animation: none; }
+}
+/* Enter solo — solid gold, clearly a button, high contrast */
+.he-cta-secondary {
+    background: var(--accent-gold);
+    color: #1a1205;
+    border: 1px solid var(--accent-gold);
+    box-shadow: 0 4px 16px rgba(251, 191, 36, 0.35);
+}
+.he-cta-secondary:hover { background: #fcc83a; box-shadow: 0 6px 22px rgba(251, 191, 36, 0.5); transform: translateY(-1px); }
+.he-cta-secondary:active { transform: translateY(1px); }
 .he-cta-chip {
     background: var(--bg-subtle);
     color: var(--text-muted);
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 800;
     font-family: var(--mono);
 }
-.he-cta-primary .he-cta-chip { background: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.85); }
+.he-cta-primary .he-cta-chip { background: rgba(255, 255, 255, 0.22); color: #fff; }
+.he-cta-secondary .he-cta-chip { background: rgba(26, 18, 5, 0.16); color: #1a1205; }
 
 .he-quick-meta {
     margin-top: 30px;
@@ -905,7 +918,7 @@ body > .hero,
     </h1>
     <p class="he-sub">
         Twelve teams enter, one walks away with <strong>₱20,000</strong>. Rank-seeded double elimination —
-        no easy byes, no cheap exits — decided live at Apex Cybernet Cafe, Cebu City on May 30, 2026.
+        no easy byes, no cheap exits — decided live at Apex Cybernet Cafe, Cebu City on July 11, 2026.
         Bring your full five, or queue solo and we'll build your squad.
     </p>
     <div class="he-cta-row">

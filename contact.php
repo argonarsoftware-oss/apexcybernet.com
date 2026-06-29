@@ -16,7 +16,7 @@ $faqs = [
     ],
     [
         'q' => 'When is the tournament?',
-        'a' => 'The Apex Cybernet Dota 2 Tournament is on May 30, 2026 at Apex Cybernet Cafe, 7V94+HCQ, F. Jaca St, Cebu City, 6000 Cebu. Tournament starts at 11:00 AM. Call time is 10:00 AM.',
+        'a' => 'The Apex Cybernet Dota 2 Tournament is on July 11, 2026 at Apex Cybernet Cafe, 7V94+HCQ, F. Jaca St, Cebu City, 6000 Cebu. Tournament starts at 11:00 AM. Call time is 10:00 AM.',
     ],
     [
         'q' => 'Where is the venue exactly?',
