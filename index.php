@@ -1086,6 +1086,15 @@ body > .hero,
             <div style="text-align:right;">Power</div>
         </div>
         <?php
+        // Map team Power (sum of 5 members' Dota rank tiers, 1-8 each) to a rank word
+        if (!function_exists('dota_power_rank')) {
+            function dota_power_rank($power) {
+                $tiers = ['Herald', 'Guardian', 'Crusader', 'Archon', 'Legend', 'Ancient', 'Divine', 'Immortal'];
+                if ($power <= 0) return '';
+                $idx = max(0, min(7, (int) round($power / 5) - 1));
+                return $tiers[$idx];
+            }
+        }
         $dota_main = $bracket_split['dota2']['main'] ?? [];
         // Display-only seed teams for early social proof — NOT stored in the DB,
         // excluded from bracket/slot counts, and intentionally show no roster.
@@ -1139,7 +1148,11 @@ body > .hero,
                             <?= $paid ? 'Paid' : 'Pending' ?>
                         </span>
                     </div>
-                    <div class="he-team-power"><?= (int)($team['power'] ?? 0) ?></div>
+                    <?php $tp = (int)($team['power'] ?? 0); ?>
+                    <div class="he-team-power">
+                        <?= $tp ?>
+                        <?php if ($tp > 0): ?><span style="display:block; font-family:'Inter',sans-serif; font-size:10px; color:var(--text-muted); font-weight:600; letter-spacing:0.02em;"><?= dota_power_rank($tp) ?></span><?php endif; ?>
+                    </div>
                 </div>
             <?php }
         } ?>
