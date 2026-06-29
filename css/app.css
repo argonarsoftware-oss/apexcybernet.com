@@ -4976,12 +4976,16 @@ body { background: var(--bg-dark); color: var(--text-body); }
     -webkit-text-fill-color: transparent !important; color: transparent !important;
     font-style: normal;
 }
-/* Raptor logo watermark behind the homepage hero */
+/* Dota 2 embery hero background */
 .he-hero { position: relative; overflow: hidden; }
 .he-hero::before {
-    content: ""; position: absolute; right: -60px; top: 50%; transform: translateY(-50%);
-    width: 480px; height: 480px; background: url('/images/apex-logo.jpg') center/contain no-repeat;
-    opacity: 0.08; filter: grayscale(1) contrast(1.15); pointer-events: none; z-index: 0;
+    content: ""; position: absolute; inset: 0;
+    background: url('/images/dota2-hero.jpg') center/cover no-repeat;
+    opacity: 0.55; pointer-events: none; z-index: 0;
+}
+.he-hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: linear-gradient(180deg, rgba(14,15,19,0.50) 0%, rgba(14,15,19,0.78) 55%, rgba(14,15,19,0.96) 100%);
 }
 .he-hero > * { position: relative; z-index: 1; }
 
