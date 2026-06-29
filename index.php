@@ -328,19 +328,26 @@ $idx_hc_shown = false;
 // Defined once here so the hero stat counters and the "Registered squads"
 // list stay in sync. Excluded from real bracket seeding and payments.
 $seed_teams = [
-    ['team_name' => 'Ako Rani',         'status' => 'approved', 'power' => 40, 'members_ranks' => 'Rani Carry:Immortal', 'seed' => true],
+    ['team_name' => 'Ako Rani',         'status' => 'approved', 'power' => 40, 'members_ranks' => 'Rani Carry:Immortal|Rani Mid:Immortal|Rani Offlane:Immortal|Rani Soft:Immortal|Rani Hard:Immortal', 'seed' => true],
     ['team_name' => 'Aegis',            'status' => 'approved', 'power' => 40, 'seed' => true],
     ['team_name' => 'Inayawan Players', 'status' => 'pending',  'power' => 40, 'seed' => true],
     ['team_name' => 'Mystic',           'status' => 'pending',  'power' => 40, 'seed' => true],
     ['team_name' => 'Syndicate',        'status' => 'approved', 'power' => 40, 'seed' => true],
 ];
+// Display-only seed solo players for social proof — NOT stored in the DB.
+$seed_solos = [
+    ['player_name' => 'Dodong', 'rank_tier' => 'Divine',   'preferred_role' => 'Carry',   'status' => 'approved', 'seed' => true],
+    ['player_name' => 'Totoy',  'rank_tier' => 'Ancient',  'preferred_role' => 'Mid',     'status' => 'pending',  'seed' => true],
+    ['player_name' => 'Raven',  'rank_tier' => 'Immortal', 'preferred_role' => 'Support', 'status' => 'approved', 'seed' => true],
+];
 $seed_team_count = count($seed_teams);
 $seed_paid_count = count(array_filter($seed_teams, fn($t) => ($t['status'] ?? '') === 'approved'));
+$seed_solo_count = count($seed_solos);
 
 $dota_main_count    = $dota_paid_tc + (int)floor($dota_paid_sc / 5) + $seed_paid_count;
 $dota_max_slots     = 16;
 $dota_registered    = $dota_tc + $seed_team_count;
-$dota_solo_pending  = $dota_sc;
+$dota_solo_pending  = $dota_sc + $seed_solo_count;
 $dota_date_label    = 'July 11, 2026';
 $dota_time_label    = '11:00 AM';
 $dota_call_label    = '10:00 AM';
@@ -801,6 +808,11 @@ body > .hero,
     font-size: 12px;
 }
 .he-team-name { color: var(--text); font-weight: 600; letter-spacing: -0.01em; }
+.he-roster { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+.he-roster-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 7px; padding: 3px 8px; font-size: 11px; line-height: 1.4; }
+.he-roster-cap { color: #fbbf24; font-size: 9px; }
+.he-roster-name { color: var(--text-body); font-weight: 600; }
+.he-roster-rank { color: var(--accent-light); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.02em; }
 .he-team-status {
     font-size: 11px;
     font-weight: 700;
@@ -1134,21 +1146,31 @@ body > .hero,
                             <div style="min-width:0;">
                                 <div><?= htmlspecialchars($team['team_name']) ?></div>
                                 <?php
-                                // Member names: prefer members_ranks (name:rank|...), else member_1..5
-                                $mnames = [];
+                                // Roster: parse members_ranks (name:rank|...), else member_1..5 (rank unknown)
+                                $roster = [];
                                 if (!empty($team['members_ranks'])) {
                                     foreach (explode('|', $team['members_ranks']) as $entry) {
-                                        $nm = trim(explode(':', $entry, 2)[0]);
-                                        if ($nm !== '') $mnames[] = $nm;
+                                        $parts = explode(':', $entry, 2);
+                                        $nm = trim($parts[0] ?? '');
+                                        $rk = trim($parts[1] ?? '');
+                                        if ($nm !== '') $roster[] = ['name' => $nm, 'rank' => $rk];
                                     }
                                 }
-                                if (empty($mnames)) {
+                                if (empty($roster)) {
                                     for ($mi = 1; $mi <= 5; $mi++) {
-                                        if (!empty($team["member_$mi"])) $mnames[] = trim($team["member_$mi"]);
+                                        if (!empty($team["member_$mi"])) $roster[] = ['name' => trim($team["member_$mi"]), 'rank' => ''];
                                     }
                                 }
-                                if (!empty($mnames)): ?>
-                                    <div style="font-size:11.5px; color:var(--text-muted); font-weight:500; margin-top:2px; line-height:1.45;"><?= htmlspecialchars(implode(' · ', $mnames)) ?></div>
+                                if (!empty($roster)): ?>
+                                    <div class="he-roster">
+                                        <?php foreach ($roster as $ri => $m): ?>
+                                            <span class="he-roster-chip">
+                                                <?php if ($ri === 0): ?><i class="bi bi-star-fill he-roster-cap" title="Captain"></i><?php endif; ?>
+                                                <span class="he-roster-name"><?= htmlspecialchars($m['name']) ?></span>
+                                                <?php if ($m['rank'] !== ''): ?><span class="he-roster-rank"><?= htmlspecialchars($m['rank']) ?></span><?php endif; ?>
+                                            </span>
+                                        <?php endforeach; ?>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -1183,7 +1205,7 @@ body > .hero,
             <div style="text-align:right;">Rank</div>
         </div>
         <?php
-        $dota_solos = $solo_players['dota2'] ?? [];
+        $dota_solos = array_merge($solo_players['dota2'] ?? [], $seed_solos);
         if (empty($dota_solos)) {
             echo '<div class="he-empty">No solo players yet — enter solo and we\'ll find your squad.</div>';
         } else {
@@ -1210,7 +1232,7 @@ body > .hero,
                     <div>
                         <span class="he-team-status <?= $sclass ?>"><?= $slabel ?></span>
                     </div>
-                    <div class="he-team-power" style="font-size:12.5px;"><?= htmlspecialchars($sp['rank_tier'] ?: '—') ?></div>
+                    <div class="he-team-power"><span class="he-roster-rank" style="font-size:10.5px; padding:2px 8px; background:rgba(226,54,54,0.12); border:1px solid var(--accent); border-radius:6px; white-space:nowrap;"><?= htmlspecialchars($sp['rank_tier'] ?: '—') ?></span></div>
                 </div>
             <?php }
         } ?>
