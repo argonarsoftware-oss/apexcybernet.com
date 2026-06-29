@@ -279,7 +279,6 @@ require_once __DIR__ . '/includes/he-chrome.php';
             </div>
         </div>
         <?php endforeach; ?>
-    <?php endif; ?>
 
         </div><!-- /.he-card-wide -->
 
