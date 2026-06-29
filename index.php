@@ -898,6 +898,7 @@ body > .hero,
             <a href="<?= base_url('bracket.php?game=dota2') ?>" class="he-nav-link">Bracket</a>
             <a href="<?= base_url('rules.php') ?>" class="he-nav-link">Rules</a>
             <a href="<?= base_url('contact.php') ?>" class="he-nav-link">Contact</a>
+            <a href="<?= base_url('status.php') ?>" class="he-nav-link">Status</a>
             <a href="<?= base_url('register.php?game=dota2') ?>" class="he-cta-mini">Register →</a>
         </nav>
     </div>
@@ -917,10 +918,48 @@ body > .hero,
         Fight for glory in the<br><em>Apex Cybernet Dota 2 Tournament.</em>
     </h1>
     <p class="he-sub">
-        Twelve teams enter, one walks away with <strong>₱20,000</strong>. Rank-seeded double elimination —
+        Sixteen teams enter, one walks away with <strong>₱20,000</strong>. Rank-seeded double elimination —
         no easy byes, no cheap exits — decided live at Apex Cybernet Cafe, Cebu City on July 11, 2026.
         Bring your full five, or queue solo and we'll build your squad.
     </p>
+    <div style="margin:8px auto 26px; max-width:540px;">
+        <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:11px;">
+            <i class="bi bi-calendar-event" style="color:var(--accent); font-size:17px;"></i>
+            <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.12em; font-weight:800; color:var(--accent);">Tournament day · July 11, 2026</span>
+        </div>
+        <div id="hpCountdown" data-hp-target="2026-07-11T11:00:00" style="display:flex; gap:8px; justify-content:center;">
+            <?php foreach (['hpDays' => 'Days', 'hpHours' => 'Hours', 'hpMins' => 'Mins', 'hpSecs' => 'Secs'] as $hp_id => $hp_label): ?>
+                <div style="flex:1; max-width:78px; text-align:center; background:linear-gradient(180deg, rgba(226,54,54,0.12), rgba(251,191,36,0.08)); border:1px solid var(--accent); border-radius:12px; padding:13px 6px;">
+                    <div id="<?= $hp_id ?>" style="font-size:30px; font-weight:800; color:var(--text); font-variant-numeric:tabular-nums; line-height:1;">--</div>
+                    <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-top:6px; font-weight:700;"><?= $hp_label ?></div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <script>
+    (function () {
+        var box = document.getElementById('hpCountdown');
+        if (!box) return;
+        var target = new Date(box.dataset.hpTarget).getTime();
+        var d = document.getElementById('hpDays'), h = document.getElementById('hpHours'),
+            m = document.getElementById('hpMins'), s = document.getElementById('hpSecs');
+        function pad(n) { return n < 10 ? '0' + n : n; }
+        function tick() {
+            var diff = target - Date.now();
+            if (diff <= 0) {
+                d.textContent = '0'; h.textContent = '00'; m.textContent = '00'; s.textContent = '00';
+                clearInterval(iv);
+                return;
+            }
+            d.textContent = Math.floor(diff / 86400000);
+            h.textContent = pad(Math.floor((diff % 86400000) / 3600000));
+            m.textContent = pad(Math.floor((diff % 3600000) / 60000));
+            s.textContent = pad(Math.floor((diff % 60000) / 1000));
+        }
+        tick();
+        var iv = setInterval(tick, 1000);
+    })();
+    </script>
     <div class="he-cta-row">
         <a href="<?= base_url('register.php?game=dota2') ?>" class="he-cta-primary">
             Register your team <span class="he-cta-chip">₱550</span>
@@ -951,9 +990,9 @@ body > .hero,
             <div class="he-stat-foot">Out of <?= $dota_max_slots ?> total seats</div>
         </div>
         <div class="he-stat">
-            <div class="he-stat-label">Days to register</div>
-            <div class="he-stat-value"><?= $dota_reg_closed ? 'Closed' : $dota_days_left ?></div>
-            <div class="he-stat-foot"><?= $dota_reg_closed ? 'Registration is locked' : 'Cut-off ' . $dota_date_label ?></div>
+            <div class="he-stat-label">Reg. deadline</div>
+            <div class="he-stat-value"><?= $dota_reg_closed ? 'Closed' : date('M j', strtotime($dota_deadline)) ?></div>
+            <div class="he-stat-foot"><?= $dota_reg_closed ? 'Registration is locked' : 'Pay to lock your slot' ?></div>
         </div>
         <div class="he-stat">
             <div class="he-stat-label">Registered</div>
@@ -1048,15 +1087,53 @@ body > .hero,
         </div>
         <?php
         $dota_main = $bracket_split['dota2']['main'] ?? [];
-        if (empty($dota_main)) {
+        // Display-only seed teams for early social proof — NOT stored in the DB,
+        // excluded from bracket/slot counts, and intentionally show no roster.
+        $seed_teams = [
+            ['team_name' => 'Roshan Republic',  'status' => 'approved', 'power' => 30, 'seed' => true],
+            ['team_name' => 'Aegis Vanguard',   'status' => 'approved', 'power' => 27, 'seed' => true],
+            ['team_name' => 'Midnight Carry',   'status' => 'pending',  'power' => 24, 'seed' => true],
+            ['team_name' => 'Throne Breakers',  'status' => 'pending',  'power' => 22, 'seed' => true],
+            ['team_name' => 'Rapier Syndicate', 'status' => 'approved', 'power' => 28, 'seed' => true],
+        ];
+        $dota_field = array_merge($dota_main, $seed_teams);
+        if (empty($dota_field)) {
             echo '<div class="he-empty">No teams registered yet — be the first to claim a seat.</div>';
         } else {
-            foreach ($dota_main as $i => $team) {
+            foreach ($dota_field as $i => $team) {
                 $paid = ($team['status'] ?? '') === 'approved';
                 ?>
                 <div class="he-team">
                     <div class="he-team-num"><?= str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT) ?></div>
-                    <div class="he-team-name"><?= htmlspecialchars($team['team_name']) ?></div>
+                    <div class="he-team-name">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <?php if (!empty($team['team_logo'])): ?>
+                                <img src="<?= base_url($team['team_logo']) ?>" alt="<?= htmlspecialchars($team['team_name']) ?> logo" style="width:36px; height:36px; border-radius:8px; object-fit:cover; border:1px solid var(--border); flex-shrink:0;" loading="lazy" decoding="async">
+                            <?php else: ?>
+                                <div style="width:36px; height:36px; border-radius:8px; background:var(--bg-subtle); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--text-muted); font-size:15px;"><i class="bi bi-people-fill"></i></div>
+                            <?php endif; ?>
+                            <div style="min-width:0;">
+                                <div><?= htmlspecialchars($team['team_name']) ?></div>
+                                <?php
+                                // Member names: prefer members_ranks (name:rank|...), else member_1..5
+                                $mnames = [];
+                                if (!empty($team['members_ranks'])) {
+                                    foreach (explode('|', $team['members_ranks']) as $entry) {
+                                        $nm = trim(explode(':', $entry, 2)[0]);
+                                        if ($nm !== '') $mnames[] = $nm;
+                                    }
+                                }
+                                if (empty($mnames)) {
+                                    for ($mi = 1; $mi <= 5; $mi++) {
+                                        if (!empty($team["member_$mi"])) $mnames[] = trim($team["member_$mi"]);
+                                    }
+                                }
+                                if (!empty($mnames)): ?>
+                                    <div style="font-size:11.5px; color:var(--text-muted); font-weight:500; margin-top:2px; line-height:1.45;"><?= htmlspecialchars(implode(' · ', $mnames)) ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                     <div>
                         <span class="he-team-status <?= $paid ? 'he-status-paid' : 'he-status-pending' ?>">
                             <?= $paid ? 'Paid' : 'Pending' ?>
@@ -1095,8 +1172,17 @@ body > .hero,
                 <div class="he-team">
                     <div class="he-team-num"><?= str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT) ?></div>
                     <div class="he-team-name">
-                        <?= htmlspecialchars($sp['player_name']) ?>
-                        <span style="display:block; font-size:11.5px; color:var(--text-muted); font-weight:500;"><?= htmlspecialchars($sp['preferred_role'] ?: 'Flexible') ?></span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <?php if (!empty($sp['profile_photo'])): ?>
+                                <img src="<?= base_url($sp['profile_photo']) ?>" alt="<?= htmlspecialchars($sp['player_name']) ?> photo" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid var(--border); flex-shrink:0;" loading="lazy" decoding="async">
+                            <?php else: ?>
+                                <div style="width:36px; height:36px; border-radius:50%; background:var(--bg-subtle); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--text-muted); font-size:15px;"><i class="bi bi-person-fill"></i></div>
+                            <?php endif; ?>
+                            <div style="min-width:0;">
+                                <?= htmlspecialchars($sp['player_name']) ?>
+                                <span style="display:block; font-size:11.5px; color:var(--text-muted); font-weight:500;"><?= htmlspecialchars($sp['preferred_role'] ?: 'Flexible') ?></span>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <span class="he-team-status <?= $sclass ?>"><?= $slabel ?></span>
@@ -1484,7 +1570,7 @@ $dota_all_paid = $dota_paid_in_main >= 16;
             <span style="font-size:1.3rem; flex-shrink:0;">🏆</span>
             <div style="flex:1; min-width:0;">
                 <div style="font-size:0.98rem; font-weight:900; color:#fff; letter-spacing:0.3px; line-height:1.2;">
-                    TOURNAMENT STARTS MAY 30 · 11:00 AM
+                    TOURNAMENT STARTS JULY 11 · 11:00 AM
                 </div>
                 <div style="font-size:0.76rem; color:#fb923c; font-weight:600; margin-top:3px;">
                     <i class="bi bi-geo-alt-fill"></i> Apex Cybernet Cafe, F. Jaca St, Cebu City
@@ -1627,7 +1713,7 @@ if ($best_game && !empty($best_game['reg_deadline']) && strtotime($best_game['re
             <span style="font-size:1.3rem;">🏆</span>
             <div>
                 <div style="font-size:1.05rem; font-weight:900; color:#fff; letter-spacing:0.3px; line-height:1.2;">
-                    TOURNAMENT STARTS MAY 30 · 11:00 AM
+                    TOURNAMENT STARTS JULY 11 · 11:00 AM
                 </div>
                 <div style="font-size:0.78rem; color:#fb923c; font-weight:600; margin-top:2px;">
                     <i class="bi bi-geo-alt-fill"></i> Apex Cybernet Cafe, F. Jaca St, Cebu City

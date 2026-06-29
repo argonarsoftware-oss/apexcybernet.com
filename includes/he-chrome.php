@@ -38,6 +38,7 @@ body > .terms-landing, body > .prize-pick, body > .hero,
             <a href="<?= base_url('bracket.php?game=dota2') ?>" class="he-nav-link">Bracket</a>
             <a href="<?= base_url('rules.php') ?>" class="he-nav-link">Rules</a>
             <a href="<?= base_url('contact.php') ?>" class="he-nav-link">Contact</a>
+            <a href="<?= base_url('status.php') ?>" class="he-nav-link">Status</a>
             <a href="<?= base_url('register.php?game=dota2') ?>" class="he-cta-mini">Register →</a>
         </nav>
     </div>
