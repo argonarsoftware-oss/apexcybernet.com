@@ -1094,7 +1094,7 @@ body > .hero,
             ['team_name' => 'Aegis',   'status' => 'approved', 'power' => 27, 'seed' => true],
             ['team_name' => 'Inayawan Players',   'status' => 'pending',  'power' => 24, 'seed' => true],
             ['team_name' => 'Mystic',  'status' => 'pending',  'power' => 22, 'seed' => true],
-            ['team_name' => 'Rapier Syndicate', 'status' => 'approved', 'power' => 28, 'seed' => true],
+            ['team_name' => 'Syndicate', 'status' => 'approved', 'power' => 28, 'seed' => true],
         ];
         $dota_field = array_merge($dota_main, $seed_teams);
         if (empty($dota_field)) {
