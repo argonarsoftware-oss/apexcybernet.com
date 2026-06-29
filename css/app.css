@@ -1,24 +1,24 @@
 :root {
-    /* Apex Cybernet — dark monochrome (raptor / fossil B&W aesthetic) */
-    --bg-dark:        #0a0a0b;        /* near-black page background */
-    --bg-card:        #141417;        /* elevated card surface */
-    --bg-card-hover:  #1c1c20;
-    --bg-subtle:      #1a1a1e;
+    /* Apex Cybernet — dark slate + Dota-red accent (esports) */
+    --bg-dark:        #0e0f13;        /* page background — dark slate, not pure black */
+    --bg-card:        #181a20;        /* elevated card surface */
+    --bg-card-hover:  #20232b;
+    --bg-subtle:      #22252e;        /* inputs / inset surfaces (distinct from cards) */
 
-    --accent:         #fafafa;        /* primary near-white (white-on-black, like the logo) */
-    --accent-light:   #a1a1aa;        /* muted highlight */
-    --accent-cyan:    #e4e4e7;        /* light mono */
-    --accent-magenta: #d4d4d8;
-    --accent-gold:    #fbbf24;        /* reserved for trophy / champion accents only */
+    --accent:         #e23636;        /* Dota-red primary (CTAs, energy) */
+    --accent-light:   #f87171;        /* light red highlight (links, focus) */
+    --accent-cyan:    #f87171;
+    --accent-magenta: #f87171;
+    --accent-gold:    #fbbf24;        /* trophy / champion accents */
 
-    --text:           #fafafa;
-    --text-main:      #fafafa;
-    --text-body:      #d4d4d8;
-    --text-muted:     #a1a1aa;
-    --text-subtle:    #71717a;
+    --text:           #f3f4f6;
+    --text-main:      #f3f4f6;
+    --text-body:      #c8ccd4;
+    --text-muted:     #8b919e;
+    --text-subtle:    #6b7280;
 
-    --border:         #26262b;
-    --border-strong:  #3f3f46;
+    --border:         #262932;
+    --border-strong:  #343845;
 
     --success:        #22c55e;
     --warning:        #f59e0b;
@@ -4951,16 +4951,61 @@ small, .small { color: var(--text-muted); }
     50% { opacity: 0.5; }
 }
 
-/* ===== Apex Cybernet — dark monochrome theme overrides ===== */
+/* ===== Apex Cybernet — dark theme refinements ===== */
 body { background: var(--bg-dark); color: var(--text-body); }
-.navbar { background: rgba(10,10,11,0.92); border-bottom: 1px solid var(--border); }
+
+/* Editorial nav (he-chrome — used on public pages) */
+.he-nav { background: rgba(14,15,19,0.88) !important; border-bottom: 1px solid var(--border) !important; backdrop-filter: blur(10px); }
+.he-brand-mark { background: transparent !important; box-shadow: none !important; width: 40px !important; height: 40px !important; overflow: hidden; border-radius: 9px; padding: 0 !important; }
+.he-brand-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.he-nav-link { color: var(--text-body) !important; }
+.he-nav-link:hover { background: var(--bg-subtle) !important; color: var(--text) !important; }
+.he-cta-mini { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; }
+.he-cta-mini:hover { background: #c92a2a !important; }
+
+/* Legacy navbar (other pages) */
+.navbar { background: rgba(14,15,19,0.92); border-bottom: 1px solid var(--border); }
 .navbar-brand { color: var(--text) !important; display: inline-flex; align-items: center; gap: 10px; }
-.navbar-brand img.brand-logo {
-    height: 40px; width: 40px; border-radius: 9px; object-fit: cover;
-    display: inline-block; box-shadow: 0 0 0 1px var(--border-strong);
+.navbar-brand img.brand-logo { height: 38px; width: 38px; border-radius: 8px; object-fit: cover; box-shadow: 0 0 0 1px var(--border-strong); }
+
+/* Hero title gradient — readable light→red on dark */
+.he-hero em {
+    background: linear-gradient(90deg, #ffffff 30%, var(--accent-light)) !important;
+    -webkit-background-clip: text !important; background-clip: text !important;
+    -webkit-text-fill-color: transparent !important; color: transparent !important;
+    font-style: normal;
 }
-/* Primary actions: white surface + black text (mirrors the white-on-black logo) */
-.btn-register, .btn-submit { color: #0a0a0b !important; }
-.btn-register:hover, .btn-submit:hover { background: var(--accent-light) !important; color: #0a0a0b !important; }
-.btn-solo { color: var(--text) !important; border: 1px solid var(--border-strong) !important; }
-.btn-solo:hover { background: var(--accent) !important; color: #0a0a0b !important; }
+/* Raptor logo watermark behind the homepage hero */
+.he-hero { position: relative; overflow: hidden; }
+.he-hero::before {
+    content: ""; position: absolute; right: -60px; top: 50%; transform: translateY(-50%);
+    width: 480px; height: 480px; background: url('/images/apex-logo.jpg') center/contain no-repeat;
+    opacity: 0.08; filter: grayscale(1) contrast(1.15); pointer-events: none; z-index: 0;
+}
+.he-hero > * { position: relative; z-index: 1; }
+
+/* Form controls — dark inset surface distinct from cards, readable text */
+.form-control, .form-select, .he-field input, .he-field select, .he-field textarea,
+input[type="text"], input[type="email"], input[type="tel"], input[type="url"],
+input[type="password"], input[type="number"], input[type="search"], select, textarea {
+    background: var(--bg-subtle) !important;
+    border: 1px solid var(--border-strong) !important;
+    color: var(--text) !important;
+}
+.form-control::placeholder, input::placeholder, textarea::placeholder { color: var(--text-muted) !important; opacity: 1; }
+.form-control:focus, .form-select:focus, input:focus, select:focus, textarea:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(226,54,54,0.18) !important;
+    background: var(--bg-subtle) !important;
+}
+select option { background: #181a20; color: var(--text); }
+::-webkit-file-upload-button, ::file-selector-button {
+    background: var(--accent) !important; color: #fff !important; border: none !important;
+    border-radius: 8px; padding: 0.5rem 0.9rem; cursor: pointer;
+}
+
+/* Buttons — red accent, white text */
+.btn-register, .btn-submit { background: var(--accent) !important; color: #fff !important; }
+.btn-register:hover, .btn-submit:hover { background: #c92a2a !important; color: #fff !important; }
+.btn-solo { background: transparent !important; color: var(--accent-light) !important; border: 1px solid var(--accent) !important; }
+.btn-solo:hover { background: var(--accent) !important; color: #fff !important; }

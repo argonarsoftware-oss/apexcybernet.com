@@ -27,9 +27,7 @@ body > .terms-landing, body > .prize-pick, body > .hero,
     <div class="he-nav-inner">
         <a href="<?= base_url() ?>" class="he-brand">
             <div class="he-brand-mark">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/>
-                </svg>
+                <img src="<?= base_url('images/apex-logo.jpg') ?>" alt="Apex Cybernet Cafe" width="40" height="40">
             </div>
             <div>
                 <div class="he-brand-name">Apex Cybernet</div>
