@@ -33,8 +33,8 @@ Are you ready to prove you're the best? 🔥
 ✅ Solo Entry: ₱110 — we'll match you with a team based on your skill level!
 ✅ Register, pay via QR Ph (InstaPay), and your slot is locked in
 
-📍 Venue: PGL Ibabao
-📌 S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu
+📍 Venue: Apex Cybernet Cafe
+📌 7V94+HCQ, F. Jaca St, Cebu City, 6000 Cebu
 
 🔗 REGISTER NOW: https://apexcybernet.com
 
@@ -44,9 +44,9 @@ Are you ready to prove you're the best? 🔥
 Don't have a team? No problem! Join solo and we'll build one for you 💪
 
 Presented by Apex Cybernet
-Venue hosted by PGL Ibabao
+Venue hosted by Apex Cybernet Cafe
 
-#ApexCybernetTournament #GamingCebu #Esports #Valorant #Dota2 #CrossFire #CebuGaming #WinnerTakesAll #PGLIbabao #GameOn</div>
+#ApexCybernetTournament #GamingCebu #Esports #Valorant #Dota2 #CrossFire #CebuGaming #WinnerTakesAll #ApexCybernetCafe #GameOn</div>
 
         <!-- VALORANT POST -->
         <div class="section-label"><i class="bi bi-crosshair"></i> Valorant Post</div>
@@ -69,7 +69,7 @@ Your aim, your strats, your team — it's time to prove it on the big stage. 5v5
 🎮 No team? Register solo — we'll match you with players at your rank!
 Iron to Radiant, everyone's welcome.
 
-📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
+📍 Apex Cybernet Cafe — 7V94+HCQ, F. Jaca St, Cebu City
 🎟️ ₱550/team · ₱110/solo entry. Pay via QR Ph (InstaPay) right after you register.
 
 🔗 REGISTER: https://apexcybernet.com/register.php?game=valorant
@@ -101,7 +101,7 @@ Mga lodi ng Dota, tara na! 🔥
 🎮 Solo player? Register and we'll match you by rank!
 Herald to Immortal — Carry, Mid, Offlane, Support — pick your role.
 
-📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
+📍 Apex Cybernet Cafe — 7V94+HCQ, F. Jaca St, Cebu City
 🎟️ ₱550/team · ₱110/solo entry. Pay via QR Ph (InstaPay) right after you register.
 
 🔗 REGISTER: https://apexcybernet.com/register.php?game=dota2
@@ -132,7 +132,7 @@ CrossFire on GameClub — the classic FPS is back and better than ever. 5v5 Sear
 
 🎮 Flying solo? We got you — register solo and we'll build your dream team based on your skill level!
 
-📍 PGL Ibabao — S.B. Cabahug, Mandaue, Cebu
+📍 Apex Cybernet Cafe — 7V94+HCQ, F. Jaca St, Cebu City
 🎟️ ₱550/team · ₱110/solo entry. Pay via QR Ph (InstaPay) right after you register.
 
 🔗 REGISTER: https://apexcybernet.com/register.php?game=crossfire
@@ -162,7 +162,7 @@ Here's how it works:
 
 Don't sit this one out. Your next squad is waiting! 💪
 
-📍 PGL Ibabao — Mandaue, Cebu
+📍 Apex Cybernet Cafe — Cebu City
 🔗 https://apexcybernet.com
 
 #ApexCybernetTournament #SoloQueue #FindYourTeam #GamingCebu #Valorant #Dota2 #CrossFire #Esports #NoTeamNoProblem</div>

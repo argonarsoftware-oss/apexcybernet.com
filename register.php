@@ -27,7 +27,7 @@ $game_prefixes = [
 
 $game_name = $valid_games[$game_slug];
 $pageTitle = "Register Your Team — Apex Cybernet $game_name Tournament";
-$pageDescription = "Register your $game_name team for the Apex Cybernet Tournament. ₱550/team entry, 5-player team, ₱20,000 cash prize. Double elimination at PGL Ibabao, Mandaue, Cebu.";
+$pageDescription = "Register your $game_name team for the Apex Cybernet Tournament. ₱550/team entry, 5-player team, ₱20,000 cash prize. Double elimination at Apex Cybernet Cafe, Cebu City.";
 $canonicalUrl = canonical_url('register.php?game=' . $game_slug);
 $extraHead = breadcrumb_jsonld([
     ['name' => 'Home',          'url' => 'https://apexcybernet.com/'],
@@ -236,7 +236,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                     </div>
                     <div style="font-size:12px; color:var(--text-muted); max-width:240px; text-align:right;">Pay on the next page via QR Ph. Your slot locks when payment clears.</div>
                 </div>
-                <div class="he-field-hint">PC time at the venue is paid directly to PGL Ibabao and is separate from this fee.</div>
+                <div class="he-field-hint">PC time at the venue is paid directly to Apex Cybernet Cafe and is separate from this fee.</div>
             </div>
 
             <div class="he-card-section">

@@ -623,7 +623,7 @@ $pageTitle = 'Admin Dashboard — Apex Cybernet Tournament';
                         <?php endif; ?>
                     </span>
                 <?php endif; ?>
-                <span style="font-size:0.7rem; color:var(--text-muted);">listener.apexcybernet.com</span>
+                <span style="font-size:0.7rem; color:var(--text-muted);">listener.argonar.co</span>
                 <button onclick="rematchPayments()" style="background:#fbbf24; color:#000; border:none; padding:0.4rem 0.85rem; border-radius:8px; font-size:0.75rem; font-weight:700; cursor:pointer;">
                     <i class="bi bi-arrow-repeat"></i> Rematch Now
                 </button>
@@ -1312,7 +1312,7 @@ function rematchPayments() {
     const btn = event.target.closest('button');
     btn.disabled = true;
     btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Rematching...';
-    fetch('https://listener.apexcybernet.com/api/payments/rematch', {
+    fetch('https://listener.argonar.co/api/payments/rematch', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1335,7 +1335,7 @@ function rematchPayments() {
 function forceMatchPrompt(paymentId, amount, sender) {
     const orderId = prompt('Force match payment ₱' + amount + ' from ' + sender + '\n\nEnter the order ref code (e.g. DOTA-T-XXXX):');
     if (!orderId || orderId.trim() === '') return;
-    fetch('https://listener.apexcybernet.com/api/payments/force-match', {
+    fetch('https://listener.argonar.co/api/payments/force-match', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

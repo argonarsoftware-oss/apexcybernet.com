@@ -240,7 +240,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
                     </div>
                     <div style="font-size:12px; color:var(--text-muted); max-width:240px; text-align:right;">Pay on the next page via QR Ph. Slot locks when payment clears.</div>
                 </div>
-                <div class="he-field-hint">PC time at PGL Ibabao is paid directly to the venue and is separate.</div>
+                <div class="he-field-hint">PC time at Apex Cybernet Cafe is paid directly to the venue and is separate.</div>
             </div>
 
             <div class="he-card-section">

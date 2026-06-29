@@ -251,13 +251,13 @@ $extraHead = '<script type="application/ld+json">' . json_encode([
     'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
     'location' => [
         '@type' => 'Place',
-        'name' => 'PGL Ibabao',
-        'hasMap' => 'https://www.google.com/maps/search/?api=1&query=PGL+Ibabao+S.B.+Cabahug+Ibabao-Estancia+Mandaue+Cebu',
+        'name' => 'Apex Cybernet Cafe',
+        'hasMap' => 'https://www.google.com/maps/search/?api=1&query=7V94%2BHCQ+F.+Jaca+St+Cebu+City',
         'address' => [
             '@type' => 'PostalAddress',
-            'streetAddress' => 'S.B. Cabahug, Ibabao-Estancia',
-            'addressLocality' => 'Mandaue',
-            'postalCode' => '6014',
+            'streetAddress' => '7V94+HCQ, F. Jaca St',
+            'addressLocality' => 'Cebu City',
+            'postalCode' => '6000',
             'addressCountry' => 'PH',
         ],
     ],
@@ -331,7 +331,7 @@ $dota_solo_pending  = $dota_sc;
 $dota_date_label    = 'May 30, 2026';
 $dota_time_label    = '11:00 AM';
 $dota_call_label    = '10:00 AM';
-$dota_venue_label   = 'PGL Ibabao · Mandaue, Cebu';
+$dota_venue_label   = 'Apex Cybernet Cafe · Cebu City';
 $dota_prize_label   = '&#8369;20,000';
 $dota_team_fee      = 550;
 $dota_solo_fee      = 110;
@@ -901,7 +901,7 @@ body > .hero,
         Fight for glory in the<br><em>Apex Cybernet Dota 2 Tournament.</em>
     </h1>
     <p class="he-sub">
-        12 teams. Double elimination. One champion. May 30, 2026 at PGL Ibabao, Mandaue —
+        12 teams. Double elimination. One champion. May 30, 2026 at Apex Cybernet Cafe, Cebu City —
         a ₱20,000 cash prize. Register your full squad or enter solo and we'll match you with a team.
     </p>
     <div class="he-cta-row">
@@ -915,7 +915,7 @@ body > .hero,
     <div class="he-quick-meta">
         <span><i class="bi bi-calendar-event"></i> <?= $dota_date_label ?> · <?= $dota_time_label ?></span>
         <span class="he-quick-meta-sep">·</span>
-        <span><i class="bi bi-geo-alt-fill"></i> PGL Ibabao</span>
+        <span><i class="bi bi-geo-alt-fill"></i> Apex Cybernet Cafe</span>
         <span class="he-quick-meta-sep">·</span>
         <span><i class="bi bi-stopwatch"></i> Call time <?= $dota_call_label ?></span>
     </div>
@@ -1010,7 +1010,7 @@ body > .hero,
             </div>
             <div class="he-prize-row">
                 <span class="he-prize-row-label">Venue</span>
-                <span class="he-prize-row-value">PGL Ibabao</span>
+                <span class="he-prize-row-value">Apex Cybernet Cafe</span>
             </div>
         </div>
     </div>
@@ -1283,20 +1283,20 @@ $dota_all_paid = $dota_paid_in_main >= 16;
     <div class="sponsor-block">
         <span class="sponsor-label" style="color:#fbbf24; letter-spacing:0.18em;"><i class="bi bi-geo-alt-fill" style="font-size:0.8em; margin-right:0.25rem;"></i> Official Venue</span>
         <div class="sponsor-logo">
-            <img src="<?= base_url('images/pgl-ibabao.webp') ?>" alt="PGL Ibabao — tournament venue" class="venue-logo" width="60" height="60" decoding="async" style="object-fit:cover;">
+            <img src="<?= base_url('images/pgl-ibabao.webp') ?>" alt="Apex Cybernet Cafe — tournament venue" class="venue-logo" width="60" height="60" decoding="async" style="object-fit:cover;">
             <div class="sponsor-text">
-                <strong>PGL IBABAO</strong>
-                <span>MANDAUE</span>
+                <strong>APEX CYBERNET CAFE</strong>
+                <span>CEBU CITY</span>
             </div>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.6rem; font-size:0.82rem;">
             <div style="color:var(--text-muted); display:flex; align-items:flex-start; gap:0.4rem; line-height:1.45;">
                 <i class="bi bi-geo-alt-fill" style="color:#fbbf24; margin-top:0.15rem; flex-shrink:0;"></i>
-                <span>S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu</span>
+                <span>7V94+HCQ, F. Jaca St, Cebu City, 6000 Cebu</span>
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.15rem;">
-                <a href="https://www.google.com/maps/search/?api=1&query=PGL+Ibabao+S.B.+Cabahug+Ibabao-Estancia+Mandaue+Cebu"
+                <a href="https://www.google.com/maps/search/?api=1&query=7V94%2BHCQ+F.+Jaca+St+Cebu+City"
                    target="_blank" rel="noopener"
                    style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.35rem 0.7rem; background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.35); border-radius:999px; font-size:0.74rem; font-weight:700; color:#fbbf24; text-decoration:none; letter-spacing:0.05em;">
                     <i class="bi bi-map-fill"></i> Get directions
@@ -1431,7 +1431,7 @@ $dota_all_paid = $dota_paid_in_main >= 16;
                     TOURNAMENT STARTS MAY 30 · 11:00 AM
                 </div>
                 <div style="font-size:0.76rem; color:#fb923c; font-weight:600; margin-top:3px;">
-                    <i class="bi bi-geo-alt-fill"></i> PGL Ibabao, S.B. Cabahug, Mandaue
+                    <i class="bi bi-geo-alt-fill"></i> Apex Cybernet Cafe, F. Jaca St, Cebu City
                 </div>
                 <div style="display:flex; align-items:center; gap:0.55rem; margin-top:8px; padding:0.55rem 0.75rem; background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(245,158,11,0.12)); border:2px solid #fbbf24; border-radius:10px; box-shadow:0 0 0 2px rgba(251,191,36,0.15), 0 0 12px rgba(251,191,36,0.25);">
                     <i class="bi bi-bell-fill" style="font-size:1.2rem; color:#fbbf24; animation:pulseGlow 1.4s ease-in-out infinite;"></i>
@@ -1574,7 +1574,7 @@ if ($best_game && !empty($best_game['reg_deadline']) && strtotime($best_game['re
                     TOURNAMENT STARTS MAY 30 · 11:00 AM
                 </div>
                 <div style="font-size:0.78rem; color:#fb923c; font-weight:600; margin-top:2px;">
-                    <i class="bi bi-geo-alt-fill"></i> PGL Ibabao, S.B. Cabahug, Mandaue
+                    <i class="bi bi-geo-alt-fill"></i> Apex Cybernet Cafe, F. Jaca St, Cebu City
                 </div>
             </div>
         </div>
@@ -2695,7 +2695,7 @@ foreach ($featured_games as $fg) {
                 <li><strong>Media Release:</strong> You consent to being photographed, filmed, and/or recorded during the tournament. All media may be used for promotional, social media, and public purposes by the organizers.</li>
                 <li><strong>Fair Play &amp; Integrity:</strong> You commit to playing with honesty and sportsmanship. Any form of cheating, rank manipulation, or unsportsmanlike behavior may result in disqualification.</li>
                 <li><strong>Violations &amp; Penalties:</strong> Rank manipulation, submitting false information, smurfing, or any form of dishonesty will be subject to penalties — including disqualification and prize forfeiture — at the discretion of Apex Cybernet.</li>
-                <li><strong>Entry Fee:</strong> ₱550 per team or ₱110 per solo player. Pay via QR Ph (InstaPay) on the payment page after registration. PC time at the venue is paid directly to PGL Ibabao.</li>
+                <li><strong>Entry Fee:</strong> ₱550 per team or ₱110 per solo player. Pay via QR Ph (InstaPay) on the payment page after registration. PC time at the venue is paid directly to Apex Cybernet Cafe.</li>
                 <li><strong>Build Your Reputation:</strong> This tournament is your stage. Your performance, conduct, and teamwork build your credibility as a player in the community. Play with honor.</li>
             </ul>
             <!-- Violations & Penalties Warning -->

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/includes/db.php';
 
 $pageTitle = 'Contact & Support — Apex Cybernet Dota 2 Tournament';
-$pageDescription = 'Get in touch with the Apex Cybernet Dota 2 Tournament organizers. Venue: PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue. ₱550/team · ₱110/solo entry. FAQs about registration and tournament day.';
+$pageDescription = 'Get in touch with the Apex Cybernet Dota 2 Tournament organizers. Venue: Apex Cybernet Cafe, 7V94+HCQ, F. Jaca St, Cebu City. ₱550/team · ₱110/solo entry. FAQs about registration and tournament day.';
 $canonicalUrl = canonical_url('contact.php');
 
 $faqs = [
@@ -16,11 +16,11 @@ $faqs = [
     ],
     [
         'q' => 'When is the tournament?',
-        'a' => 'The Apex Cybernet Dota 2 Tournament is on May 30, 2026 at PGL Ibabao, S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu. Tournament starts at 11:00 AM. Call time is 10:00 AM.',
+        'a' => 'The Apex Cybernet Dota 2 Tournament is on May 30, 2026 at Apex Cybernet Cafe, 7V94+HCQ, F. Jaca St, Cebu City, 6000 Cebu. Tournament starts at 11:00 AM. Call time is 10:00 AM.',
     ],
     [
         'q' => 'Where is the venue exactly?',
-        'a' => 'PGL Ibabao — S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu. Open the venue in Google Maps from the Contact page.',
+        'a' => 'Apex Cybernet Cafe — 7V94+HCQ, F. Jaca St, Cebu City, 6000 Cebu. Open the venue in Google Maps from the Contact page.',
     ],
     [
         'q' => 'What if I can\'t attend on tournament day?',
@@ -32,7 +32,7 @@ $faqs = [
     ],
     [
         'q' => 'Do I need to pay for PC time at the venue?',
-        'a' => 'Yes. PC time at PGL Ibabao is paid directly to the venue and is separate from the tournament entry fee.',
+        'a' => 'Yes. PC time at Apex Cybernet Cafe is paid directly to the venue and is separate from the tournament entry fee.',
     ],
     [
         'q' => 'Is the bracket final before the tournament?',
@@ -86,14 +86,14 @@ require_once __DIR__ . '/includes/he-chrome.php';
                 </div>
                 <i class="bi bi-arrow-up-right" style="color:var(--text-muted);"></i>
             </a>
-            <a href="https://www.google.com/maps/search/?api=1&amp;query=PGL+Ibabao+S.B.+Cabahug+Ibabao-Estancia+Mandaue+Cebu" target="_blank" rel="noopener"
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=7V94%2BHCQ+F.+Jaca+St+Cebu+City" target="_blank" rel="noopener"
                style="display:flex; align-items:center; gap:14px; padding:16px 18px; background:var(--bg-subtle); border:1px solid var(--border); border-radius:12px; text-decoration:none; transition:border-color 0.15s;">
                 <div style="width:40px; height:40px; background:#fff; border:1px solid var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--danger); font-size:20px;">
                     <i class="bi bi-geo-alt-fill"></i>
                 </div>
                 <div style="flex:1; min-width:0;">
-                    <div style="font-weight:600; color:var(--text); font-size:14.5px;">PGL Ibabao</div>
-                    <div style="font-size:12.5px; color:var(--text-muted); margin-top:1px;">S.B. Cabahug, Ibabao-Estancia, Mandaue, 6014 Cebu · opens in Maps</div>
+                    <div style="font-weight:600; color:var(--text); font-size:14.5px;">Apex Cybernet Cafe</div>
+                    <div style="font-size:12.5px; color:var(--text-muted); margin-top:1px;">7V94+HCQ, F. Jaca St, Cebu City, 6000 Cebu · opens in Maps</div>
                 </div>
                 <i class="bi bi-arrow-up-right" style="color:var(--text-muted);"></i>
             </a>
@@ -102,7 +102,7 @@ require_once __DIR__ . '/includes/he-chrome.php';
         <div class="he-card-section">
             <div class="he-card-section-label">Entry</div>
             <div style="font-size:13.5px; color:var(--text-body); line-height:1.6;">
-                <strong>₱550/team · ₱110/solo.</strong> Paid via QR Ph (InstaPay) on the payment page after registration. PC time at PGL Ibabao is paid directly to the venue and is separate.
+                <strong>₱550/team · ₱110/solo.</strong> Paid via QR Ph (InstaPay) on the payment page after registration. PC time at Apex Cybernet Cafe is paid directly to the venue and is separate.
             </div>
         </div>
 

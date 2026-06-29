@@ -321,7 +321,7 @@ function toggleVideoSound(btn) {
         <div id="gjb-perks">
             <span>🎮 Tournament access</span>
             <span>🏆 Ranked matches</span>
-            <span>📅 May 30 · PGL Ibabao</span>
+            <span>📅 May 30 · Apex Cybernet Cafe</span>
         </div>
         <a href="<?= base_url('login.php') ?>?tab=register" id="gjb-cta">Create Free Account</a>
         <a href="<?= base_url('login.php') ?>" id="gjb-login">Already have an account? Log in</a>

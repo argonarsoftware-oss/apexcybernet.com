@@ -8,10 +8,10 @@
     <?php
     // ── SEO defaults ──
     $defaultTitle       = 'Apex Cybernet Tournament — Dota 2 Esports Cebu';
-    $defaultDescription = 'Apex Cybernet Dota 2 Tournament — 5v5 double elimination, ₱20,000 cash prize. ₱550/team · ₱110/solo entry. May 30, 2026 at PGL Ibabao, Mandaue, Cebu.';
+    $defaultDescription = 'Apex Cybernet Dota 2 Tournament — 5v5 double elimination, ₱20,000 cash prize. ₱550/team · ₱110/solo entry. May 30, 2026 at Apex Cybernet Cafe, Cebu City.';
     $effectiveTitle     = $pageTitle ?? $defaultTitle;
     $metaDescription    = $pageDescription ?? $defaultDescription;
-    $metaKeywords       = 'Apex Cybernet Tournament, Dota 2 Cebu, Cebu esports, Dota 2 Philippines, gaming tournament Cebu, PGL Ibabao, Mandaue Cebu, double elimination Dota, paid entry esports';
+    $metaKeywords       = 'Apex Cybernet Tournament, Dota 2 Cebu, Cebu esports, Dota 2 Philippines, gaming tournament Cebu, Apex Cybernet Cafe, Cebu City, double elimination Dota, paid entry esports';
     $metaOgImage        = $ogImage ?? 'https://apexcybernet.com/og-image.php';
     $metaOgImageAlt     = $ogImageAlt ?? 'Apex Cybernet Dota 2 Tournament — Fight for Glory, ₱20,000 cash prize';
 
@@ -79,7 +79,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://listener.apexcybernet.com">
+    <link rel="dns-prefetch" href="https://listener.argonar.co">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
