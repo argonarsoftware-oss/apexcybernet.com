@@ -18,19 +18,32 @@ body {
     text-align: center;
     padding: 2rem;
 }
-.wrap { max-width: 440px; }
+.wrap { max-width: 460px; }
 .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; }
 h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
 p { color: rgba(255,255,255,0.5); font-size: 0.95rem; line-height: 1.7; margin-bottom: 0.5rem; }
+.cafe {
+    margin-top: 1.75rem;
+    padding: 1rem 1.25rem;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.35);
+    border-radius: 12px;
+}
+.cafe .status { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: #34d399; font-weight: 700; margin-bottom: 0.35rem; }
+.cafe .status::before { content: "●"; margin-right: 0.4rem; }
+.cafe p { color: rgba(255,255,255,0.7); margin-bottom: 0; font-size: 0.9rem; }
 .brand { margin-top: 2rem; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(124,58,237,0.9); font-weight: 700; }
 </style>
 </head>
 <body>
     <div class="wrap">
         <div class="icon">🛠️</div>
-        <h1>We'll be right back</h1>
-        <p>Apex Cybernet is temporarily unavailable while we perform maintenance.</p>
-        <p>Please check back again shortly.</p>
+        <h1>Our Website Is Paused</h1>
+        <p>Only our online website is temporarily offline for maintenance.</p>
+        <div class="cafe">
+            <div class="status">Internet Cafe — Open as Usual</div>
+            <p>Good news: our physical internet cafe is <strong>still open and fully operating</strong>. Only the website is down — come drop by and play with us in person!</p>
+        </div>
         <div class="brand">Apex Cybernet</div>
     </div>
 </body>
