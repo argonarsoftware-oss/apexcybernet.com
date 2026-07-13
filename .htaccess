@@ -1,3 +1,16 @@
 php_value upload_max_filesize 50M
 php_value post_max_size 55M
 php_value max_execution_time 120
+
+# --- SITE SUSPENDED (maintenance mode) ---
+# Serve suspended.html for all requests with a 503 status.
+# Exceptions: the deploy webhook (so auto-deploy still works to lift this)
+# and the suspended page / its assets themselves.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/suspended\.html$ [NC]
+    RewriteCond %{REQUEST_URI} !^/webhook-deploy\.php$ [NC]
+    RewriteRule ^ /suspended.html [R=503,L]
+</IfModule>
+ErrorDocument 503 /suspended.html
+Header always set Retry-After "3600" env=REDIRECT_STATUS
